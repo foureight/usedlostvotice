@@ -22,10 +22,23 @@ function asStringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.map((item) => asString(item)) : [];
 }
 
-function normalizeSite(site: UnknownRecord): SiteContent {
+function normalizeSearch(search: UnknownRecord) {
+  return {
+    seoTitle: asString(search.seoTitle),
+    seoDescription: asString(search.seoDescription),
+    keywords: asStringArray(search.keywords),
+    seoBody: asStringArray(search.seoBody),
+    geoBody: asStringArray(search.geoBody),
+    aioSummary: asString(search.aioSummary),
+    aioBullets: asStringArray(search.aioBullets),
+  };
+}
+
+function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteContent {
   const location = asRecord(site.location);
   const specs = asRecord(site.specs);
-  const search = asRecord(site.search);
+  // SEO lives in content/seo.json (Keystatic singleton), with legacy fallback on site.search.
+  const search = Object.keys(seo).length ? seo : asRecord(site.search);
   const architecture = asRecord(site.architecture);
   const completion = asRecord(site.completion);
   const contact = asRecord(site.contact);
@@ -89,15 +102,7 @@ function normalizeSite(site: UnknownRecord): SiteContent {
       utilities: asStringArray(specs.utilities),
     },
     summary: asStringArray(site.summary),
-    search: {
-      seoTitle: asString(search.seoTitle),
-      seoDescription: asString(search.seoDescription),
-      keywords: asStringArray(search.keywords),
-      seoBody: asStringArray(search.seoBody),
-      geoBody: asStringArray(search.geoBody),
-      aioSummary: asString(search.aioSummary),
-      aioBullets: asStringArray(search.aioBullets),
-    },
+    search: normalizeSearch(search),
     highlights: (Array.isArray(site.highlights) ? site.highlights : []).map((item) => {
       const h = asRecord(item);
       return { title: asString(h.title), text: asString(h.text) };
@@ -175,7 +180,8 @@ export async function getContent(): Promise<SiteContent> {
   if (!site) {
     throw new Error("Chybí content/site.json — otevřete /keystatic a uložte obsah.");
   }
-  return normalizeSite(site as UnknownRecord);
+  const seo = (await reader.singletons.seo.read()) as UnknownRecord | null;
+  return normalizeSite(site as UnknownRecord, seo ?? {});
 }
 
 export async function getProperty() {
