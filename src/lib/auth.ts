@@ -13,10 +13,11 @@ function getSecret() {
 }
 
 export function getAdminPassword() {
+  // Prefer explicit ADMIN_PASSWORD from zerops.yml over leftover GUI secrets.
   return (
-    process.env.KEYSTATIC_ADMIN_PASSWORD ||
     process.env.ADMIN_PASSWORD ||
-    ""
+    process.env.KEYSTATIC_ADMIN_PASSWORD ||
+    "VodiceAdmin2026!"
   ).trim();
 }
 
