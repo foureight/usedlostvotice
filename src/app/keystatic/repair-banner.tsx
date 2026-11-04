@@ -52,7 +52,7 @@ export function RepairBanner({ initialNote = "" }: { initialNote?: string }) {
     >
       <p style={{ margin: 0, maxWidth: "52rem", lineHeight: 1.4 }}>
         {note ||
-          "Když Keystatic hlásí „Bad data“ / nejde Save: nejdřív opravte data, pak obnovte stránku."}
+          "Když nejde uložit: klikněte na opravu, pak F5 a znovu Save."}
       </p>
       <button
         type="button"
@@ -68,7 +68,7 @@ export function RepairBanner({ initialNote = "" }: { initialNote?: string }) {
           whiteSpace: "nowrap",
         }}
       >
-        {busy ? "Opravuji…" : "Opravit data (Bad data)"}
+        {busy ? "Opravuji…" : "Opravit CMS data"}
       </button>
     </div>
   );
