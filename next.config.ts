@@ -17,6 +17,16 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: true,
       },
+      {
+        source: "/keystatic",
+        destination: "/zmensito",
+        permanent: true,
+      },
+      {
+        source: "/keystatic/:path*",
+        destination: "/zmensito/:path*",
+        permanent: true,
+      },
     ];
   },
 };

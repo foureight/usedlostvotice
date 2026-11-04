@@ -53,5 +53,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/keystatic", "/keystatic/:path*", "/api/keystatic/:path*"],
+  matcher: ["/zmensito", "/zmensito/:path*", "/api/keystatic/:path*"],
 };

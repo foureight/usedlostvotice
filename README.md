@@ -13,15 +13,15 @@ Otevřete [http://127.0.0.1:43210](http://127.0.0.1:43210).
 
 ## Administrace
 
-Keystatic admin: [http://127.0.0.1:43210/keystatic](http://127.0.0.1:43210/keystatic)
+Admin: [http://127.0.0.1:43210/zmensito](http://127.0.0.1:43210/zmensito)
 
-Chráněno HTTP Basic Auth — nastavte `ADMIN_USER` a `ADMIN_PASSWORD` v `.env.local` / Zerops.
+Chráněno HTTP Basic Auth — nastavte `ADMIN_USER` a `ADMIN_PASSWORD` / `KEYSTATIC_ADMIN_PASSWORD` v `.env.local` / Zerops.
 
 - **Celý web** — texty, cena, FAQ, galerie, místa…
 - **Poptávky** — záznamy z kontaktního formuláře (stav Nová / Kontaktováno / Vyřízeno)
 - **E-mail / SMTP** — host, port, přihlášení, příjemci poptávek z formuláře
 
-Na produkci stejná cesta `/keystatic`. SMTP heslo můžete nastavit i jako env `SMTP_PASSWORD` (má přednost).
+Na produkci: https://usedlostvodice.cz/zmensito (staré `/keystatic` přesměruje). SMTP heslo můžete nastavit i jako env `SMTP_PASSWORD` (má přednost).
 
 Poptávky se ukládají do `content/inquiries/`. Při novém deployi na Zerops se runtime soubory mohou přepsat — SMTP e-mail zůstává zálohou.
 
