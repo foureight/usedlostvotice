@@ -1,34 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import {
-  gallery,
-  plans,
-  property,
-  visualizations,
-  visualizationsDokonceno,
-  visualizationsPhoto,
-} from "@/data/property";
 
-const showGalerie = gallery.length > 0;
-const showVize =
-  visualizationsPhoto.length > 0 ||
-  visualizationsDokonceno.length > 0 ||
-  visualizations.length > 0 ||
-  plans.length > 0;
+type SiteHeaderProps = {
+  brand: string;
+  showGalerie: boolean;
+  showVize: boolean;
+};
 
-const links = [
-  { href: "#nemovitost", label: "Nemovitost" },
-  ...(showGalerie ? [{ href: "#galerie", label: "Galerie" }] : []),
-  ...(showVize ? [{ href: "#vize", label: "Vize" }] : []),
-  { href: "#lokalita", label: "Lokalita" },
-  { href: "#mapa", label: "Mapa" },
-  { href: "#dostavba", label: "Dostavba" },
-  { href: "#kontakt", label: "Kontakt" },
-];
-
-export function SiteHeader() {
+export function SiteHeader({ brand, showGalerie, showVize }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
+
+  const links = [
+    { href: "#nemovitost", label: "Nemovitost" },
+    ...(showGalerie ? [{ href: "#galerie", label: "Galerie" }] : []),
+    ...(showVize ? [{ href: "#vize", label: "Vize" }] : []),
+    { href: "#lokalita", label: "Lokalita" },
+    { href: "#mapa", label: "Mapa" },
+    { href: "#dostavba", label: "Dostavba" },
+    { href: "#kontakt", label: "Kontakt" },
+  ];
 
   return (
     <header
@@ -40,7 +31,7 @@ export function SiteHeader() {
           <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">
             Prezentace prodeje domu
           </span>
-          <span className="font-display text-lg tracking-tight sm:text-xl">{property.brand}</span>
+          <span className="font-display text-lg tracking-tight sm:text-xl">{brand}</span>
         </a>
         <nav className="hidden items-center gap-6 text-sm text-white/80 md:flex">
           {links.map((l) => (

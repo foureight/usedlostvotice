@@ -4,14 +4,9 @@ import { FadeIn } from "@/components/fade-in";
 import { FaqAccordion } from "@/components/faq-accordion";
 import { GalleryGrid } from "@/components/lightbox";
 import { InquiryForm } from "@/components/inquiry-form";
-import {
-  gallery,
-  plans,
-  property,
-  visualizations,
-  visualizationsDokonceno,
-  visualizationsPhoto,
-} from "@/data/property";
+import { getProperty } from "@/lib/content";
+
+export const dynamic = "force-dynamic";
 
 function SectionHead({
   eyebrow,
@@ -35,7 +30,15 @@ function SectionHead({
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const {
+    property,
+    gallery,
+    plans,
+    visualizations,
+    visualizationsDokonceno,
+    visualizationsPhoto,
+  } = await getProperty();
   const photoGallery = gallery.filter((g) => g.kind !== "stav");
   const stavGallery = gallery.filter((g) => g.kind === "stav");
   const showGalerie = photoGallery.length > 0 || stavGallery.length > 0;
@@ -396,23 +399,27 @@ export default function HomePage() {
               </ul>
               <p className="mt-6 text-sm text-[var(--color-ink-soft)]">{property.location.parcel}</p>
             </FadeIn>
-            <DeferUntilVisible
-              className="relative min-h-[320px] overflow-hidden bg-[var(--color-paper-deep)] lg:min-h-full"
-              minHeight={320}
-              label="Načítám lokalitu…"
-            >
-              <div className="relative min-h-[320px] h-full w-full lg:absolute lg:inset-0">
-                <Image
-                  src="/galerie/02.jpg"
-                  alt="Krajina kolem usedlosti a Pilského rybníka"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  quality={70}
-                  loading="lazy"
-                  className="object-cover"
-                />
-              </div>
-            </DeferUntilVisible>
+            {photoGallery[1] || photoGallery[0] || hero ? (
+              <DeferUntilVisible
+                className="relative min-h-[320px] overflow-hidden bg-[var(--color-paper-deep)] lg:min-h-full"
+                minHeight={320}
+                label="Načítám lokalitu…"
+              >
+                <div className="relative min-h-[320px] h-full w-full lg:absolute lg:inset-0">
+                  <Image
+                    src={(photoGallery[1] || photoGallery[0] || hero)!.src}
+                    alt={(photoGallery[1] || photoGallery[0] || hero)!.alt}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality={70}
+                    loading="lazy"
+                    className="object-cover"
+                  />
+                </div>
+              </DeferUntilVisible>
+            ) : (
+              <div className="min-h-[320px] bg-[var(--color-paper-deep)] lg:min-h-full" aria-hidden />
+            )}
           </div>
           <FadeIn delay={80} className="mt-12 space-y-4 text-base leading-relaxed text-[var(--color-ink-soft)] sm:text-lg">
             {property.search.geoBody.map((p) => (
@@ -573,7 +580,7 @@ export default function HomePage() {
               </div>
             </FadeIn>
             <FadeIn delay={100} className="rounded-sm border border-[var(--color-line)] bg-white/50 p-5 sm:p-8">
-              <InquiryForm />
+              <InquiryForm brand={property.brand} priceLabel={property.priceLabel} />
             </FadeIn>
           </div>
         </section>

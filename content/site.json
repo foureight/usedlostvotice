@@ -362,12 +362,12 @@
       "kind": "interier"
     },
     {
-      "src": "/stav/dum-pristavek-celek.jpg",
+      "src": "/galerie/dum-pristavek-celek.jpg",
       "alt": "Aktuální stav — celý dům a přístavek",
       "kind": "stav"
     },
     {
-      "src": "/stav/stodola.jpg",
+      "src": "/galerie/stodola.jpg",
       "alt": "Aktuální stav — původní stodola",
       "kind": "stav"
     }

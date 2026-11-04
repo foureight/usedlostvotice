@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { property } from "@/data/property";
 
-export function InquiryForm() {
+export function InquiryForm({
+  brand,
+  priceLabel,
+}: {
+  brand: string;
+  priceLabel: string;
+}) {
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -77,7 +82,7 @@ export function InquiryForm() {
         <textarea
           name="note"
           rows={4}
-          defaultValue={`Dobrý den, mám zájem o ${property.brand} (${property.priceLabel}). Rád/a bych domluvil/a prohlídku.`}
+          defaultValue={`Dobrý den, mám zájem o ${brand} (${priceLabel}). Rád/a bych domluvil/a prohlídku.`}
           className="w-full rounded-sm border border-[var(--color-line)] bg-white/70 px-3 py-2.5 outline-none ring-[var(--color-moss)] focus:ring-2"
         />
       </label>

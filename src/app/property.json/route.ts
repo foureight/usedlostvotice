@@ -1,11 +1,11 @@
 import { getListingJson } from "@/lib/listing-export";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
-export function GET() {
-  return Response.json(getListingJson(), {
+export async function GET() {
+  return Response.json(await getListingJson(), {
     headers: {
-      "Cache-Control": "public, max-age=3600, s-maxage=86400",
+      "Cache-Control": "public, max-age=60, s-maxage=60",
       "Access-Control-Allow-Origin": "*",
     },
   });

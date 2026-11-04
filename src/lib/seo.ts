@@ -1,4 +1,4 @@
-import { property } from "@/data/property";
+import type { SiteContent } from "@/lib/content-types";
 
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
@@ -12,8 +12,9 @@ export function absoluteUrl(path = "/") {
 
 export const defaultOgImage = absoluteUrl("/og.jpg");
 
-export function realEstateJsonLd() {
-  const { location, specs, contact, architecture, completion, search } = property;
+export function realEstateJsonLd(property: SiteContent) {
+  const { location, specs, contact, architecture, completion, search, gallery } = property;
+  const galleryImages = gallery.slice(0, 4).map((g) => absoluteUrl(g.src));
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -41,12 +42,7 @@ export function realEstateJsonLd() {
         url: siteUrl,
         datePosted: "2026-04-01",
         keywords: search.keywords.join(", "),
-        image: [
-          absoluteUrl("/og.jpg"),
-          absoluteUrl("/galerie/01.jpg"),
-          absoluteUrl("/galerie/06.jpg"),
-          absoluteUrl("/vizualizace-foto/04-krajina.jpg"),
-        ],
+        image: [absoluteUrl("/og.jpg"), ...galleryImages],
         offers: {
           "@type": "Offer",
           price: property.price,

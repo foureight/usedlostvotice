@@ -83,9 +83,13 @@ const mediaItemLabel =
           ? raw.filename
           : undefined;
     if (!filename) return text;
-    const src = filename.startsWith("/")
-      ? filename
-      : `/${folder}/${filename.replace(/^\//, "")}`;
+    // Normalize legacy /stav/* into the Keystatic gallery folder.
+    const normalized = filename.startsWith("/stav/")
+      ? `/galerie/${filename.slice("/stav/".length)}`
+      : filename;
+    const src = normalized.startsWith("/")
+      ? normalized
+      : `/${folder}/${normalized.replace(/^\//, "")}`;
     return `${text} «${src}»`;
   };
 

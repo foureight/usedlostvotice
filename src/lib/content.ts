@@ -22,6 +22,23 @@ function asStringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.map((item) => asString(item)) : [];
 }
 
+/** Keystatic may store filename only, a public path, or a { filename } object. */
+function resolveMediaSrc(value: unknown, folder: string): string {
+  let raw = "";
+  if (typeof value === "string") raw = value.trim();
+  else if (value && typeof value === "object") {
+    const rec = value as UnknownRecord;
+    raw = asString(rec.filename || rec.src || rec.path).trim();
+  }
+  if (!raw) return "";
+  if (raw.startsWith("http://") || raw.startsWith("https://") || raw.startsWith("/")) {
+    // Legacy stav images lived under /stav/; Keystatic gallery field is rooted in /galerie/.
+    if (raw.startsWith("/stav/")) return `/galerie/${raw.slice("/stav/".length)}`;
+    return raw;
+  }
+  return `/${folder}/${raw.replace(/^\.?\//, "")}`;
+}
+
 function normalizeSearch(search: UnknownRecord) {
   return {
     seoTitle: asString(search.seoTitle),
@@ -139,38 +156,56 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
       const f = asRecord(item);
       return { q: asString(f.q), a: asString(f.a) };
     }),
-    gallery: (Array.isArray(site.gallery) ? site.gallery : []).map((item) => {
-      const g = asRecord(item);
-      const kind = asString(g.kind, "exterier");
-      return {
-        src: asString(g.src),
-        alt: asString(g.alt),
-        kind: (kind === "interier" || kind === "stav" ? kind : "exterier") as
-          | "exterier"
-          | "interier"
-          | "stav",
-      };
-    }),
-    visualizationsPhoto: (Array.isArray(site.visualizationsPhoto) ? site.visualizationsPhoto : []).map(
-      (item) => {
+    gallery: (Array.isArray(site.gallery) ? site.gallery : [])
+      .map((item) => {
         const g = asRecord(item);
-        return { src: asString(g.src), alt: asString(g.alt) };
-      },
-    ),
+        const kind = asString(g.kind, "exterier");
+        const src = resolveMediaSrc(g.src, "galerie");
+        if (!src) return null;
+        return {
+          src,
+          alt: asString(g.alt),
+          kind: (kind === "interier" || kind === "stav" ? kind : "exterier") as
+            | "exterier"
+            | "interier"
+            | "stav",
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null),
+    visualizationsPhoto: (Array.isArray(site.visualizationsPhoto) ? site.visualizationsPhoto : [])
+      .map((item) => {
+        const g = asRecord(item);
+        const src = resolveMediaSrc(g.src, "vizualizace-foto");
+        if (!src) return null;
+        return { src, alt: asString(g.alt) };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null),
     visualizationsDokonceno: (
       Array.isArray(site.visualizationsDokonceno) ? site.visualizationsDokonceno : []
-    ).map((item) => {
-      const g = asRecord(item);
-      return { src: asString(g.src), alt: asString(g.alt) };
-    }),
-    visualizations: (Array.isArray(site.visualizations) ? site.visualizations : []).map((item) => {
-      const g = asRecord(item);
-      return { src: asString(g.src), alt: asString(g.alt) };
-    }),
-    plans: (Array.isArray(site.plans) ? site.plans : []).map((item) => {
-      const g = asRecord(item);
-      return { src: asString(g.src), alt: asString(g.alt), label: asString(g.label) };
-    }),
+    )
+      .map((item) => {
+        const g = asRecord(item);
+        const src = resolveMediaSrc(g.src, "vizualizace-dokonceno");
+        if (!src) return null;
+        return { src, alt: asString(g.alt) };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null),
+    visualizations: (Array.isArray(site.visualizations) ? site.visualizations : [])
+      .map((item) => {
+        const g = asRecord(item);
+        const src = resolveMediaSrc(g.src, "vizualizace");
+        if (!src) return null;
+        return { src, alt: asString(g.alt) };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null),
+    plans: (Array.isArray(site.plans) ? site.plans : [])
+      .map((item) => {
+        const g = asRecord(item);
+        const src = resolveMediaSrc(g.src, "pudorysy");
+        if (!src) return null;
+        return { src, alt: asString(g.alt), label: asString(g.label) };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null),
   };
 }
 

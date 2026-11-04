@@ -1,12 +1,12 @@
 import { getLlmsTxt } from "@/lib/listing-export";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
-export function GET() {
-  return new Response(getLlmsTxt(), {
+export async function GET() {
+  return new Response(await getLlmsTxt(), {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=86400",
+      "Cache-Control": "public, max-age=60, s-maxage=60",
       "Access-Control-Allow-Origin": "*",
     },
   });

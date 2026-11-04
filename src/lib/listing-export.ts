@@ -1,8 +1,9 @@
-import { property } from "@/data/property";
+import { getContent } from "@/lib/content";
 import { absoluteUrl, siteUrl } from "@/lib/seo";
 
 /** Strojově čitelná nabídka — pro AI / LLM / mapové asistenty. */
-export function getListingJson() {
+export async function getListingJson() {
+  const property = await getContent();
   const { location, specs, contact, architecture, completion, search, faqs } = property;
 
   return {
@@ -127,7 +128,8 @@ export function getListingJson() {
 }
 
 /** Index míst pro AI hledání podle lokality. */
-export function getPlacesJson() {
+export async function getPlacesJson() {
+  const property = await getContent();
   const { location, search } = property;
   const placeNames = location.places.flatMap((p) => [p.name, ...p.aliases]);
 
@@ -194,7 +196,8 @@ export function getPlacesJson() {
   };
 }
 
-export function getFaqJson() {
+export async function getFaqJson() {
+  const property = await getContent();
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -225,8 +228,9 @@ export function getFaqJson() {
   };
 }
 
-export function getLlmsTxt(): string {
-  const json = getListingJson();
+export async function getLlmsTxt(): Promise<string> {
+  const property = await getContent();
+  const json = await getListingJson();
   const lines = [
     `# ${property.brand}`,
     "",
@@ -283,9 +287,10 @@ export function getLlmsTxt(): string {
   return lines.join("\n");
 }
 
-export function getLlmsFullTxt(): string {
+export async function getLlmsFullTxt(): Promise<string> {
+  const property = await getContent();
   const parts = [
-    getLlmsTxt(),
+    await getLlmsTxt(),
     "## Shrnutí nabídky (SEO)",
     "",
     ...property.search.seoBody,
