@@ -63,7 +63,8 @@ const mediaImage = (folder: string, label = "Fotka") =>
     label,
     directory: `public/${folder}`,
     publicPath: `/${folder}/`,
-    validation: { isRequired: true },
+    // Optional so admin Save works when a blob failed to hydrate from disk.
+    validation: { isRequired: false },
   });
 
 type ImageFieldValue = { filename?: string } | string | null | undefined;

@@ -398,48 +398,7 @@
       "alt": "Fotovize — obytný interiér s výhledem"
     }
   ],
-  "visualizationsDokonceno": [
-    {
-      "src": "/vizualizace-dokonceno/01.jpg",
-      "alt": "Vize dokončení — usedlost od příjezdové cesty, terasa a rybník"
-    },
-    {
-      "src": "/vizualizace-dokonceno/02.jpg",
-      "alt": "Vize dokončení — celkový pohled na dům, dřevěný přístavek a stodolu"
-    },
-    {
-      "src": "/vizualizace-dokonceno/03.jpg",
-      "alt": "Vize dokončení — usedlost přes hladinu Pilského rybníka"
-    },
-    {
-      "src": "/vizualizace-dokonceno/04.jpg",
-      "alt": "Vize dokončení — terasa u stodoly a francouzské okno"
-    },
-    {
-      "src": "/vizualizace-dokonceno/05.jpg",
-      "alt": "Vize dokončení — letecký pohled na usedlost u rybníka"
-    },
-    {
-      "src": "/vizualizace-dokonceno/06.jpg",
-      "alt": "Vize dokončení — průčelí domu se stodolou a kamenným štítem"
-    },
-    {
-      "src": "/vizualizace-dokonceno/07.jpg",
-      "alt": "Vize dokončení — dřevěný přístavek a zahradní terasa"
-    },
-    {
-      "src": "/vizualizace-dokonceno/08.jpg",
-      "alt": "Vize dokončení — terasa s výhledem na rybník"
-    },
-    {
-      "src": "/vizualizace-dokonceno/09.jpg",
-      "alt": "Vize dokončení — obývací prostor otevřený do krajiny"
-    },
-    {
-      "src": "/vizualizace-dokonceno/10.jpg",
-      "alt": "Vize dokončení — podkrovní ložnice s výhledem"
-    }
-  ],
+  "visualizationsDokonceno": [],
   "visualizations": [
     {
       "src": "/vizualizace/01-exterier.jpg",
