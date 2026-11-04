@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Item = { src: string; alt: string };
@@ -16,7 +15,7 @@ function GalleryThumb({
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const [showImage, setShowImage] = useState(false);
-  const [usePlain, setUsePlain] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -46,28 +45,18 @@ function GalleryThumb({
       onClick={() => onOpen(index)}
       className="group relative aspect-[4/3] overflow-hidden bg-[var(--color-paper-deep)] text-left"
     >
-      {showImage ? (
-        usePlain ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={item.src}
-            alt={item.alt}
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
-          />
-        ) : (
-          <Image
-            src={item.src}
-            alt={item.alt}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            quality={65}
-            loading="lazy"
-            className="object-cover transition duration-700 group-hover:scale-[1.03]"
-            onError={() => setUsePlain(true)}
-          />
-        )
+      {showImage && !failed ? (
+        // Plain <img> — bypass /_next/image so poisoned 404 caches from missing
+        // CMS uploads cannot stick for 30 days in the browser.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={item.src}
+          alt={item.alt}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+          onError={() => setFailed(true)}
+        />
       ) : null}
     </button>
   );
@@ -168,17 +157,14 @@ export function GalleryGrid({
             />
 
             <div
-              className="relative z-[1] h-[min(78vh,720px)] w-full max-w-5xl"
+              className="relative z-[1] flex h-[min(78vh,720px)] w-full max-w-5xl items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={items[active].src}
                 alt={items[active].alt}
-                fill
-                sizes="(max-width: 1280px) 100vw, 1024px"
-                quality={80}
-                className="object-contain"
-                priority
+                className="max-h-full max-w-full object-contain"
               />
             </div>
           </div>
