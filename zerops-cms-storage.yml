@@ -1,0 +1,5 @@
+# Import into project usedlost-vodice:
+#   zcli project service-import ./zerops-cms-storage.yml -P Prc159APSUaR9mUbQeWTtQ
+services:
+  - hostname: cmsdata
+    type: local-storage:single@1

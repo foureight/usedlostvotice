@@ -16,6 +16,7 @@ function GalleryThumb({
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const [showImage, setShowImage] = useState(false);
+  const [usePlain, setUsePlain] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -46,15 +47,27 @@ function GalleryThumb({
       className="group relative aspect-[4/3] overflow-hidden bg-[var(--color-paper-deep)] text-left"
     >
       {showImage ? (
-        <Image
-          src={item.src}
-          alt={item.alt}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          quality={65}
-          loading="lazy"
-          className="object-cover transition duration-700 group-hover:scale-[1.03]"
-        />
+        usePlain ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={item.src}
+            alt={item.alt}
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <Image
+            src={item.src}
+            alt={item.alt}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            quality={65}
+            loading="lazy"
+            className="object-cover transition duration-700 group-hover:scale-[1.03]"
+            onError={() => setUsePlain(true)}
+          />
+        )
       ) : null}
     </button>
   );
@@ -97,7 +110,12 @@ export function GalleryGrid({
     <>
       <div className={`grid gap-3 ${columns}`}>
         {items.map((item, i) => (
-          <GalleryThumb key={item.src} item={item} index={i} onOpen={setActive} />
+          <GalleryThumb
+            key={`${item.src}-${i}`}
+            item={item}
+            index={i}
+            onOpen={setActive}
+          />
         ))}
       </div>
       {active !== null ? (

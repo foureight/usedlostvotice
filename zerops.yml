@@ -13,13 +13,19 @@ zerops:
       ports:
         - port: 3000
           httpSupport: true
+      # Keep admin uploads across deploys (Keystatic content + public media).
+      volume:
+        hostname: cmsdata
+        mountPath: /srv/cms
+        readOnly: false
       envVariables:
         NODE_ENV: production
         PORT: "3000"
         NEXT_PUBLIC_SITE_URL: https://usedlostvodice.cz
         ADMIN_USER: michal@tribo.cz
         ADMIN_PASSWORD: ${KEYSTATIC_ADMIN_PASSWORD}
-      start: npm run start
+        CMS_DATA_DIR: /srv/cms
+      start: sh scripts/zerops-start.sh
       healthCheck:
         httpGet:
           port: 3000
