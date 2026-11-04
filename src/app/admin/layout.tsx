@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "./admin.css";
 
 export const dynamic = "force-dynamic";
 

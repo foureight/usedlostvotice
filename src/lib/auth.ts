@@ -6,14 +6,13 @@ export const ADMIN_COOKIE = "uv_admin_session";
 function getSecret() {
   return (
     process.env.ADMIN_SECRET ||
-    process.env.KEYSTATIC_ADMIN_PASSWORD ||
     process.env.ADMIN_PASSWORD ||
+    process.env.KEYSTATIC_ADMIN_PASSWORD ||
     "usedlost-vodice-dev-secret"
   );
 }
 
 export function getAdminPassword() {
-  // Prefer explicit ADMIN_PASSWORD from zerops.yml over leftover GUI secrets.
   return (
     process.env.ADMIN_PASSWORD ||
     process.env.KEYSTATIC_ADMIN_PASSWORD ||

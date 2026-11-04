@@ -220,7 +220,7 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
 export async function getContent(): Promise<SiteContent> {
   const site = await readSiteJson();
   if (!site || Object.keys(site).length === 0) {
-    throw new Error("Chybí content/site.json — otevřete /admin a uložte obsah.");
+    throw new Error("Chybí content/site.json — otevřete /keystatic a uložte obsah.");
   }
   const seo = await readSeoJson();
   return normalizeSite(site as UnknownRecord, seo as UnknownRecord);

@@ -1,9 +1,12 @@
+import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { AdminApp } from "./admin-app";
+import { LoginForm } from "./login-form";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const authenticated = await isAdminAuthenticated();
-  return <AdminApp authenticated={authenticated} />;
+  if (await isAdminAuthenticated()) {
+    redirect("/keystatic");
+  }
+  return <LoginForm />;
 }
