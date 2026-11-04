@@ -34,7 +34,10 @@ export function realEstateJsonLd() {
         "@type": "RealEstateListing",
         "@id": `${siteUrl}/#listing`,
         name: search.seoTitle,
+        alternateName: "Usedlost Vodice 17 — okres Tábor",
         description: search.seoDescription,
+        disambiguatingDescription:
+          "Prodej domu ve Vodicích u Tábora (čp. 17, Pilský rybník). Ne Vodice u Lhenic / památka čp. 25.",
         url: siteUrl,
         datePosted: "2026-04-01",
         keywords: search.keywords.join(", "),
@@ -70,7 +73,14 @@ export function realEstateJsonLd() {
         "@type": ["House", "SingleFamilyResidence"],
         "@id": `${siteUrl}/#residence`,
         name: property.title,
+        alternateName: [
+          "Usedlost Vodice 17",
+          "Dům Vodice u Tábora u Pilského rybníka",
+          "Prodej domu okres Tábor Vodice 17",
+        ],
         description: search.aioSummary,
+        disambiguatingDescription:
+          "Prodej domu čp. 17 v obci Vodice u Tábora (okres Tábor). Ne Vodice u Lhenic na Prachaticku a ne památková usedlost čp. 25.",
         url: siteUrl,
         numberOfRooms: specs.rooms,
         numberOfBathroomsTotal: 1,
@@ -83,9 +93,9 @@ export function realEstateJsonLd() {
         address: {
           "@type": "PostalAddress",
           streetAddress: `Vodice ${location.houseNumber}`,
-          addressLocality: location.village,
+          addressLocality: "Vodice u Tábora",
           postalCode: location.postalCode,
-          addressRegion: location.region,
+          addressRegion: location.district,
           addressCountry: location.country,
         },
         geo: {
@@ -100,11 +110,14 @@ export function realEstateJsonLd() {
         "@type": "Place",
         "@id": `${siteUrl}/#place`,
         name: `${property.brand}, ${location.addressLine}`,
+        alternateName: ["Vodice 17 u Tábora", "Usedlost u Pilského rybníka"],
         description: search.geoBody.join(" "),
+        disambiguatingDescription:
+          "Okres Tábor / KÚ Vodice u Tábora. Není to Vodice u Lhenic (Prachaticko) ani památkové usedlosti čp. 25, 1 nebo 20.",
         address: {
           "@type": "PostalAddress",
           streetAddress: `Vodice ${location.houseNumber}`,
-          addressLocality: location.village,
+          addressLocality: "Vodice u Tábora",
           postalCode: location.postalCode,
           addressRegion: location.district,
           addressCountry: location.country,
@@ -128,12 +141,19 @@ export function realEstateJsonLd() {
             name: "Jihočeský kraj",
           },
         ],
-        additionalProperty: location.places.map((p) => ({
-          "@type": "PropertyValue",
-          name: "searchablePlace",
-          value: p.name,
-          description: `${p.kind}; ${p.relation}${p.distanceKm ? `; ${p.distanceKm} km` : ""}; aliases: ${p.aliases.join(", ")}`,
-        })),
+        additionalProperty: [
+          {
+            "@type": "PropertyValue",
+            name: "notToBeConfusedWith",
+            value: "Vodice u Lhenic (Prachaticko); památková usedlost čp. 25",
+          },
+          ...location.places.map((p) => ({
+            "@type": "PropertyValue",
+            name: "searchablePlace",
+            value: p.name,
+            description: `${p.kind}; ${p.relation}${p.distanceKm ? `; ${p.distanceKm} km` : ""}; aliases: ${p.aliases.join(", ")}`,
+          })),
+        ],
       },
       {
         "@type": "ItemList",
@@ -169,7 +189,7 @@ export function realEstateJsonLd() {
           {
             "@type": "ListItem",
             position: 2,
-            name: "Prodej domu Vodice u Tábora",
+            name: "Prodej domu Vodice 17 u Tábora",
             item: siteUrl,
           },
         ],

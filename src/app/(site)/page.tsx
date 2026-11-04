@@ -373,7 +373,7 @@ export default function HomePage() {
             <FadeIn>
               <SectionHead
                 eyebrow="Shrnutí nabídky"
-                title="Prodej domu Vodice u Tábora — fakta na jednom místě"
+                title="Prodej domu Vodice 17 u Tábora — fakta na jednom místě"
                 lead={property.search.aioSummary}
               />
             </FadeIn>

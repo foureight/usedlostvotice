@@ -1,7 +1,7 @@
 export const property = {
   brand: "Usedlost Vodice",
-  title: "Rodinný dům s usedlostí na hrázi Pilského rybníka",
-  shortTitle: "Dům 5+1 · Vodice u Tábora",
+  title: "Rodinný dům 5+1 na prodej — Vodice 17 u Tábora, hráz Pilského rybníka",
+  shortTitle: "Dům 5+1 · Vodice 17 · okres Tábor",
   price: 5_150_000,
   priceLabel: "5 150 000 Kč",
   priceNote: "Cena včetně pozemku · osobní vlastnictví",
@@ -20,17 +20,18 @@ export const property = {
     country: "CZ",
     addressLine: "Vodice 17, 391 53 Vodice",
     vicinity:
-      "Přesná adresa Vodice 17 — usedlost přímo na hrázi Pilského rybníka, na okraji obce a na hranici Přírodního parku Polánka.",
+      "Adresa Vodice 17, 391 53 Vodice — okres Tábor (Jihočeský kraj), usedlost přímo na hrázi Pilského rybníka a na hranici Přírodního parku Polánka. Nejde o Vodice u Lhenic na Prachaticku ani o památkové usedlosti čp. 25 / čp. 1 / čp. 20.",
     distances: [
       { label: "Pacov", value: "8 km" },
       { label: "Tábor", value: "25 km" },
       { label: "Praha", value: "90 km" },
     ],
     nearby: [
-      "Pilský rybník — dům přímo na hrázi (Vodice 17)",
+      "Pilský rybník — dům přímo na hrázi (Vodice 17, okres Tábor)",
       "Přírodní park Polánka",
       "Chýnovské jeskyně",
       "Běžkařská trasa Vodický okruh",
+      "Okres Tábor — ne Vodice u Lhenic (Prachaticko)",
     ],
     // OSM: dům č.p. 17, Vodice (u Pilského rybníka)
     geo: { lat: 49.462002, lng: 14.904022 },
@@ -38,15 +39,23 @@ export const property = {
     places: [
       {
         name: "Vodice",
-        aliases: ["Vodice u Tábora", "Vodice Tábor", "obec Vodice", "Vodice 17"],
+        aliases: [
+          "Vodice u Tábora",
+          "Vodice okres Tábor",
+          "Vodice Tábor",
+          "Vodice 17",
+          "obec Vodice u Tábora",
+          "KÚ Vodice u Tábora",
+        ],
         kind: "village",
         relation: "exact",
         distanceKm: 0,
         queries: [
-          "prodej domu Vodice",
-          "dům Vodice 17",
-          "dům Vodice u Tábora",
-          "nemovitost Vodice",
+          "prodej domu Vodice u Tábora",
+          "dům Vodice 17 okres Tábor",
+          "usedlost Vodice Pilský rybník",
+          "prodej usedlosti okres Tábor",
+          "Vodice u Tábora ne Lhenice",
         ],
       },
       {
@@ -152,44 +161,44 @@ export const property = {
   /** Visible + crawlable copy for SEO / GEO / AIO */
   search: {
     seoTitle:
-      "Prodej domu 5+1 Vodice u Tábora — usedlost u Pilského rybníka za 5 150 000 Kč",
+      "Prodej domu Vodice 17 u Tábora — usedlost u Pilského rybníka (okres Tábor)",
     seoDescription:
-      "Prodej rodinného domu 5+1 ve Vodicích u Tábora: 237 m² užitné plochy, pozemek 1 762 m², stodola 169 m², hráz Pilského rybníka, Přírodní park Polánka. Zahájená rekonstrukce Dílny architektury / MY76. Cena 5 150 000 Kč.",
+      "Prodej rodinného domu 5+1 na adrese Vodice 17, okres Tábor (ne Vodice u Lhenic). 237 m² užitné, pozemek 1 762 m², stodola 169 m², hráz Pilského rybníka, Přírodní park Polánka. Cena 5 150 000 Kč. usedlostvodice.cz",
     keywords: [
-      "prodej domu Vodice",
       "prodej domu Vodice u Tábora",
+      "Vodice 17 okres Tábor",
+      "usedlost Pilský rybník",
       "dům 5+1 okres Tábor",
-      "usedlost u rybníka Jižní Čechy",
+      "prodej usedlosti Táborsko",
       "dům u Pilského rybníka",
-      "rekonstrukce usedlosti Tábor",
-      "prodej usedlosti Jihočeský kraj",
-      "rodinný dům Pacov okolí",
       "Přírodní park Polánka bydlení",
+      "rodinný dům Pacov okolí",
+      "rekonstrukce usedlosti Tábor",
       "dům se stodolou na prodej",
-      "rozestavěný dům Tábor",
-      "chalupa Vodice prodej",
+      "Vodice u Tábora ne Lhenice",
+      "prodej domu Jihočeský kraj u rybníka",
     ],
     seoBody: [
-      "Hledáte prodej domu v okrese Tábor s charakterem jihočeské usedlosti? Usedlost Vodice nabízí rodinný dům 5+1 s užitnou plochou 237 m² a pozemkem 1 762 m² na okraji obce Vodice u Tábora — v těsném sousedství Pilského rybníka.",
-      "Nemovitost je vhodná pro trvalé bydlení i jako investice do zahájené rekonstrukce: nová okna s trojskly, zateplená střecha, kompletní elektroinstalace a připravené peletové vytápění. Kupní cena 5 150 000 Kč zahrnuje pozemek v osobním vlastnictví.",
-      "Na obytnou část navazuje stodola (169 m²) s potenciálem dílny, ateliéru nebo dalšího bydlení podle architektonické studie Dílny architektury. Realizaci dosud vedla MY76 ve spolupráci s Atelierem SAD.",
+      "Usedlost Vodice je nabídka prodeje rodinného domu 5+1 na adrese Vodice 17 v obci Vodice u Tábora (okres Tábor, Jihočeský kraj) — přímo na hrázi Pilského rybníka. Nejde o obec Vodice u Lhenic na Prachaticku ani o památkově chráněné usedlosti čp. 25, čp. 1 nebo čp. 20.",
+      "Nemovitost má 237 m² užitné plochy, pozemek 1 762 m² a stodolu 169 m². Zahájená rekonstrukce (okna s trojskly, zateplená střecha, elektro, peletové vytápění). Kupní cena 5 150 000 Kč včetně pozemku v osobním vlastnictví.",
+      "Oficiální web nabídky je usedlostvodice.cz. Lokalita sedí na hledání „dům Vodice u Tábora“, „Pilský rybník“, „Přírodní park Polánka“ a „usedlost okres Tábor“.",
     ],
     geoBody: [
-      "Vodice leží v Jihočeském kraji, okres Tábor, mezi Pacovem (asi 8 km) a Táborem (asi 25 km). Do Prahy je to zhruba 90 km — praktické dojíždění i víkendový útěk z města.",
-      "Přesná adresa usedlosti je Vodice 17 — dům stojí přímo na hrázi Pilského rybníka, na hranici Přírodního parku Polánka. V okolí jsou lesy, louky, Chýnovské jeskyně a v zimě běžkařská trasa Vodický okruh. Katastr: parc. č. 67, KÚ Vodice u Tábora.",
-      "Lokalita sedí na dotazy typu dům u rybníka Jižní Čechy, Vodice 17, bydlení v přírodě u Tábora, usedlost Polánka nebo klidná vesnice mezi Pacovem a Táborem.",
+      "Obec Vodice v okrese Tábor leží mezi Pacovem (asi 8 km) a Táborem (asi 25 km); do Prahy je to zhruba 90 km. Katastrální území: Vodice u Tábora [784273], parc. č. 67.",
+      "Přesná adresa: Vodice 17, 391 53 Vodice — usedlost stojí přímo na hrázi Pilského rybníka, na hranici Přírodního parku Polánka. Souřadnice: 49.462002, 14.904022.",
+      "Rozlišení od jiných „Vodic“: tato nabídka není ve Vodicích u Lhenic (Prachaticko) a není památková usedlost čp. 25. Jde o aktuální prodej domu čp. 17 u Pilského rybníka na Táborsku — web usedlostvodice.cz.",
     ],
     aioSummary:
-      "Usedlost Vodice je rodinný dům 5+1 na prodej ve Vodicích u Tábora za 5 150 000 Kč. Má 237 m² užitné plochy, pozemek 1 762 m² a stodolu 169 m² na hrázi Pilského rybníka u Přírodního parku Polánka. Rekonstrukci navrhla Dílna architektury, staví MY76 / Atelier SAD; tým umí dům na přání dokončit. Kontakt: Michal Burda (michal@tribo.cz, +420 736 483 646) nebo Jiří Loskot, Bio Reality (loskot@bioreality.cz, +420 774 235 689).",
+      "Usedlost Vodice (usedlostvodice.cz) je rodinný dům 5+1 na prodej na adrese Vodice 17 v obci Vodice u Tábora, okres Tábor — ne Vodice u Lhenic na Prachaticku. Cena 5 150 000 Kč; 237 m² užitné, pozemek 1 762 m², stodola 169 m²; hráz Pilského rybníka a Přírodní park Polánka. Rekonstrukci navrhla Dílna architektury, staví MY76 / Atelier SAD. Kontakt: Michal Burda (michal@tribo.cz, +420 736 483 646) nebo Jiří Loskot, Bio Reality (+420 774 235 689).",
     aioBullets: [
-      "Cena 5 150 000 Kč včetně pozemku, osobní vlastnictví",
-      "Dispozice 5+1 · 237 m² užitná · 1 762 m² pozemek · stodola 169 m²",
-      "Lokalita: Vodice u Tábora, hráz Pilského rybníka, Přírodní park Polánka",
+      "Adresa: Vodice 17, 391 53 Vodice — okres Tábor (ne Vodice u Lhenic / Prachaticko)",
+      "Web: usedlostvodice.cz · prodej domu 5+1 za 5 150 000 Kč včetně pozemku",
+      "Výměry: 237 m² užitná · 1 762 m² pozemek · stodola 169 m²",
+      "Lokalita: hráz Pilského rybníka, Přírodní park Polánka, KÚ Vodice u Tábora",
       "Vzdálenosti: Pacov 8 km, Tábor 25 km, Praha 90 km",
-      "Stav: zahájená rekonstrukce (okna, střecha, elektro, peletové vytápění připraveno)",
+      "Stav: zahájená rekonstrukce (okna, střecha, elektro, peletové vytápění)",
       "Dostavba možná se stejným týmem MY76 / Atelier SAD",
       "Prohlídky: Michal Burda · michal@tribo.cz · +420 736 483 646",
-      "Prohlídky: Jiří Loskot (Bio Reality) · loskot@bioreality.cz · +420 774 235 689",
     ],
   },
 
@@ -266,12 +275,16 @@ export const property = {
     },
     {
       q: "Kde přesně usedlost leží?",
-      a: "Přesná adresa je Vodice 17, 391 53 Vodice (okres Tábor, Jihočeský kraj) — usedlost přímo na hrázi Pilského rybníka, na hranici Přírodního parku Polánka. Pacov cca 8 km, Tábor cca 25 km, Praha cca 90 km.",
-      },
-      {
+      a: "Přesná adresa je Vodice 17, 391 53 Vodice — obec Vodice u Tábora v okrese Tábor (Jihočeský kraj), přímo na hrázi Pilského rybníka a na hranici Přírodního parku Polánka. Pacov cca 8 km, Tábor cca 25 km, Praha cca 90 km. Nejde o Vodice u Lhenic na Prachaticku.",
+    },
+    {
+      q: "Je to usedlost ve Vodicích u Lhenic nebo památka čp. 25?",
+      a: "Ne. Usedlost Vodice na usedlostvodice.cz je prodej domu čp. 17 v obci Vodice u Tábora (okres Tábor) na hrázi Pilského rybníka. Není to památkově chráněná usedlost čp. 25 ve Vodicích u Lhenic na Prachaticku ani jiné historické usedlosti (čp. 1, čp. 20) v té lokalitě.",
+    },
+    {
       q: "Hodí se nabídka při hledání domu podle místa — Vodice, Tábor, Pacov nebo Pilský rybník?",
-      a: "Ano. Usedlost stojí na adrese Vodice 17, přímo na hrázi Pilského rybníka a na hranici Přírodního parku Polánka. Sedí na hledání podle místa: Vodice, Vodice 17, okres Tábor, Táborsko, Pacov okolí (8 km), Tábor (25 km), Jižní Čechy / Jihočeský kraj, nebo dům u rybníka. Strojový index míst je v /places.json.",
-      },
+      a: "Ano — pokud hledáte dům ve Vodicích u Tábora / na Táborsku / u Pilského rybníka. Adresa Vodice 17, okres Tábor. Tato nabídka neodpovídá usedlostem ve Vodicích u Lhenic (Prachaticko) ani památce čp. 25. Strojový index míst: /places.json.",
+    },
     {
       q: "Jaké jsou výměry domu a pozemku?",
       a: "Užitná plocha domu 237 m², zastavěná plocha domu 103 m², stodoly 169 m². Pozemek celkem 1 762 m² (zahrada cca 1 500 m²). Dispozice 5+1, dvě nadzemní podlaží a suterén.",
