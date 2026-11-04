@@ -54,20 +54,16 @@ const placeItem = fields.object({
 });
 
 /**
- * Image field rooted in a flat public subfolder so Keystatic can show
- * thumbnails (nested paths under `public/` do not preview reliably).
- * Stored value stays a public URL, e.g. `/galerie/01.jpg`.
+ * Path to a public image as plain text — NOT fields.image.
+ * Keystatic's image field throws "Bad data" when the file is missing on disk;
+ * multi-upload already writes files + paths, and AdminListThumbs shows previews.
  */
-const mediaImage = (folder: string, label = "Fotka") =>
-  fields.image({
+const mediaPath = (folder: string, label = "Cesta k fotce") =>
+  fields.text({
     label,
-    directory: `public/${folder}`,
-    publicPath: `/${folder}/`,
-    // Optional so admin Save works when a blob failed to hydrate from disk.
+    description: `Veřejná cesta, např. /${folder}/01.jpg. Soubory nahrávejte přes „Nahrát více fotek“.`,
     validation: { isRequired: false },
   });
-
-type ImageFieldValue = { filename?: string } | string | null | undefined;
 
 /** Encode public path into itemLabel so AdminListThumbs can show a row thumbnail. */
 const mediaItemLabel =
@@ -76,18 +72,11 @@ const mediaItemLabel =
     const text =
       String(props.fields[textField]?.value ?? "").trim() ||
       (textField === "label" ? "Půdorys" : "Foto");
-    const raw = props.fields.src?.value as ImageFieldValue;
-    const filename =
-      typeof raw === "string"
-        ? raw
-        : raw && typeof raw === "object"
-          ? raw.filename
-          : undefined;
-    if (!filename) return text;
-    // Normalize legacy /stav/* into the Keystatic gallery folder.
-    const normalized = filename.startsWith("/stav/")
-      ? `/galerie/${filename.slice("/stav/".length)}`
-      : filename;
+    const raw = String(props.fields.src?.value ?? "").trim();
+    if (!raw) return text;
+    const normalized = raw.startsWith("/stav/")
+      ? `/galerie/${raw.slice("/stav/".length)}`
+      : raw;
     const src = normalized.startsWith("/")
       ? normalized
       : `/${folder}/${normalized.replace(/^\//, "")}`;
@@ -95,7 +84,7 @@ const mediaItemLabel =
   };
 
 const galleryItem = fields.object({
-  src: mediaImage("galerie", "Fotka"),
+  src: mediaPath("galerie"),
   alt: fields.text({ label: "Alt text", validation: { isRequired: true } }),
   kind: fields.select({
     label: "Typ",
@@ -109,22 +98,22 @@ const galleryItem = fields.object({
 });
 
 const photoVisionItem = fields.object({
-  src: mediaImage("vizualizace-foto", "Fotka"),
+  src: mediaPath("vizualizace-foto"),
   alt: fields.text({ label: "Alt text", validation: { isRequired: true } }),
 });
 
 const doneVisionItem = fields.object({
-  src: mediaImage("vizualizace-dokonceno", "Fotka"),
+  src: mediaPath("vizualizace-dokonceno"),
   alt: fields.text({ label: "Alt text", validation: { isRequired: true } }),
 });
 
 const studyItem = fields.object({
-  src: mediaImage("vizualizace", "Fotka"),
+  src: mediaPath("vizualizace"),
   alt: fields.text({ label: "Alt text", validation: { isRequired: true } }),
 });
 
 const planItem = fields.object({
-  src: mediaImage("pudorysy", "Půdorys"),
+  src: mediaPath("pudorysy", "Cesta k půdorysu"),
   alt: fields.text({ label: "Alt text", validation: { isRequired: true } }),
   label: fields.text({ label: "Popisek", validation: { isRequired: true } }),
 });
@@ -185,7 +174,11 @@ export default config({
         price: fields.integer({ label: "Cena (Kč)", validation: { isRequired: true } }),
         priceLabel: fields.text({ label: "Cena (zobrazení)", validation: { isRequired: true } }),
         priceNote: fields.text({ label: "Poznámka k ceně" }),
-        listingUrl: fields.url({ label: "URL inzerátu" }),
+        listingUrl: fields.text({
+          label: "URL inzerátu",
+          description: "Celá adresa včetně https://",
+        }),
+
         listingId: fields.text({ label: "ID inzerátu" }),
 
         location: fields.object(
@@ -265,8 +258,8 @@ export default config({
           {
             team: fields.text({ label: "Realizační tým" }),
             partner: fields.text({ label: "Partner" }),
-            teamUrl: fields.url({ label: "URL týmu" }),
-            partnerUrl: fields.url({ label: "URL partnera" }),
+            teamUrl: fields.text({ label: "URL týmu" }),
+            partnerUrl: fields.text({ label: "URL partnera" }),
             headline: fields.text({ label: "Nadpis sekce" }),
             text: textList("Texty sekce"),
           },
