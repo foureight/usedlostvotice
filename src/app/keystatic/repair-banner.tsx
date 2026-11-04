@@ -16,6 +16,7 @@ export function RepairBanner({ initialNote = "" }: { initialNote?: string }) {
       const data = (await res.json().catch(() => ({}))) as {
         ok?: boolean;
         removedCount?: number;
+        optimized?: number;
         error?: string;
       };
       if (!res.ok || !data.ok) {
@@ -23,7 +24,7 @@ export function RepairBanner({ initialNote = "" }: { initialNote?: string }) {
         return;
       }
       setNote(
-        `Opraveno (odebráno ${data.removedCount ?? 0} položek). Obnovte stránku (F5) a uložte znovu.`,
+        `Hotovo: odebráno ${data.removedCount ?? 0} chybějících, zmenšeno ${data.optimized ?? 0} fotek. F5 a Save.`,
       );
     } catch {
       setNote("Oprava selhala — síťová chyba.");

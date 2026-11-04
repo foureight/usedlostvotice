@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Item = { src: string; alt: string };
@@ -31,7 +32,6 @@ function GalleryThumb({
           io.disconnect();
         }
       },
-      // Load a bit before each tile hits the screen — top tiles first while scrolling.
       { rootMargin: "120px 0px", threshold: 0.01 },
     );
     io.observe(el);
@@ -46,15 +46,14 @@ function GalleryThumb({
       className="group relative aspect-[4/3] overflow-hidden bg-[var(--color-paper-deep)] text-left"
     >
       {showImage && !failed ? (
-        // Plain <img> — bypass /_next/image so poisoned 404 caches from missing
-        // CMS uploads cannot stick for 30 days in the browser.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           src={item.src}
           alt={item.alt}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          quality={65}
           loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+          className="object-cover transition duration-700 group-hover:scale-[1.03]"
           onError={() => setFailed(true)}
         />
       ) : null}
@@ -157,14 +156,17 @@ export function GalleryGrid({
             />
 
             <div
-              className="relative z-[1] flex h-[min(78vh,720px)] w-full max-w-5xl items-center justify-center"
+              className="relative z-[1] h-[min(78vh,720px)] w-full max-w-5xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={items[active].src}
                 alt={items[active].alt}
-                className="max-h-full max-w-full object-contain"
+                fill
+                sizes="(max-width: 1280px) 100vw, 1024px"
+                quality={80}
+                className="object-contain"
+                priority
               />
             </div>
           </div>

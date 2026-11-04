@@ -2,6 +2,7 @@ import { randomBytes } from "crypto";
 import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
+import { optimizeImageUpload } from "@/lib/optimize-image";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -158,10 +159,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const filename = uniqueName(file.name, usedNames);
+    const raw = Buffer.from(await file.arrayBuffer());
+    let optimized;
+    try {
+      optimized = await optimizeImageUpload(raw, file.name);
+    } catch (err) {
+      console.error("[photos] optimize failed", file.name, err);
+      return NextResponse.json(
+        { error: `Soubor ${file.name} nejde zpracovat (poškozený obrázek?).` },
+        { status: 400 },
+      );
+    }
+    const filename = uniqueName(optimized.filename, usedNames);
     const abs = path.join(folderAbs, filename);
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(abs, buffer);
+    await writeFile(abs, optimized.buffer);
 
     const src = `/${target.folder}/${filename}`;
     const alt =
