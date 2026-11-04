@@ -213,7 +213,7 @@ export async function getContent(): Promise<SiteContent> {
   const reader = createReader(process.cwd(), keystaticConfig);
   const site = await reader.singletons.site.read();
   if (!site) {
-    throw new Error("Chybí content/site.json — otevřete /zmensito a uložte obsah.");
+    throw new Error("Chybí content/site.json — otevřete /keystatic a uložte obsah.");
   }
   const seo = (await reader.singletons.seo.read()) as UnknownRecord | null;
   return normalizeSite(site as UnknownRecord, seo ?? {});

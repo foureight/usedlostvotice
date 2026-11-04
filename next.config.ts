@@ -17,15 +17,17 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: true,
       },
+      // Keystatic hardcodes basePath "/keystatic" — keep that as the real admin UI.
+      // /zmensito stays as a short bookmark that lands on the same admin.
       {
-        source: "/keystatic",
-        destination: "/zmensito",
-        permanent: true,
+        source: "/zmensito",
+        destination: "/keystatic",
+        permanent: false,
       },
       {
-        source: "/keystatic/:path*",
-        destination: "/zmensito/:path*",
-        permanent: true,
+        source: "/zmensito/:path*",
+        destination: "/keystatic/:path*",
+        permanent: false,
       },
     ];
   },
