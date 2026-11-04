@@ -35,4 +35,4 @@ services:
       PORT: "3000"
       NEXT_PUBLIC_SITE_URL: https://usedlostvodice.cz
       ADMIN_USER: admin
-      ADMIN_PASSWORD: VodiceAdmin2026!
+      ADMIN_PASSWORD: ${KEYSTATIC_ADMIN_PASSWORD}
