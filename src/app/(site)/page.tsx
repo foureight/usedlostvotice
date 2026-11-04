@@ -36,25 +36,45 @@ function SectionHead({
 }
 
 export default function HomePage() {
-  const hero = gallery[0];
   const photoGallery = gallery.filter((g) => g.kind !== "stav");
   const stavGallery = gallery.filter((g) => g.kind === "stav");
+  const showGalerie = photoGallery.length > 0 || stavGallery.length > 0;
+  const showVisionPhoto = visualizationsPhoto.length > 0;
+  const showVisionDone = visualizationsDokonceno.length > 0;
+  const showVisionStudy = visualizations.length > 0;
+  const showPlans = plans.length > 0;
+  const showVize = showVisionPhoto || showVisionDone || showVisionStudy || showPlans;
+  const hero =
+    gallery[0] ??
+    visualizationsPhoto[0] ??
+    visualizationsDokonceno[0] ??
+    visualizations[0] ??
+    (plans[0] ? { src: plans[0].src, alt: plans[0].alt } : null);
+  const photosCtaHref = showGalerie ? "#galerie" : showVize ? "#vize" : "#kontakt";
+  const photosCtaLabel = showGalerie || showVize ? "Prohlédnout fotografie" : "Domluvit prohlídku";
 
   return (
     <main id="top" className="atmosphere relative overflow-x-hidden">
       {/* HERO — mobile: photo then gray copy strip; desktop: full-bleed overlay */}
       <section className="relative md:min-h-[100svh] md:grain">
         <div className="relative h-[62svh] w-full md:absolute md:inset-0 md:h-auto md:min-h-[100svh]">
-          <Image
-            src={hero.src}
-            alt={hero.alt}
-            fill
-            priority
-            fetchPriority="high"
-            sizes="100vw"
-            quality={75}
-            className="animate-ken object-cover object-center"
-          />
+          {hero ? (
+            <Image
+              src={hero.src}
+              alt={hero.alt}
+              fill
+              priority
+              fetchPriority="high"
+              sizes="100vw"
+              quality={75}
+              className="animate-ken object-cover object-center"
+            />
+          ) : (
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-[color-mix(in_oklab,var(--color-moss-deep)_85%,black)]"
+            />
+          )}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-[color-mix(in_oklab,var(--color-ink)_78%,transparent)] via-[color-mix(in_oklab,var(--color-ink)_35%,transparent)] to-[color-mix(in_oklab,var(--color-ink)_20%,transparent)] md:block"
@@ -95,12 +115,14 @@ export default function HomePage() {
               >
                 Domluvit prohlídku
               </a>
-              <a
-                href="#galerie"
-                className="rounded-sm border border-[color-mix(in_oklab,var(--color-ink)_28%,transparent)] px-5 py-3 text-sm text-[var(--color-ink)] transition hover:border-[var(--color-ink)] md:border-[color-mix(in_oklab,var(--color-paper)_45%,transparent)] md:text-[var(--color-paper)] md:hover:border-[var(--color-paper)]"
-              >
-                Prohlédnout fotografie
-              </a>
+              {showGalerie || showVize ? (
+                <a
+                  href={photosCtaHref}
+                  className="rounded-sm border border-[color-mix(in_oklab,var(--color-ink)_28%,transparent)] px-5 py-3 text-sm text-[var(--color-ink)] transition hover:border-[var(--color-ink)] md:border-[color-mix(in_oklab,var(--color-paper)_45%,transparent)] md:text-[var(--color-paper)] md:hover:border-[var(--color-paper)]"
+                >
+                  {photosCtaLabel}
+                </a>
+              ) : null}
             </div>
           </div>
         </div>
@@ -169,102 +191,134 @@ export default function HomePage() {
         </section>
 
         {/* GALLERY */}
-        <section id="galerie" className="bg-[var(--color-moss-deep)] py-16 text-[var(--color-paper)] sm:py-24">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <FadeIn>
-              <p className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-[color-mix(in_oklab,var(--color-paper)_55%,transparent)]">
-                Fotografie
-              </p>
-              <h2 className="font-display text-3xl sm:text-4xl">Dům, stodola a krajina kolem Pilského rybníka</h2>
-              <p className="mt-4 max-w-2xl text-[color-mix(in_oklab,var(--color-paper)_72%,transparent)]">
-                Profesionální snímky exteriéu a interiéru. Po srovnání terénu jsou další aktuální fotky na{" "}
-                <a href={property.listingUrl} className="underline underline-offset-2" target="_blank" rel="noreferrer">
-                  inzerátu
-                </a>
-                ; lokalita znovu ožije zelení.
-              </p>
-            </FadeIn>
-            <DeferUntilVisible className="mt-10" minHeight={420} label="Načítám galerii…">
-              <GalleryGrid items={photoGallery} />
-            </DeferUntilVisible>
-            {stavGallery.length ? (
-              <div className="mt-12">
-                <h3 className="font-display text-2xl">Aktuální stavební stav</h3>
-                <p className="mt-2 max-w-xl text-sm text-[color-mix(in_oklab,var(--color-paper)_70%,transparent)]">
-                  Přístavek a stodola tak, jak dnes vypadají na místě.
-                </p>
-                <DeferUntilVisible className="mt-6" minHeight={280} label="Načítám fotografie stavu…">
-                  <GalleryGrid items={stavGallery} columns="grid-cols-1 sm:grid-cols-2" />
+        {showGalerie ? (
+          <section id="galerie" className="bg-[var(--color-moss-deep)] py-16 text-[var(--color-paper)] sm:py-24">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+              {photoGallery.length ? (
+                <>
+                  <FadeIn>
+                    <p className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-[color-mix(in_oklab,var(--color-paper)_55%,transparent)]">
+                      Fotografie
+                    </p>
+                    <h2 className="font-display text-3xl sm:text-4xl">Dům, stodola a krajina kolem Pilského rybníka</h2>
+                    <p className="mt-4 max-w-2xl text-[color-mix(in_oklab,var(--color-paper)_72%,transparent)]">
+                      Profesionální snímky exteriéu a interiéru. Po srovnání terénu jsou další aktuální fotky na{" "}
+                      <a href={property.listingUrl} className="underline underline-offset-2" target="_blank" rel="noreferrer">
+                        inzerátu
+                      </a>
+                      ; lokalita znovu ožije zelení.
+                    </p>
+                  </FadeIn>
+                  <DeferUntilVisible className="mt-10" minHeight={420} label="Načítám galerii…">
+                    <GalleryGrid items={photoGallery} />
+                  </DeferUntilVisible>
+                </>
+              ) : null}
+              {stavGallery.length ? (
+                <div className={photoGallery.length ? "mt-12" : undefined}>
+                  <FadeIn>
+                    <h3 className="font-display text-2xl">Aktuální stavební stav</h3>
+                    <p className="mt-2 max-w-xl text-sm text-[color-mix(in_oklab,var(--color-paper)_70%,transparent)]">
+                      Přístavek a stodola tak, jak dnes vypadají na místě.
+                    </p>
+                  </FadeIn>
+                  <DeferUntilVisible className="mt-6" minHeight={280} label="Načítám fotografie stavu…">
+                    <GalleryGrid items={stavGallery} columns="grid-cols-1 sm:grid-cols-2" />
+                  </DeferUntilVisible>
+                </div>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
+
+        {/* VISION */}
+        {showVize ? (
+          <section id="vize" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+            {showVisionPhoto ? (
+              <>
+                <FadeIn>
+                  <SectionHead
+                    eyebrow="Vize dokončení"
+                    title="Studie nabarvená do atmosféry místa"
+                    lead="Šedé rámce Dílny architektury jsme dobarvili materiály a světlem z reálných fotek usedlosti — bílá omítka, dřevo, pálená krytina, jarní zeleň a rybník. Jde o ilustrativní fotovize, ne o finální CGI zakázku."
+                  />
+                </FadeIn>
+                <FadeIn delay={100} className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[var(--color-ink-soft)]">
+                  <span>
+                    Autor studie: {property.architecture.studio} · {property.architecture.authors.join(", ")}
+                  </span>
+                  <span>Studie {property.architecture.studyYear}</span>
+                  <a
+                    href={property.architecture.pdf}
+                    className="font-medium text-[var(--color-moss)] underline-offset-2 hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Stáhnout PDF studie
+                  </a>
+                </FadeIn>
+                <DeferUntilVisible className="mt-10" minHeight={420} label="Načítám fotovize…">
+                  <GalleryGrid items={visualizationsPhoto} />
+                </DeferUntilVisible>
+              </>
+            ) : null}
+
+            {showVisionDone ? (
+              <div
+                id="vize-dokonceno"
+                className={
+                  showVisionPhoto
+                    ? "mt-16 border-t border-[var(--color-line)] pt-14"
+                    : undefined
+                }
+              >
+                <FadeIn>
+                  <p className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-[var(--color-moss)]">
+                    Další vize dokončení
+                  </p>
+                  <h3 className="font-display text-2xl sm:text-3xl">
+                    Usedlost po dostavbě — dům, stodola, terasa a rybník
+                  </h3>
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--color-ink-soft)] sm:text-base">
+                    Druhá sada ilustrativních vizí: exteriér, terasy, interiér a atmosféra bydlení u
+                    Pilského rybníka. Nejde o finální CGI zakázku — pomáhají představit směr dokončení.
+                  </p>
+                </FadeIn>
+                <DeferUntilVisible className="mt-8" minHeight={420} label="Načítám vize dokončení…">
+                  <GalleryGrid items={visualizationsDokonceno} />
                 </DeferUntilVisible>
               </div>
             ) : null}
-          </div>
-        </section>
 
-        {/* VISION */}
-        <section id="vize" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <FadeIn>
-            <SectionHead
-              eyebrow="Vize dokončení"
-              title="Studie nabarvená do atmosféry místa"
-              lead="Šedé rámce Dílny architektury jsme dobarvili materiály a světlem z reálných fotek usedlosti — bílá omítka, dřevo, pálená krytina, jarní zeleň a rybník. Jde o ilustrativní fotovize, ne o finální CGI zakázku."
-            />
-          </FadeIn>
-          <FadeIn delay={100} className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[var(--color-ink-soft)]">
-            <span>
-              Autor studie: {property.architecture.studio} · {property.architecture.authors.join(", ")}
-            </span>
-            <span>Studie {property.architecture.studyYear}</span>
-            <a
-              href={property.architecture.pdf}
-              className="font-medium text-[var(--color-moss)] underline-offset-2 hover:underline"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Stáhnout PDF studie
-            </a>
-          </FadeIn>
-          <DeferUntilVisible className="mt-10" minHeight={420} label="Načítám fotovize…">
-            <GalleryGrid items={visualizationsPhoto} />
-          </DeferUntilVisible>
+            {showVisionStudy ? (
+              <div className={showVisionPhoto || showVisionDone ? "mt-14" : undefined}>
+                <h3 className="font-display text-2xl sm:text-3xl">Původní studie (černobílé rámy)</h3>
+                <p className="mt-2 max-w-2xl text-sm text-[var(--color-ink-soft)] sm:text-base">
+                  Originální prostorové náhledy ze studie — přesná geometrie, ze které fotovize vycházejí.
+                </p>
+                <DeferUntilVisible className="mt-6" minHeight={420} label="Načítám studii…">
+                  <GalleryGrid items={visualizations} />
+                </DeferUntilVisible>
+              </div>
+            ) : null}
 
-          <div id="vize-dokonceno" className="mt-16 border-t border-[var(--color-line)] pt-14">
-            <FadeIn>
-              <p className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-[var(--color-moss)]">
-                Další vize dokončení
-              </p>
-              <h3 className="font-display text-2xl sm:text-3xl">
-                Usedlost po dostavbě — dům, stodola, terasa a rybník
-              </h3>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--color-ink-soft)] sm:text-base">
-                Druhá sada ilustrativních vizí: exteriér, terasy, interiér a atmosféra bydlení u
-                Pilského rybníka. Nejde o finální CGI zakázku — pomáhají představit směr dokončení.
-              </p>
-            </FadeIn>
-            <DeferUntilVisible className="mt-8" minHeight={420} label="Načítám vize dokončení…">
-              <GalleryGrid items={visualizationsDokonceno} />
-            </DeferUntilVisible>
-          </div>
-
-          <div className="mt-14">
-            <h3 className="font-display text-2xl sm:text-3xl">Původní studie (černobílé rámy)</h3>
-            <p className="mt-2 max-w-2xl text-sm text-[var(--color-ink-soft)] sm:text-base">
-              Originální prostorové náhledy ze studie — přesná geometrie, ze které fotovize vycházejí.
-            </p>
-            <DeferUntilVisible className="mt-6" minHeight={420} label="Načítám studii…">
-              <GalleryGrid items={visualizations} />
-            </DeferUntilVisible>
-          </div>
-          <div className="mt-14">
-            <h3 className="font-display text-2xl sm:text-3xl">Půdorysy a situace</h3>
-            <DeferUntilVisible className="mt-6" minHeight={320} label="Načítám půdorysy…">
-              <GalleryGrid
-                items={plans.map((p) => ({ src: p.src, alt: p.alt }))}
-                columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-              />
-            </DeferUntilVisible>
-          </div>
-        </section>
+            {showPlans ? (
+              <div
+                className={
+                  showVisionPhoto || showVisionDone || showVisionStudy ? "mt-14" : undefined
+                }
+              >
+                <h3 className="font-display text-2xl sm:text-3xl">Půdorysy a situace</h3>
+                <DeferUntilVisible className="mt-6" minHeight={320} label="Načítám půdorysy…">
+                  <GalleryGrid
+                    items={plans.map((p) => ({ src: p.src, alt: p.alt }))}
+                    columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                  />
+                </DeferUntilVisible>
+              </div>
+            ) : null}
+          </section>
+        ) : null}
 
         {/* COMPLETION MY76 */}
         <section id="dostavba" className="border-y border-[var(--color-line)] bg-[var(--color-paper-deep)]">

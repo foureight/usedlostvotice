@@ -1,12 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { property } from "@/data/property";
+import {
+  gallery,
+  plans,
+  property,
+  visualizations,
+  visualizationsDokonceno,
+  visualizationsPhoto,
+} from "@/data/property";
+
+const showGalerie = gallery.length > 0;
+const showVize =
+  visualizationsPhoto.length > 0 ||
+  visualizationsDokonceno.length > 0 ||
+  visualizations.length > 0 ||
+  plans.length > 0;
 
 const links = [
   { href: "#nemovitost", label: "Nemovitost" },
-  { href: "#galerie", label: "Galerie" },
-  { href: "#vize", label: "Vize" },
+  ...(showGalerie ? [{ href: "#galerie", label: "Galerie" }] : []),
+  ...(showVize ? [{ href: "#vize", label: "Vize" }] : []),
   { href: "#lokalita", label: "Lokalita" },
   { href: "#mapa", label: "Mapa" },
   { href: "#dostavba", label: "Dostavba" },
