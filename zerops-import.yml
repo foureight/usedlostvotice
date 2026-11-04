@@ -34,5 +34,5 @@ services:
       NODE_ENV: production
       PORT: "3000"
       NEXT_PUBLIC_SITE_URL: https://usedlostvodice.cz
-      ADMIN_USER: admin
+      ADMIN_USER: michal@tribo.cz
       ADMIN_PASSWORD: ${KEYSTATIC_ADMIN_PASSWORD}

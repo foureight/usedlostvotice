@@ -25,13 +25,21 @@ function parseBasicAuth(header: string | null): { user: string; pass: string } |
 }
 
 export function middleware(request: NextRequest) {
-  const expectedUser = (process.env.ADMIN_USER || "admin").trim();
-  const expectedPass = (process.env.ADMIN_PASSWORD || "").trim();
+  const expectedUser = (
+    process.env.ADMIN_USER ||
+    "michal@tribo.cz"
+  ).trim();
+  // Prefer Zerops secret; fall back to ADMIN_PASSWORD if set separately.
+  const expectedPass = (
+    process.env.KEYSTATIC_ADMIN_PASSWORD ||
+    process.env.ADMIN_PASSWORD ||
+    ""
+  ).trim();
 
   // Bez hesla v env je admin zamčený — ať se omylem neotevře veřejně.
   if (!expectedPass) {
     return new NextResponse(
-      "Administrace není nastavená (chybí ADMIN_PASSWORD).",
+      "Administrace není nastavená (chybí KEYSTATIC_ADMIN_PASSWORD).",
       { status: 503, headers: { "Cache-Control": "no-store" } },
     );
   }
