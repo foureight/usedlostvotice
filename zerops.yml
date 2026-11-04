@@ -22,7 +22,8 @@ zerops:
         NODE_ENV: production
         PORT: "3000"
         NEXT_PUBLIC_SITE_URL: https://usedlostvodice.cz
-        ADMIN_PASSWORD: ${KEYSTATIC_ADMIN_PASSWORD}
+        # Same simple password login as Dal Birbante (/admin → heslo).
+        ADMIN_PASSWORD: VodiceAdmin2026!
         CMS_DATA_DIR: /srv/cms
       start: sh scripts/zerops-start.sh
       healthCheck:
