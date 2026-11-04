@@ -1,0 +1,95 @@
+export type SiteContent = {
+  brand: string;
+  title: string;
+  shortTitle: string;
+  price: number;
+  priceLabel: string;
+  priceNote: string;
+  listingUrl: string;
+  listingId: string;
+  location: {
+    village: string;
+    houseNumber: string;
+    postalCode: string;
+    cadastral: string;
+    parcel: string;
+    district: string;
+    region: string;
+    country: string;
+    addressLine: string;
+    vicinity: string;
+    distances: { label: string; value: string }[];
+    nearby: string[];
+    geo: { lat: number; lng: number };
+    places: {
+      name: string;
+      aliases: string[];
+      kind: string;
+      relation: string;
+      distanceKm: number;
+      queries: string[];
+    }[];
+  };
+  specs: {
+    usableArea: number;
+    builtUpHouse: number;
+    builtUpBarn: number;
+    plotArea: number;
+    gardenArea: number;
+    disposition: string;
+    floors: number;
+    basementFloors: number;
+    rooms: number;
+    construction: string;
+    condition: string;
+    ownership: string;
+    furnishing: string;
+    energy: string;
+    utilities: string[];
+  };
+  summary: string[];
+  search: {
+    seoTitle: string;
+    seoDescription: string;
+    keywords: string[];
+    seoBody: string[];
+    geoBody: string[];
+    aioSummary: string;
+    aioBullets: string[];
+  };
+  highlights: { title: string; text: string }[];
+  architecture: {
+    studio: string;
+    authors: string[];
+    studyYear: number;
+    studyTitle: string;
+    investors: string;
+    email: string;
+    pdf: string;
+    concept: string;
+  };
+  completion: {
+    team: string;
+    partner: string;
+    teamUrl: string;
+    partnerUrl: string;
+    headline: string;
+    text: string[];
+  };
+  contact: {
+    ownerName: string;
+    ownerNote: string;
+    ownerEmail: string;
+    ownerPhone: string;
+    agentName: string;
+    agentNote: string;
+    agentEmail: string;
+    agentPhone: string;
+  };
+  faqs: { q: string; a: string }[];
+  gallery: { src: string; alt: string; kind: "exterier" | "interier" | "stav" }[];
+  visualizationsPhoto: { src: string; alt: string }[];
+  visualizationsDokonceno: { src: string; alt: string }[];
+  visualizations: { src: string; alt: string }[];
+  plans: { src: string; alt: string; label: string }[];
+};

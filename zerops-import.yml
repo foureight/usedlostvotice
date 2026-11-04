@@ -1,0 +1,38 @@
+# Usedlost Vodice — Zerops project import
+# Docs: https://docs.zerops.io/references/import
+#
+# CLI (doporučeno):
+#   zcli login <token>
+#   zcli project project-import ./zerops-import.yml --org-id <ORG_ID>
+#   zcli push app -P <PROJECT_ID> --setup app
+#
+# Po importu:
+# 1. V dashboardu napojte GitHub `foureight/usedlostvotice` (větev main, setup `app`),
+#    až bude repo s kódem — do té doby používejte `zcli push`.
+# 2. Přidejte vlastní doménu / public HTTP access.
+# 3. Nastavte NEXT_PUBLIC_SITE_URL na ostrou doménu.
+
+project:
+  name: usedlost-vodice
+  tags:
+    - production
+    - usedlost-vodice
+
+services:
+  - hostname: app
+    type: nodejs@22
+    enableSubdomainAccess: true
+    minContainers: 1
+    maxContainers: 1
+    priority: 1
+    # Next.js potřebuje ≥ ~0.5 GB; výchozí LIGHT 0.12 GB padá na OOM.
+    verticalAutoscaling:
+      minRam: 1
+      maxRam: 2
+      minFreeRamGB: 0.25
+    envVariables:
+      NODE_ENV: production
+      PORT: "3000"
+      NEXT_PUBLIC_SITE_URL: https://usedlostvodice.cz
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: VodiceAdmin2026!

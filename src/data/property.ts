@@ -1,0 +1,449 @@
+export const property = {
+  brand: "Usedlost Vodice",
+  title: "Rodinný dům s usedlostí na hrázi Pilského rybníka",
+  shortTitle: "Dům 5+1 · Vodice u Tábora",
+  price: 5_150_000,
+  priceLabel: "5 150 000 Kč",
+  priceNote: "Cena včetně pozemku · osobní vlastnictví",
+  listingUrl:
+    "https://reality.idnes.cz/detail/prodej/dum/vodice/6a6147e13f8d1f18a50ae96b/",
+  listingId: "IDNES-202604",
+
+  location: {
+    village: "Vodice",
+    houseNumber: "17",
+    postalCode: "391 53",
+    cadastral: "Vodice u Tábora",
+    parcel: "parc. č. 67, KÚ Vodice u Tábora [784273]",
+    district: "okres Tábor",
+    region: "Jihočeský kraj",
+    country: "CZ",
+    addressLine: "Vodice 17, 391 53 Vodice",
+    vicinity:
+      "Přesná adresa Vodice 17 — usedlost přímo na hrázi Pilského rybníka, na okraji obce a na hranici Přírodního parku Polánka.",
+    distances: [
+      { label: "Pacov", value: "8 km" },
+      { label: "Tábor", value: "25 km" },
+      { label: "Praha", value: "90 km" },
+    ],
+    nearby: [
+      "Pilský rybník — dům přímo na hrázi (Vodice 17)",
+      "Přírodní park Polánka",
+      "Chýnovské jeskyně",
+      "Běžkařská trasa Vodický okruh",
+    ],
+    // OSM: dům č.p. 17, Vodice (u Pilského rybníka)
+    geo: { lat: 49.462002, lng: 14.904022 },
+    /** Místa pro AI / mapové hledání — match podle názvu nebo okolí */
+    places: [
+      {
+        name: "Vodice",
+        aliases: ["Vodice u Tábora", "Vodice Tábor", "obec Vodice", "Vodice 17"],
+        kind: "village",
+        relation: "exact",
+        distanceKm: 0,
+        queries: [
+          "prodej domu Vodice",
+          "dům Vodice 17",
+          "dům Vodice u Tábora",
+          "nemovitost Vodice",
+        ],
+      },
+      {
+        name: "Pilský rybník",
+        aliases: ["Pilský rybník Vodice", "hráz Pilského rybníka", "rybník Vodice 17"],
+        kind: "landmark",
+        relation: "on",
+        distanceKm: 0,
+        queries: [
+          "dům u Pilského rybníka",
+          "prodej u rybníka Vodice",
+          "bydlení u rybníka Tábor",
+          "usedlost u rybníka Vodice 17",
+        ],
+      },
+      {
+        name: "Přírodní park Polánka",
+        aliases: ["Polánka", "park Polánka"],
+        kind: "nature_park",
+        relation: "border",
+        distanceKm: 0,
+        queries: ["bydlení Přírodní park Polánka", "usedlost Polánka", "dům Polánka Tábor"],
+      },
+      {
+        name: "okres Tábor",
+        aliases: ["Tábor okres", "Táborsko"],
+        kind: "district",
+        relation: "contains",
+        distanceKm: 0,
+        queries: ["prodej domu okres Tábor", "dům 5+1 Táborsko", "usedlost Tábor okolí"],
+      },
+      {
+        name: "Jihočeský kraj",
+        aliases: ["Jižní Čechy", "jižní Čechy"],
+        kind: "region",
+        relation: "contains",
+        distanceKm: 0,
+        queries: ["usedlost Jižní Čechy", "dům u rybníka Jižní Čechy", "prodej usedlosti Jihočeský kraj"],
+      },
+      {
+        name: "Pacov",
+        aliases: ["Pacov okolí", "u Pacova"],
+        kind: "town",
+        relation: "near",
+        distanceKm: 8,
+        queries: ["prodej domu Pacov okolí", "dům u Pacova", "nemovitost mezi Pacovem a Táborem"],
+      },
+      {
+        name: "Tábor",
+        aliases: ["u Tábora", "Tábor okolí", "město Tábor"],
+        kind: "town",
+        relation: "near",
+        distanceKm: 25,
+        queries: ["prodej domu u Tábora", "dům Tábor 25 km", "usedlost u Tábora"],
+      },
+      {
+        name: "Chýnov",
+        aliases: ["Chýnovské jeskyně", "u Chýnova"],
+        kind: "town",
+        relation: "near",
+        distanceKm: 12,
+        queries: ["dům u Chýnova", "bydlení Chýnovské jeskyně okolí"],
+      },
+      {
+        name: "Praha",
+        aliases: ["dojezd Praha", "z Prahy"],
+        kind: "city",
+        relation: "commute",
+        distanceKm: 90,
+        queries: ["dům Jižní Čechy dojezd Praha", "usedlost 90 km od Prahy", "víkendový dům z Prahy"],
+      },
+    ],
+  },
+
+  specs: {
+    usableArea: 237,
+    builtUpHouse: 103,
+    builtUpBarn: 169,
+    plotArea: 1762,
+    gardenArea: 1500,
+    disposition: "5+1",
+    floors: 2,
+    basementFloors: 1,
+    rooms: 5,
+    construction: "cihlová / kamenná",
+    condition: "rozestavěná rekonstrukce — hrubé práce z velké části hotové",
+    ownership: "osobní",
+    furnishing: "nezařízený",
+    energy: "PENB G",
+    utilities: [
+      "Elektřina",
+      "Obecní vodovod",
+      "Kanalizace — jímka nebo ČOV",
+    ],
+  },
+
+  summary: [
+    "Dům se zahájenou velkorysou rekonstrukcí za účelem trvalého bydlení stojí na okraji Vodice u Tábora, hned u Pilského rybníka, na pozemcích o celkové výměře 1 762 m².",
+    "Základní dispozice 5+1 prošla nákladnou rekonstrukcí podle návrhu Dílny architektury. Stavební práce dosud realizovala firma MY76, která úzce spolupracuje s Atelierem SAD.",
+    "Snahou bylo zachovat maximum původních prvků a materiálů v rovnováze s moderními technologiemi. Projekt počítá i s dalším využitím stávající stodoly.",
+  ],
+
+  /** Visible + crawlable copy for SEO / GEO / AIO */
+  search: {
+    seoTitle:
+      "Prodej domu 5+1 Vodice u Tábora — usedlost u Pilského rybníka za 5 150 000 Kč",
+    seoDescription:
+      "Prodej rodinného domu 5+1 ve Vodicích u Tábora: 237 m² užitné plochy, pozemek 1 762 m², stodola 169 m², hráz Pilského rybníka, Přírodní park Polánka. Zahájená rekonstrukce Dílny architektury / MY76. Cena 5 150 000 Kč.",
+    keywords: [
+      "prodej domu Vodice",
+      "prodej domu Vodice u Tábora",
+      "dům 5+1 okres Tábor",
+      "usedlost u rybníka Jižní Čechy",
+      "dům u Pilského rybníka",
+      "rekonstrukce usedlosti Tábor",
+      "prodej usedlosti Jihočeský kraj",
+      "rodinný dům Pacov okolí",
+      "Přírodní park Polánka bydlení",
+      "dům se stodolou na prodej",
+      "rozestavěný dům Tábor",
+      "chalupa Vodice prodej",
+    ],
+    seoBody: [
+      "Hledáte prodej domu v okrese Tábor s charakterem jihočeské usedlosti? Usedlost Vodice nabízí rodinný dům 5+1 s užitnou plochou 237 m² a pozemkem 1 762 m² na okraji obce Vodice u Tábora — v těsném sousedství Pilského rybníka.",
+      "Nemovitost je vhodná pro trvalé bydlení i jako investice do zahájené rekonstrukce: nová okna s trojskly, zateplená střecha, kompletní elektroinstalace a připravené peletové vytápění. Kupní cena 5 150 000 Kč zahrnuje pozemek v osobním vlastnictví.",
+      "Na obytnou část navazuje stodola (169 m²) s potenciálem dílny, ateliéru nebo dalšího bydlení podle architektonické studie Dílny architektury. Realizaci dosud vedla MY76 ve spolupráci s Atelierem SAD.",
+    ],
+    geoBody: [
+      "Vodice leží v Jihočeském kraji, okres Tábor, mezi Pacovem (asi 8 km) a Táborem (asi 25 km). Do Prahy je to zhruba 90 km — praktické dojíždění i víkendový útěk z města.",
+      "Přesná adresa usedlosti je Vodice 17 — dům stojí přímo na hrázi Pilského rybníka, na hranici Přírodního parku Polánka. V okolí jsou lesy, louky, Chýnovské jeskyně a v zimě běžkařská trasa Vodický okruh. Katastr: parc. č. 67, KÚ Vodice u Tábora.",
+      "Lokalita sedí na dotazy typu dům u rybníka Jižní Čechy, Vodice 17, bydlení v přírodě u Tábora, usedlost Polánka nebo klidná vesnice mezi Pacovem a Táborem.",
+    ],
+    aioSummary:
+      "Usedlost Vodice je rodinný dům 5+1 na prodej ve Vodicích u Tábora za 5 150 000 Kč. Má 237 m² užitné plochy, pozemek 1 762 m² a stodolu 169 m² na hrázi Pilského rybníka u Přírodního parku Polánka. Rekonstrukci navrhla Dílna architektury, staví MY76 / Atelier SAD; tým umí dům na přání dokončit. Kontakt: Michal Burda (michal@tribo.cz, +420 736 483 646) nebo Jiří Loskot, Bio Reality (loskot@bioreality.cz, +420 774 235 689).",
+    aioBullets: [
+      "Cena 5 150 000 Kč včetně pozemku, osobní vlastnictví",
+      "Dispozice 5+1 · 237 m² užitná · 1 762 m² pozemek · stodola 169 m²",
+      "Lokalita: Vodice u Tábora, hráz Pilského rybníka, Přírodní park Polánka",
+      "Vzdálenosti: Pacov 8 km, Tábor 25 km, Praha 90 km",
+      "Stav: zahájená rekonstrukce (okna, střecha, elektro, peletové vytápění připraveno)",
+      "Dostavba možná se stejným týmem MY76 / Atelier SAD",
+      "Prohlídky: Michal Burda · michal@tribo.cz · +420 736 483 646",
+      "Prohlídky: Jiří Loskot (Bio Reality) · loskot@bioreality.cz · +420 774 235 689",
+    ],
+  },
+
+  highlights: [
+    {
+      title: "Obytná kuchyně k rybníku",
+      text: "Velkoformátové francouzské okno s výhledem na Pilský rybník.",
+    },
+    {
+      title: "Nová okna a střecha",
+      text: "Dřevěná okna s trojskly, zateplená střecha s novou krytinou, komínem a střešními okny.",
+    },
+    {
+      title: "Technologie připravené",
+      text: "Kompletní elektroinstalace. Vytápění peletovým kotlem a radiátory; v každém patře možnost kamen nebo krbové vložky.",
+    },
+    {
+      title: "Zahrada a sklep",
+      text: "Přímý vstup ze přízemí na zahradu, v suterénu nový sklep na potraviny.",
+    },
+    {
+      title: "Co zbývá",
+      text: "V koupelně jsou rozvody pro finální zařizovací předměty. Zbývá položit podlahové krytiny a dokončit povrchy.",
+    },
+    {
+      title: "Stodola",
+      text: "Na obytnou část navazuje původní stodola — prostor pro dílnu, sklad, ateliér nebo další bydlení dle studie.",
+    },
+  ],
+
+  architecture: {
+    studio: "Dílna architektury",
+    authors: ["Ing. arch. Vít Markvart", "Ing. arch. Naďa Klimešová"],
+    studyYear: 2020,
+    studyTitle: "Architektonická studie — rodinný dům ve Vodicích u Tábora",
+    investors: "Marie a Michal Burdovi",
+    email: "dilna@dilnaarchitektury.cz",
+    pdf: "/docs/architektonicka-studie.pdf",
+    concept:
+      "Studie řeší rekonstrukci venkovské usedlosti — obytného domu (původní sýpky) a stodoly — pro trvalé bydlení 4–6členné rodiny a případnou provozovnu zpracování potravin. Návrh propojuje dům se stodolou, zachovává charakter usedlosti a otevírá výhledy k rybníku.",
+  },
+
+  completion: {
+    team: "MY76",
+    partner: "Atelier SAD",
+    teamUrl: "https://www.my76.cz/",
+    partnerUrl: "https://www.ateliersad.cz/",
+    headline: "Dostavba na míru se stejným týmem",
+    text: [
+      "Stavební práce na usedlosti dosud vedla realizační firma MY76, úzce spjatá s Atelierem SAD. V případě zájmu je tým schopen v práci pokračovat — sestavit rozpočet na míru a dům se zdroji investora dotáhnout do finální podoby.",
+      "Kupující tak nemusí hledat nového zhotovitele od nuly: zná lokalitu, projekt i dosavadní technologická řešení.",
+    ],
+  },
+
+  contact: {
+    ownerName: "Michal Burda",
+    ownerNote: "Majitel — prohlídky a individuální domluva",
+    ownerEmail: process.env.NEXT_PUBLIC_OWNER_EMAIL || "michal@tribo.cz",
+    ownerPhone: process.env.NEXT_PUBLIC_OWNER_PHONE || "+420 736 483 646",
+    agentName: "Jiří Loskot",
+    agentNote: "Bio Reality — prohlídky a nabídka",
+    agentEmail: process.env.NEXT_PUBLIC_AGENT_EMAIL || "loskot@bioreality.cz",
+    agentPhone: process.env.NEXT_PUBLIC_AGENT_PHONE || "+420 774 235 689",
+  },
+
+  faqs: [
+    {
+      q: "Kolik stojí prodej domu ve Vodicích u Tábora?",
+      a: "Kupní cena Usedlosti Vodice je 5 150 000 Kč včetně pozemku, v osobním vlastnictví. Dispozice 5+1, užitná plocha 237 m², pozemek 1 762 m².",
+    },
+    {
+      q: "V jakém stavu je dům dnes?",
+      a: "Jde o zahájenou velkorysou rekonstrukci: nová okna s trojskly, zateplená střecha s krytinou, kompletní elektro, připravené vytápění peletami, nový sklep. Zbývají především povrchy, podlahy a finální vybavení koupelny. Na obytnou část navazuje původní stodola.",
+    },
+    {
+      q: "Kde přesně usedlost leží?",
+      a: "Přesná adresa je Vodice 17, 391 53 Vodice (okres Tábor, Jihočeský kraj) — usedlost přímo na hrázi Pilského rybníka, na hranici Přírodního parku Polánka. Pacov cca 8 km, Tábor cca 25 km, Praha cca 90 km.",
+      },
+      {
+      q: "Hodí se nabídka při hledání domu podle místa — Vodice, Tábor, Pacov nebo Pilský rybník?",
+      a: "Ano. Usedlost stojí na adrese Vodice 17, přímo na hrázi Pilského rybníka a na hranici Přírodního parku Polánka. Sedí na hledání podle místa: Vodice, Vodice 17, okres Tábor, Táborsko, Pacov okolí (8 km), Tábor (25 km), Jižní Čechy / Jihočeský kraj, nebo dům u rybníka. Strojový index míst je v /places.json.",
+      },
+    {
+      q: "Jaké jsou výměry domu a pozemku?",
+      a: "Užitná plocha domu 237 m², zastavěná plocha domu 103 m², stodoly 169 m². Pozemek celkem 1 762 m² (zahrada cca 1 500 m²). Dispozice 5+1, dvě nadzemní podlaží a suterén.",
+    },
+    {
+      q: "Kdo projektoval a kdo stavěl?",
+      a: "Architektonickou studii zpracovala Dílna architektury (Vít Markvart, Naďa Klimešová). Stavební práce realizovala MY76 ve spolupráci s Atelierem SAD. Stejný tým umí na přání pokračovat v dostavbě a sestavit rozpočet na míru.",
+    },
+    {
+      q: "Hodí se dům jako bydlení u rybníka v Jižních Čechách?",
+      a: "Ano — usedlost je přímo na hrázi Pilského rybníka, s výhledy do krajiny Přírodního parku Polánka. Je určená k trvalému bydlení 4–6členné rodiny, s možností dalšího využití stodoly.",
+    },
+    {
+      q: "Jaké jsou sítě?",
+      a: "Dům je napojen na elektřinu a obecní vodovod. Kanalizaci lze řešit jímkou nebo domovní čističkou.",
+    },
+    {
+      q: "Jak domluvit prohlídku?",
+      a: "Napište nebo volejte Michalovi Burdovi (michal@tribo.cz, +420 736 483 646) nebo Jiřímu Loskotovi z Bio Reality (loskot@bioreality.cz, +420 774 235 689), případně použijte formulář na webu. Kvalitu investice nejlépe posoudíte na místě.",
+    },
+  ],
+} as const;
+
+export const gallery = [
+  {
+    src: "/galerie/01.jpg",
+    alt: "Letecký pohled — usedlost na hrázi Pilského rybníka, Vodice u Tábora",
+    kind: "exterier",
+  },
+  {
+    src: "/galerie/02.jpg",
+    alt: "Usedlost a rybník v jarní krajině Přírodního parku Polánka",
+    kind: "exterier",
+  },
+  {
+    src: "/galerie/03.jpg",
+    alt: "Pozemek 1 762 m² na okraji obce Vodice",
+    kind: "exterier",
+  },
+  {
+    src: "/galerie/04.jpg",
+    alt: "Celkový pohled na dům a stodolu u rybníka",
+    kind: "exterier",
+  },
+  {
+    src: "/galerie/05.jpg",
+    alt: "Exteriér — původní štít a nový přístavek s francouzským oknem",
+    kind: "exterier",
+  },
+  {
+    src: "/galerie/06.jpg",
+    alt: "Interiér — trámový strop, fošnová podlaha a výhled do zeleně",
+    kind: "interier",
+  },
+  {
+    src: "/galerie/07.jpg",
+    alt: "Výhled z okna na Pilský rybník a louku",
+    kind: "interier",
+  },
+  {
+    src: "/galerie/08.jpg",
+    alt: "Exteriér — nová střecha se střešními okny a štít domu",
+    kind: "exterier",
+  },
+  {
+    src: "/galerie/09.jpg",
+    alt: "Podkroví — původní krov, nové fošny a kamenný štít",
+    kind: "interier",
+  },
+  {
+    src: "/stav/dum-pristavek-celek.jpg",
+    alt: "Aktuální stav — celý dům a přístavek",
+    kind: "stav",
+  },
+  {
+    src: "/stav/stodola.jpg",
+    alt: "Aktuální stav — původní stodola",
+    kind: "stav",
+  },
+] as const;
+
+/** Colorized / photo-style finishes derived from the study + real site photos */
+export const visualizationsPhoto = [
+  {
+    src: "/vizualizace-foto/04-krajina.jpg",
+    alt: "Fotovize — dokončená usedlost u Pilského rybníka",
+  },
+  {
+    src: "/vizualizace-foto/01.jpg",
+    alt: "Fotovize — dvůr, terasy a stodola",
+  },
+  {
+    src: "/vizualizace-foto/02.jpg",
+    alt: "Fotovize — celkový pohled na hmoty domu",
+  },
+  {
+    src: "/vizualizace-foto/03.jpg",
+    alt: "Fotovize — štít, terasa a francouzské okno",
+  },
+  {
+    src: "/vizualizace-foto/06-garaz.jpg",
+    alt: "Fotovize — dům a garáž od cesty",
+  },
+  {
+    src: "/vizualizace-foto/05-interier.jpg",
+    alt: "Fotovize — obytný interiér s výhledem",
+  },
+] as const;
+
+/** Richer completion visions (exterior, terrace, interiors) */
+export const visualizationsDokonceno = [
+  {
+    src: "/vizualizace-dokonceno/01.jpg",
+    alt: "Vize dokončení — usedlost od příjezdové cesty, terasa a rybník",
+  },
+  {
+    src: "/vizualizace-dokonceno/02.jpg",
+    alt: "Vize dokončení — celkový pohled na dům, dřevěný přístavek a stodolu",
+  },
+  {
+    src: "/vizualizace-dokonceno/03.jpg",
+    alt: "Vize dokončení — usedlost přes hladinu Pilského rybníka",
+  },
+  {
+    src: "/vizualizace-dokonceno/04.jpg",
+    alt: "Vize dokončení — terasa u stodoly a francouzské okno",
+  },
+  {
+    src: "/vizualizace-dokonceno/05.jpg",
+    alt: "Vize dokončení — letecký pohled na usedlost u rybníka",
+  },
+  {
+    src: "/vizualizace-dokonceno/06.jpg",
+    alt: "Vize dokončení — průčelí domu se stodolou a kamenným štítem",
+  },
+  {
+    src: "/vizualizace-dokonceno/07.jpg",
+    alt: "Vize dokončení — dřevěný přístavek a zahradní terasa",
+  },
+  {
+    src: "/vizualizace-dokonceno/08.jpg",
+    alt: "Vize dokončení — terasa s výhledem na rybník",
+  },
+  {
+    src: "/vizualizace-dokonceno/09.jpg",
+    alt: "Vize dokončení — obývací prostor otevřený do krajiny",
+  },
+  {
+    src: "/vizualizace-dokonceno/10.jpg",
+    alt: "Vize dokončení — podkrovní ložnice s výhledem",
+  },
+] as const;
+
+/** Original grayscale study frames */
+export const visualizations = [
+  { src: "/vizualizace/01-exterier.jpg", alt: "Studie — exteriér usedlosti" },
+  { src: "/vizualizace/02-exterier.jpg", alt: "Studie — hmoty domu a stodoly" },
+  { src: "/vizualizace/03-exterier.jpg", alt: "Studie — pohled od cesty" },
+  { src: "/vizualizace/09-exterier.jpg", alt: "Studie — dvůr a terasy" },
+  { src: "/vizualizace/10-exterier.jpg", alt: "Studie — štít a schodiště k terase" },
+  { src: "/vizualizace/11-exterier.jpg", alt: "Studie — usedlost mezi stromy" },
+  { src: "/vizualizace/04-interier.jpg", alt: "Studie — interiér" },
+  { src: "/vizualizace/05-interier.jpg", alt: "Studie — obytný prostor" },
+  { src: "/vizualizace/06-interier.jpg", alt: "Studie — propojení se stodolou" },
+  { src: "/vizualizace/07-interier.jpg", alt: "Studie — atmosféra bydlení" },
+  { src: "/vizualizace/08-detail.jpg", alt: "Studie — detail návrhu" },
+] as const;
+
+export const plans = [
+  { src: "/pudorysy/situace.jpg", alt: "Situace M 1:200", label: "Situace" },
+  { src: "/pudorysy/1np.jpg", alt: "Půdorys 1. NP", label: "1. NP" },
+  { src: "/pudorysy/2np.jpg", alt: "Půdorys 2. NP", label: "2. NP" },
+  { src: "/pudorysy/garaz.jpg", alt: "Garáž a parter", label: "Garáž a parter" },
+  { src: "/pudorysy/rezy.jpg", alt: "Řezy", label: "Řezy" },
+] as const;

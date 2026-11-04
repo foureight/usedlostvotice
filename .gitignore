@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.env*.local
+.DS_Store
+*.log
+tsconfig.tsbuildinfo
+
+# Runtime form leads (kept on server)
+content/inquiries/*
+!content/inquiries/.gitkeep
