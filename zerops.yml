@@ -22,7 +22,7 @@ zerops:
         NODE_ENV: production
         PORT: "3000"
         NEXT_PUBLIC_SITE_URL: https://usedlostvodice.cz
-        # Same simple password login as Dal Birbante (/admin → heslo).
+        ADMIN_USER: michal@tribo.cz
         ADMIN_PASSWORD: VodiceAdmin2026!
         KEYSTATIC_ADMIN_PASSWORD: VodiceAdmin2026!
         CMS_DATA_DIR: /srv/cms

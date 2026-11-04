@@ -3,6 +3,7 @@ import {
   ADMIN_COOKIE,
   createSessionToken,
   getAdminPassword,
+  getAdminUser,
   isAdminAuthenticated,
 } from "@/lib/auth";
 import {
@@ -68,7 +69,7 @@ export async function PUT(request: Request) {
 }
 
 export async function POST(request: Request) {
-  let body: { password?: string; action?: string };
+  let body: { email?: string; user?: string; password?: string; action?: string };
   try {
     body = await request.json();
   } catch {
@@ -81,16 +82,23 @@ export async function POST(request: Request) {
     return res;
   }
 
-  const expected = getAdminPassword();
-  if (!expected) {
+  const expectedUser = getAdminUser();
+  const expectedPass = getAdminPassword();
+  if (!expectedPass) {
     return NextResponse.json(
       { error: "Administrace není nastavená (chybí heslo)." },
       { status: 503 },
     );
   }
 
-  if (body.password !== expected) {
-    return NextResponse.json({ error: "Špatné heslo." }, { status: 401 });
+  const email = String(body.email || body.user || "")
+    .trim()
+    .toLowerCase();
+  if (email !== expectedUser || body.password !== expectedPass) {
+    return NextResponse.json(
+      { error: "Špatný e-mail nebo heslo." },
+      { status: 401 },
+    );
   }
 
   const token = createSessionToken();

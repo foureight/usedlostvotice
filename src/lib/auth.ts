@@ -12,6 +12,13 @@ function getSecret() {
   );
 }
 
+export function getAdminUser() {
+  return (
+    process.env.ADMIN_USER ||
+    "michal@tribo.cz"
+  ).trim().toLowerCase();
+}
+
 export function getAdminPassword() {
   return (
     process.env.ADMIN_PASSWORD ||

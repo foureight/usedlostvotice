@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const router = useRouter();
+  const [email, setEmail] = useState("michal@tribo.cz");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -18,10 +19,10 @@ export function LoginForm() {
         method: "POST",
         credentials: "same-origin",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        setError("Špatné heslo.");
+        setError("Špatný e-mail nebo heslo.");
         return;
       }
       router.replace("/keystatic");
@@ -32,6 +33,15 @@ export function LoginForm() {
       setBusy(false);
     }
   }
+
+  const fieldStyle: React.CSSProperties = {
+    height: 42,
+    borderRadius: 8,
+    border: "1px solid #3a4150",
+    background: "#0f1115",
+    color: "#fff",
+    padding: "0 12px",
+  };
 
   return (
     <div
@@ -70,6 +80,17 @@ export function LoginForm() {
           </p>
         </div>
         <label style={{ display: "grid", gap: 6, fontSize: 14 }}>
+          E-mail
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="username"
+            required
+            style={fieldStyle}
+          />
+        </label>
+        <label style={{ display: "grid", gap: 6, fontSize: 14 }}>
           Heslo
           <input
             type="password"
@@ -77,14 +98,8 @@ export function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             autoFocus
             autoComplete="current-password"
-            style={{
-              height: 42,
-              borderRadius: 8,
-              border: "1px solid #3a4150",
-              background: "#0f1115",
-              color: "#fff",
-              padding: "0 12px",
-            }}
+            required
+            style={fieldStyle}
           />
         </label>
         {error ? (
