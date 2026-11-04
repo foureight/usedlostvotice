@@ -1,7 +1,6 @@
 import { existsSync } from "fs";
 import path from "path";
-import { createReader } from "@keystatic/core/reader";
-import keystaticConfig from "../../keystatic.config";
+import { readSeoJson, readSiteJson } from "@/lib/cms-files";
 import type { SiteContent } from "@/lib/content-types";
 
 export type { SiteContent } from "@/lib/content-types";
@@ -219,13 +218,12 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
 }
 
 export async function getContent(): Promise<SiteContent> {
-  const reader = createReader(process.cwd(), keystaticConfig);
-  const site = await reader.singletons.site.read();
-  if (!site) {
+  const site = await readSiteJson();
+  if (!site || Object.keys(site).length === 0) {
     throw new Error("Chybí content/site.json — otevřete /keystatic a uložte obsah.");
   }
-  const seo = (await reader.singletons.seo.read()) as UnknownRecord | null;
-  return normalizeSite(site as UnknownRecord, seo ?? {});
+  const seo = await readSeoJson();
+  return normalizeSite(site as UnknownRecord, seo as UnknownRecord);
 }
 
 export async function getProperty() {
