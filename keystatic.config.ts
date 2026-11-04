@@ -251,11 +251,10 @@ export default config({
             studyTitle: fields.text({ label: "Název studie" }),
             investors: fields.text({ label: "Investoři" }),
             email: fields.text({ label: "E-mail studia" }),
-            pdf: fields.file({
-              label: "PDF studie",
-              directory: "public/docs",
-              publicPath: "/docs/",
-              description: "Soubor v public/docs/",
+            pdf: fields.text({
+              label: "PDF studie (cesta)",
+              description: "Veřejná cesta, např. /docs/architektonicka-studie.pdf",
+              defaultValue: "/docs/architektonicka-studie.pdf",
             }),
             concept: fields.text({ label: "Koncept", multiline: true }),
           },

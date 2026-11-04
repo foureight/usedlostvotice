@@ -1,3 +1,5 @@
+import { existsSync } from "fs";
+import path from "path";
 import { createReader } from "@keystatic/core/reader";
 import keystaticConfig from "../../keystatic.config";
 import type { SiteContent } from "@/lib/content-types";
@@ -37,6 +39,13 @@ function resolveMediaSrc(value: unknown, folder: string): string {
     return raw;
   }
   return `/${folder}/${raw.replace(/^\.?\//, "")}`;
+}
+
+/** Drop CMS entries whose public file is missing (avoids broken thumbnails). */
+function publicMediaExists(src: string): boolean {
+  if (!src.startsWith("/")) return false;
+  if (src.startsWith("http://") || src.startsWith("https://")) return true;
+  return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
 function normalizeSearch(search: UnknownRecord) {
@@ -161,7 +170,7 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
         const g = asRecord(item);
         const kind = asString(g.kind, "exterier");
         const src = resolveMediaSrc(g.src, "galerie");
-        if (!src) return null;
+        if (!src || !publicMediaExists(src)) return null;
         return {
           src,
           alt: asString(g.alt),
@@ -176,7 +185,7 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
       .map((item) => {
         const g = asRecord(item);
         const src = resolveMediaSrc(g.src, "vizualizace-foto");
-        if (!src) return null;
+        if (!src || !publicMediaExists(src)) return null;
         return { src, alt: asString(g.alt) };
       })
       .filter((item): item is NonNullable<typeof item> => item !== null),
@@ -186,7 +195,7 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
       .map((item) => {
         const g = asRecord(item);
         const src = resolveMediaSrc(g.src, "vizualizace-dokonceno");
-        if (!src) return null;
+        if (!src || !publicMediaExists(src)) return null;
         return { src, alt: asString(g.alt) };
       })
       .filter((item): item is NonNullable<typeof item> => item !== null),
@@ -194,7 +203,7 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
       .map((item) => {
         const g = asRecord(item);
         const src = resolveMediaSrc(g.src, "vizualizace");
-        if (!src) return null;
+        if (!src || !publicMediaExists(src)) return null;
         return { src, alt: asString(g.alt) };
       })
       .filter((item): item is NonNullable<typeof item> => item !== null),
@@ -202,7 +211,7 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
       .map((item) => {
         const g = asRecord(item);
         const src = resolveMediaSrc(g.src, "pudorysy");
-        if (!src) return null;
+        if (!src || !publicMediaExists(src)) return null;
         return { src, alt: asString(g.alt), label: asString(g.label) };
       })
       .filter((item): item is NonNullable<typeof item> => item !== null),

@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto";
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
 
@@ -72,6 +72,21 @@ type GalleryItem = {
   label?: string;
 };
 
+async function flushToVolume(sitePath: string, added: GalleryItem[]) {
+  const cms = process.env.CMS_DATA_DIR;
+  if (!cms) return;
+  await mkdir(path.join(cms, "content"), { recursive: true });
+  await copyFile(sitePath, path.join(cms, "content", "site.json"));
+  for (const item of added) {
+    const rel = (item.src || "").replace(/^\//, "");
+    if (!rel) continue;
+    const from = path.join(process.cwd(), "public", rel);
+    const to = path.join(cms, "public", rel);
+    await mkdir(path.dirname(to), { recursive: true });
+    await copyFile(from, to);
+  }
+}
+
 export async function POST(request: Request) {
   let form: FormData;
   try {
@@ -96,7 +111,6 @@ export async function POST(request: Request) {
   if (!files.length) {
     return NextResponse.json({ error: "Vyberte aspoň jednu fotku." }, { status: 400 });
   }
-  // Keep payloads small for Zerops/nginx — client should send 1–3 files per request.
   if (files.length > 5) {
     return NextResponse.json(
       { error: "Najednou max. 5 souborů (nahrajte po dávkách)." },
@@ -165,6 +179,11 @@ export async function POST(request: Request) {
 
   site[target.field] = [...existing, ...added];
   await writeFile(sitePath, `${JSON.stringify(site, null, 2)}\n`, "utf8");
+  try {
+    await flushToVolume(sitePath, added);
+  } catch (err) {
+    console.error("[cms] flushToVolume failed", err);
+  }
 
   return NextResponse.json({
     ok: true,
