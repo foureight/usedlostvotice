@@ -59,5 +59,6 @@ export const config = {
     "/zmensito",
     "/zmensito/:path*",
     "/api/keystatic/:path*",
+    "/api/admin/:path*",
   ],
 };

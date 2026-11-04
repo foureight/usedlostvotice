@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AdminListThumbs } from "./admin-list-thumbs";
+import { MultiUpload } from "./multi-upload";
 import KeystaticApp from "./keystatic";
 import { getContent } from "@/lib/content";
 
@@ -22,6 +23,7 @@ export default async function Layout() {
 
   return (
     <>
+      <MultiUpload />
       <AdminListThumbs thumbs={thumbs} />
       <KeystaticApp />
     </>
