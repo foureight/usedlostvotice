@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { DeferUntilVisible } from "@/components/defer-until-visible";
 import { FadeIn } from "@/components/fade-in";
 import { FaqAccordion } from "@/components/faq-accordion";
@@ -62,15 +61,13 @@ export default async function HomePage() {
       <section className="relative md:min-h-[100svh] md:grain">
         <div className="relative h-[62svh] w-full md:absolute md:inset-0 md:h-auto md:min-h-[100svh]">
           {hero ? (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={hero.src}
               alt={hero.alt}
-              fill
-              priority
               fetchPriority="high"
-              sizes="100vw"
-              quality={75}
-              className="animate-ken object-cover object-center"
+              decoding="async"
+              className="animate-ken absolute inset-0 h-full w-full object-cover object-center"
             />
           ) : (
             <div
@@ -406,14 +403,13 @@ export default async function HomePage() {
                 label="Načítám lokalitu…"
               >
                 <div className="relative min-h-[320px] h-full w-full lg:absolute lg:inset-0">
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={(photoGallery[1] || photoGallery[0] || hero)!.src}
                     alt={(photoGallery[1] || photoGallery[0] || hero)!.alt}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    quality={70}
                     loading="lazy"
-                    className="object-cover"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
               </DeferUntilVisible>
