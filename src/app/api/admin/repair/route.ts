@@ -1,6 +1,7 @@
 import { cp, mkdir } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
+import { isAdminAuthenticated } from "@/lib/auth";
 import { optimizePublicMedia } from "@/lib/optimize-image";
 import { repairSiteJson } from "@/lib/repair-site";
 
@@ -21,6 +22,10 @@ const MEDIA_DIRS = [
  * - Permanently resize oversized originals in public/
  */
 export async function POST() {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
+  }
+
   try {
     const repaired = await repairSiteJson();
     const optimized = await optimizePublicMedia();

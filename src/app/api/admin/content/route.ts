@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import {
+  ADMIN_COOKIE,
+  createSessionToken,
+  getAdminPassword,
+  isAdminAuthenticated,
+} from "@/lib/auth";
+import {
   listInquiries,
   readSeoJson,
   readSiteJson,
@@ -12,6 +18,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
+  }
   await repairSiteJson().catch(() => null);
   const [site, seo, smtp, inquiries] = await Promise.all([
     readSiteJson(),
@@ -23,6 +32,10 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
+  }
+
   let body: {
     site?: Record<string, unknown>;
     seo?: Record<string, unknown>;
@@ -52,4 +65,42 @@ export async function PUT(request: Request) {
     seo: await readSeoJson(),
     smtp: await readSmtpJson(),
   });
+}
+
+export async function POST(request: Request) {
+  let body: { password?: string; action?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Neplatné JSON." }, { status: 400 });
+  }
+
+  if (body.action === "logout") {
+    const res = NextResponse.json({ ok: true });
+    res.cookies.set(ADMIN_COOKIE, "", { httpOnly: true, path: "/", maxAge: 0 });
+    return res;
+  }
+
+  const expected = getAdminPassword();
+  if (!expected) {
+    return NextResponse.json(
+      { error: "Administrace není nastavená (chybí heslo)." },
+      { status: 503 },
+    );
+  }
+
+  if (body.password !== expected) {
+    return NextResponse.json({ error: "Špatné heslo." }, { status: 401 });
+  }
+
+  const token = createSessionToken();
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(ADMIN_COOKIE, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+    secure: process.env.NODE_ENV === "production",
+  });
+  return res;
 }

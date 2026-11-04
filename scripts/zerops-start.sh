@@ -1,7 +1,6 @@
 #!/bin/sh
 # Persist CMS content + uploaded photos across Zerops deploys.
-#
-# Important: do NOT symlink content/ or public/* into the volume.
+# Simple: volume for edits, deploy seed for missing photos. No prune.
 set -eu
 
 CMS="${CMS_DATA_DIR:-/srv/cms}"
@@ -42,8 +41,7 @@ for d in $MEDIA_DIRS; do
   cp -a "$CMS/public/$d/." "public/$d/" 2>/dev/null || true
 done
 
-# Always re-merge deploy media into public/ so seed photos cannot disappear
-# when the volume copy is incomplete.
+# Always re-merge deploy media into public/ so seed photos cannot disappear.
 for d in $MEDIA_DIRS; do
   cp -a "$SEED/public/$d/." "public/$d/" 2>/dev/null || true
 done
@@ -55,12 +53,8 @@ if ! node -e "JSON.parse(require('fs').readFileSync('content/site.json','utf8'))
   cp -a content/. "$CMS/content/"
 fi
 
-# Recover gallery refs wiped by older prune runs (files still on disk).
+# Recover gallery refs wiped earlier (files still on disk / in seed).
 node scripts/restore-media-refs.mjs "$SEED/content/site.json" || true
-
-# Soft prune only: drop rows whose files are still missing AFTER seed merge.
-# Never push a fully emptied gallery back to the volume.
-node scripts/prune-missing-media.mjs || true
 
 # Sync working tree → volume (content + media).
 cp -a content/. "$CMS/content/" 2>/dev/null || true

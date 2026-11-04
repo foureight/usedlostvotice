@@ -248,7 +248,9 @@ function GalleryEditor({
   );
 }
 
-export function AdminApp() {
+export function AdminApp({ authenticated }: { authenticated: boolean }) {
+  const [authed, setAuthed] = useState(authenticated);
+  const [password, setPassword] = useState("");
   const [tab, setTab] = useState<TabId>("zaklad");
   const [site, setSite] = useState<Record<string, unknown> | null>(null);
   const [seo, setSeo] = useState<Record<string, unknown> | null>(null);
@@ -290,11 +292,44 @@ export function AdminApp() {
   }, []);
 
   useEffect(() => {
+    if (!authed) return;
     load().catch((err) => {
       setError(true);
       setMessage(String(err.message || err));
     });
-  }, [load]);
+  }, [authed, load]);
+
+  async function login(e: React.FormEvent) {
+    e.preventDefault();
+    setError(false);
+    setMessage("");
+    const res = await fetch("/api/admin/content", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+    if (!res.ok) {
+      setError(true);
+      setMessage("Špatné heslo.");
+      return;
+    }
+    setAuthed(true);
+  }
+
+  async function logout() {
+    await fetch("/api/admin/content", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "logout" }),
+    });
+    setAuthed(false);
+    setSite(null);
+    setSeo(null);
+    setSmtp(null);
+    setPassword("");
+  }
 
   const patchSite = (patch: Record<string, unknown>) =>
     setSite((prev) => (prev ? { ...prev, ...patch } : prev));
@@ -399,6 +434,37 @@ export function AdminApp() {
     [uploadTarget],
   );
 
+  if (!authed) {
+    return (
+      <div className="admin-shell admin-login">
+        <div className="admin-login-card">
+          <p className="admin-kicker">Usedlost Vodice</p>
+          <h1>Administrace</h1>
+          <p className="admin-muted">
+            Přihlaste se pro editaci textů a fotek na webu.
+          </p>
+          <form onSubmit={login} className="admin-login-form">
+            <Field label="Heslo">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoFocus
+                autoComplete="current-password"
+              />
+            </Field>
+            {message ? (
+              <p className={`admin-status ${error ? "err" : "ok"}`}>{message}</p>
+            ) : null}
+            <button type="submit" className="admin-btn primary">
+              Přihlásit
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   if (!site || !seo || !smtp) {
     return (
       <div className="admin-shell">
@@ -418,11 +484,14 @@ export function AdminApp() {
           <a className="admin-btn ghost" href="/" target="_blank" rel="noreferrer">
             Otevřít web
           </a>
+          <button type="button" className="admin-btn ghost" onClick={logout}>
+            Odhlásit
+          </button>
           <button type="button" className="admin-btn ghost" disabled={busy} onClick={runRepair}>
             Opravit / zmenšit fotky
           </button>
           <button type="button" className="admin-btn primary" disabled={busy} onClick={save}>
-            {busy ? "Ukládám…" : "Uložit vše"}
+            {busy ? "Ukládám…" : "Uložit změny"}
           </button>
         </div>
       </header>

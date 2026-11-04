@@ -31,12 +31,12 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/keystatic", "/zmensito", "/api/keystatic", "/api/admin", "/api/inquiry"],
+        disallow: ["/admin", "/keystatic", "/zmensito", "/api/admin", "/api/inquiry"],
       },
       ...aiAgents.map((userAgent) => ({
         userAgent,
         allow: "/",
-        disallow: ["/keystatic", "/zmensito", "/api/keystatic", "/api/admin", "/api/inquiry"],
+        disallow: ["/admin", "/keystatic", "/zmensito", "/api/admin", "/api/inquiry"],
       })),
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

@@ -297,3 +297,35 @@
     grid-template-columns: 1fr;
   }
 }
+
+.admin-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.admin-login-card {
+  width: min(420px, 100%);
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 28px 24px;
+}
+
+.admin-login-card h1 {
+  margin: 8px 0 0;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.admin-login-form {
+  margin-top: 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.admin-login-form .admin-status {
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}

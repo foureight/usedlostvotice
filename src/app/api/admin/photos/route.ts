@@ -2,6 +2,7 @@ import { randomBytes } from "crypto";
 import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
+import { isAdminAuthenticated } from "@/lib/auth";
 import { optimizeImageUpload } from "@/lib/optimize-image";
 
 export const runtime = "nodejs";
@@ -89,6 +90,10 @@ async function flushToVolume(sitePath: string, added: GalleryItem[]) {
 }
 
 export async function POST(request: Request) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
+  }
+
   let form: FormData;
   try {
     form = await request.formData();
