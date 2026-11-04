@@ -84,9 +84,14 @@ export async function repairSiteJson(): Promise<RepairResult> {
       }
       return true;
     });
-    if (next.length !== list.length) {
+    // Never persist a fully emptied gallery — that wiped production photos before.
+    if (next.length !== list.length && (next.length > 0 || list.length === 0)) {
       site[field] = next;
       dirty = true;
+    } else if (next.length === 0 && list.length > 0) {
+      console.warn(
+        `[repair] skip emptying ${field} (${list.length} → 0); files may be mid-restore`,
+      );
     }
   }
 

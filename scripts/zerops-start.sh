@@ -1,8 +1,7 @@
 #!/bin/sh
-# Persist Keystatic content + uploaded photos across Zerops deploys.
+# Persist CMS content + uploaded photos across Zerops deploys.
 #
 # Important: do NOT symlink content/ or public/* into the volume.
-# Keystatic's local tree walker skips directory symlinks → "Bad data".
 set -eu
 
 CMS="${CMS_DATA_DIR:-/srv/cms}"
@@ -43,6 +42,12 @@ for d in $MEDIA_DIRS; do
   cp -a "$CMS/public/$d/." "public/$d/" 2>/dev/null || true
 done
 
+# Always re-merge deploy media into public/ so seed photos cannot disappear
+# when the volume copy is incomplete.
+for d in $MEDIA_DIRS; do
+  cp -a "$SEED/public/$d/." "public/$d/" 2>/dev/null || true
+done
+
 # If site.json is invalid JSON, fall back to deploy seed.
 if ! node -e "JSON.parse(require('fs').readFileSync('content/site.json','utf8'))" 2>/dev/null; then
   echo "[cms] site.json invalid — restoring deploy seed"
@@ -50,9 +55,19 @@ if ! node -e "JSON.parse(require('fs').readFileSync('content/site.json','utf8'))
   cp -a content/. "$CMS/content/"
 fi
 
-# Drop gallery rows that point at missing files (fixes broken thumbnails).
+# Recover gallery refs wiped by older prune runs (files still on disk).
+node scripts/restore-media-refs.mjs "$SEED/content/site.json" || true
+
+# Soft prune only: drop rows whose files are still missing AFTER seed merge.
+# Never push a fully emptied gallery back to the volume.
 node scripts/prune-missing-media.mjs || true
-cp -a content/site.json "$CMS/content/site.json" 2>/dev/null || true
+
+# Sync working tree → volume (content + media).
+cp -a content/. "$CMS/content/" 2>/dev/null || true
+for d in $MEDIA_DIRS; do
+  mkdir -p "$CMS/public/$d"
+  cp -a "public/$d/." "$CMS/public/$d/" 2>/dev/null || true
+done
 
 # Keep volume in sync while the app runs.
 (
