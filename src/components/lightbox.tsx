@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Item = { src: string; alt: string };
 
@@ -14,38 +14,15 @@ function GalleryThumb({
   index: number;
   onOpen: (index: number) => void;
 }) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const [showImage, setShowImage] = useState(false);
   const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (typeof IntersectionObserver === "undefined") {
-      setShowImage(true);
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowImage(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "120px 0px", threshold: 0.01 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   return (
     <button
-      ref={ref}
       type="button"
       onClick={() => onOpen(index)}
       className="group relative aspect-[4/3] overflow-hidden bg-[var(--color-paper-deep)] text-left"
     >
-      {showImage && !failed ? (
+      {!failed ? (
         <Image
           src={item.src}
           alt={item.alt}
@@ -56,7 +33,11 @@ function GalleryThumb({
           className="object-cover transition duration-700 group-hover:scale-[1.03]"
           onError={() => setFailed(true)}
         />
-      ) : null}
+      ) : (
+        <span className="absolute inset-0 flex items-center justify-center p-3 text-center text-xs text-[var(--color-ink-soft)]">
+          {item.alt || "Fotografie"}
+        </span>
+      )}
     </button>
   );
 }
