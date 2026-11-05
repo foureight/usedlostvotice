@@ -119,7 +119,12 @@ const planItem = fields.object({
 });
 
 export default config({
-  storage: { kind: "local" },
+  // GitHub mode: Save commituje do repa → Zerops může znovu deployovat.
+  // První otevření /keystatic tě provede vytvořením GitHub App.
+  storage: {
+    kind: "github",
+    repo: "foureight/usedlostvotice",
+  },
   ui: {
     brand: { name: "Usedlost Vodice" },
   },

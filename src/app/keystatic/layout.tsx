@@ -15,12 +15,22 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+function isGithubMode() {
+  return Boolean(process.env.KEYSTATIC_GITHUB_CLIENT_ID);
+}
+
 export default async function Layout() {
-  if (!(await isAdminAuthenticated())) {
+  // GitHub mode = přihlášení přes GitHub App (Keystatic).
+  // Bez GitHub env zůstaneme u hesla na /admin.
+  if (!isGithubMode() && !(await isAdminAuthenticated())) {
     redirect("/admin");
   }
 
-  // Drop orphan media / bad URL+PDF values BEFORE Keystatic parses the singleton.
+  // Local-only helpers (disk repair / multi-upload) — v GitHub módu je Keystatic autoritou.
+  if (isGithubMode()) {
+    return <KeystaticApp />;
+  }
+
   let repairNote = "";
   try {
     const repaired = await repairSiteJson();

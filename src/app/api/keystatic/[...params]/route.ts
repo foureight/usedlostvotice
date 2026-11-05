@@ -10,6 +10,8 @@ export const dynamic = "force-dynamic";
 const handler = makeRouteHandler({ config });
 
 async function requireAdmin() {
+  // GitHub mode: Keystatic řeší auth sám (OAuth App).
+  if (process.env.KEYSTATIC_GITHUB_CLIENT_ID) return null;
   if (!(await isAdminAuthenticated())) {
     return new Response("Nejste přihlášeni.", { status: 401 });
   }

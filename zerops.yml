@@ -13,7 +13,7 @@ zerops:
       ports:
         - port: 3000
           httpSupport: true
-      # Keep admin uploads across deploys (JSON content + public media).
+      # Volume dál drží nahrané fotky mezi deployi (dokud běží i local helpers).
       volume:
         hostname: cmsdata
         mountPath: /srv/cms
@@ -26,6 +26,12 @@ zerops:
         ADMIN_PASSWORD: VodiceAdmin2026!
         KEYSTATIC_ADMIN_PASSWORD: VodiceAdmin2026!
         CMS_DATA_DIR: /srv/cms
+        # Keystatic GitHub mode — hodnoty nastav v Zerops GUI (secrets)
+        # po vytvoření GitHub App přes /keystatic (Create GitHub App).
+        KEYSTATIC_GITHUB_CLIENT_ID: ${KEYSTATIC_GITHUB_CLIENT_ID}
+        KEYSTATIC_GITHUB_CLIENT_SECRET: ${KEYSTATIC_GITHUB_CLIENT_SECRET}
+        KEYSTATIC_SECRET: ${KEYSTATIC_SECRET}
+        NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: ${NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG}
       start: sh scripts/zerops-start.sh
       healthCheck:
         httpGet:
