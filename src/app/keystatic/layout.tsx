@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { AdminListThumbs } from "./admin-list-thumbs";
+import { AdminPhotoStrip } from "./admin-photo-strip";
 import { MultiUpload } from "./multi-upload";
 import { RepairBanner } from "./repair-banner";
 import KeystaticApp from "./keystatic";
@@ -16,7 +17,10 @@ export const metadata: Metadata = {
 };
 
 function isGithubMode() {
-  return Boolean(process.env.KEYSTATIC_GITHUB_CLIENT_ID);
+  const id = (process.env.KEYSTATIC_GITHUB_CLIENT_ID || "").trim();
+  // Zerops may leave unresolved `${VAR}` placeholders — treat those as unset.
+  if (!id || id.includes("${") || id === "undefined") return false;
+  return true;
 }
 
 export default async function Layout() {
@@ -24,11 +28,6 @@ export default async function Layout() {
   // Bez GitHub env zůstaneme u hesla na /admin.
   if (!isGithubMode() && !(await isAdminAuthenticated())) {
     redirect("/admin");
-  }
-
-  // Local-only helpers (disk repair / multi-upload) — v GitHub módu je Keystatic autoritou.
-  if (isGithubMode()) {
-    return <KeystaticApp />;
   }
 
   let repairNote = "";
@@ -57,12 +56,18 @@ export default async function Layout() {
     ...content.visualizationsDokonceno.map((g) => ({ alt: g.alt, src: g.src })),
     ...content.visualizations.map((g) => ({ alt: g.alt, src: g.src })),
     ...content.plans.map((g) => ({ alt: g.alt || g.label, src: g.src })),
-  ].filter((t) => t.src && t.alt);
+  ].filter((t) => t.src);
+
+  // Local helpers always on when not in real GitHub mode — photo strip + multi-upload.
+  if (isGithubMode()) {
+    return <KeystaticApp />;
+  }
 
   return (
     <>
       <RepairBanner initialNote={repairNote} />
       <MultiUpload />
+      <AdminPhotoStrip thumbs={thumbs} />
       <AdminListThumbs thumbs={thumbs} />
       <KeystaticApp />
     </>

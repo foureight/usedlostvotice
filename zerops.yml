@@ -26,12 +26,9 @@ zerops:
         ADMIN_PASSWORD: VodiceAdmin2026!
         KEYSTATIC_ADMIN_PASSWORD: VodiceAdmin2026!
         CMS_DATA_DIR: /srv/cms
-        # Keystatic GitHub mode — hodnoty nastav v Zerops GUI (secrets)
-        # po vytvoření GitHub App přes /keystatic (Create GitHub App).
-        KEYSTATIC_GITHUB_CLIENT_ID: ${KEYSTATIC_GITHUB_CLIENT_ID}
-        KEYSTATIC_GITHUB_CLIENT_SECRET: ${KEYSTATIC_GITHUB_CLIENT_SECRET}
-        KEYSTATIC_SECRET: ${KEYSTATIC_SECRET}
-        NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: ${NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG}
+        # GitHub Keystatic mode: nastav CLIENT_ID až po vytvoření GitHub App.
+        # Nenechávej unresolved ${placeholders} — spustí falešný GitHub režim
+        # a schová multi-upload / náhled fotek.
       start: sh scripts/zerops-start.sh
       healthCheck:
         httpGet:
