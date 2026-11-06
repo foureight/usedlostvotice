@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SeoLanding } from "@/components/seo-landing";
-import { getLanding, getLandingSlugs, landings } from "@/data/landings";
+import { getLanding, getLandingSlugs } from "@/data/landings";
 import { getContent } from "@/lib/content";
 import { absoluteUrl, defaultOgImage } from "@/lib/seo";
 
@@ -65,6 +65,3 @@ export default async function LandingRoute({ params }: Props) {
     />
   );
 }
-
-/** Keep TypeScript happy if someone imports the list. */
-export const landingCount = landings.length;
