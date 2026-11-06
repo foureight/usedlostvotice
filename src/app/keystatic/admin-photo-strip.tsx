@@ -29,7 +29,7 @@ export function AdminPhotoStrip({ thumbs = [] }: { thumbs?: AdminThumb[] }) {
           marginBottom: 8,
         }}
       >
-        Náhled fotek ({thumbs.length})
+          Fotky na webu ({thumbs.length}) — jen online CMS
       </div>
       <div
         style={{
