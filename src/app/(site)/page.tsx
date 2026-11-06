@@ -360,7 +360,7 @@ export default async function HomePage() {
           <div className="grid gap-12 lg:grid-cols-2">
             <FadeIn>
               <SectionHead
-                eyebrow="Lokalita · GEO"
+                eyebrow="Lokalita"
                 title={`${property.location.addressLine} · hráz Pilského rybníka`}
                 lead={property.location.vicinity}
               />
@@ -415,11 +415,12 @@ export default async function HomePage() {
               <div className="min-h-[320px] bg-[var(--color-paper-deep)] lg:min-h-full" aria-hidden />
             )}
           </div>
-          <FadeIn delay={80} className="mt-12 space-y-4 text-base leading-relaxed text-[var(--color-ink-soft)] sm:text-lg">
+          {/* SEO / GEO copy — visually hidden, kept in HTML for crawlers (+ JSON-LD / llms.txt) */}
+          <div className="sr-only" aria-hidden="true" data-seo="geo">
             {property.search.geoBody.map((p) => (
               <p key={p}>{p}</p>
             ))}
-          </FadeIn>
+          </div>
         </section>
 
         {/* Shrnutí nabídky */}
@@ -429,16 +430,22 @@ export default async function HomePage() {
               <SectionHead
                 eyebrow="Shrnutí nabídky"
                 title="Prodej domu Vodice — fakta na jednom místě"
-                lead={property.search.aioSummary}
+                lead={property.summary[0]}
               />
             </FadeIn>
             <div className="mt-10 grid gap-10 lg:grid-cols-2">
               <FadeIn delay={60} className="space-y-4 text-base leading-relaxed text-[var(--color-ink-soft)]">
                 <h3 className="font-display text-2xl text-[var(--color-ink)]">Proč Usedlost Vodice</h3>
-                {property.search.seoBody.map((p) => (
+                {property.summary.map((p) => (
                   <p key={p}>{p}</p>
                 ))}
               </FadeIn>
+              <div className="sr-only" aria-hidden="true" data-seo="body">
+                {property.search.seoBody.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
+                <p>{property.search.aioSummary}</p>
+              </div>
               <FadeIn delay={120}>
                 <h3 className="font-display text-2xl text-[var(--color-ink)]">Klíčová fakta</h3>
                 <ul className="mt-4 space-y-3 text-[var(--color-ink-soft)]">
