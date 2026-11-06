@@ -66,9 +66,6 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
     <div style={{ fontFamily: "system-ui, sans-serif", background: "#f7f4ef", minHeight: "100%" }}>
       <div
         style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 30,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",

@@ -136,9 +136,6 @@ export function AdminSeoEditor() {
     >
       <div
         style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
           display: "flex",
           justifyContent: "space-between",
           gap: 12,

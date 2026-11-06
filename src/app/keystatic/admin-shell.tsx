@@ -26,6 +26,10 @@ function SideNav({ current }: { current: string }) {
         background: "#fafafa",
         padding: "16px 12px",
         fontFamily: "system-ui, sans-serif",
+        position: "sticky",
+        top: 0,
+        alignSelf: "flex-start",
+        maxHeight: "100vh",
         overflowY: "auto",
       }}
     >
@@ -78,21 +82,20 @@ export function AdminShell({
   const onSite = pathname.includes("/singleton/site");
   const customPage = onPhotos || onSeo;
 
-  // Keystatic often locks body scroll — unlock on our pages.
+  // Unlock any Keystatic body scroll lock so the document can scroll.
   useEffect(() => {
     if (!customPage) return;
     const html = document.documentElement;
     const body = document.body;
-    const prevHtml = html.style.overflow;
-    const prevBody = body.style.overflow;
-    const prevHeight = body.style.height;
-    html.style.overflow = "hidden";
-    body.style.overflow = "hidden";
-    body.style.height = "100%";
+    html.style.setProperty("overflow", "auto", "important");
+    body.style.setProperty("overflow", "auto", "important");
+    body.style.setProperty("height", "auto", "important");
+    html.style.setProperty("height", "auto", "important");
     return () => {
-      html.style.overflow = prevHtml;
-      body.style.overflow = prevBody;
-      body.style.height = prevHeight;
+      html.style.removeProperty("overflow");
+      body.style.removeProperty("overflow");
+      body.style.removeProperty("height");
+      html.style.removeProperty("height");
     };
   }, [customPage]);
 
@@ -101,23 +104,13 @@ export function AdminShell({
       <div
         style={{
           display: "flex",
-          height: "100dvh",
-          maxHeight: "100dvh",
-          overflow: "hidden",
+          alignItems: "flex-start",
+          minHeight: "100vh",
           background: "#fff",
         }}
       >
         <SideNav current={pathname} />
-        <main
-          style={{
-            flex: 1,
-            minWidth: 0,
-            minHeight: 0,
-            overflowY: "auto",
-            overflowX: "hidden",
-            WebkitOverflowScrolling: "touch",
-          }}
-        >
+        <main style={{ flex: 1, minWidth: 0 }}>
           {onPhotos ? <AdminPhotosManager albums={albums} /> : <AdminSeoEditor />}
         </main>
       </div>
