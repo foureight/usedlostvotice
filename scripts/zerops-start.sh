@@ -1,6 +1,6 @@
 #!/bin/sh
-# Online CMS volume is the only source of content + photos after first boot.
-# Deploy must never inject local seed galleries/files into a live site.
+# Rule: what you upload online stays. Deploys never add local photos/content
+# into a live volume. Volume (/srv/cms) is the only source after first boot.
 set -eu
 
 CMS="${CMS_DATA_DIR:-/srv/cms}"
@@ -11,9 +11,9 @@ for d in $MEDIA_DIRS; do
   mkdir -p "$CMS/public/$d" "public/$d"
 done
 
-# First boot only: copy deploy tree into empty volume.
+# First boot only (empty volume): copy this deploy once, then never again.
 if [ ! -f "$CMS/.initialized" ]; then
-  echo "[cms] first boot — seeding volume from deploy once"
+  echo "[cms] first boot — seed volume once from deploy"
   cp -a content/. "$CMS/content/" 2>/dev/null || true
   for d in $MEDIA_DIRS; do
     if [ -d "public/$d" ]; then
@@ -23,45 +23,34 @@ if [ ! -f "$CMS/.initialized" ]; then
   touch "$CMS/.initialized"
 fi
 
-# Always: volume → working tree (online wins).
-echo "[cms] restoring from volume (online only)..."
+# Every start: throw away deploy-local public/content and load ONLINE volume.
+echo "[cms] load online volume → app (no local merge)"
+rm -rf content
+mkdir -p content
 cp -a "$CMS/content/." content/
+
 for d in $MEDIA_DIRS; do
   mkdir -p "public/$d"
-  # Replace folder contents with volume — do not keep deploy leftovers.
+  # Clear deploy-packaged files in this folder, then restore volume files only.
   find "public/$d" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true
-  cp -a "$CMS/public/$d/." "public/$d/" 2>/dev/null || true
-done
-
-# Allow brand-new empty singleton stubs from deploy (e.g. photos.json) if missing online.
-SEED_CONTENT=$(mktemp -d)
-cp -a content/. "$SEED_CONTENT/" 2>/dev/null || true
-# Re-read deploy stubs from image: content was just overwritten by volume;
-# pull missing filenames from the built-in image copy kept beside the app if present.
-# (No media copy — only JSON stubs.)
-for stub in photos.json; do
-  if [ ! -f "content/$stub" ] && [ -f "/var/task/content/$stub" ]; then
-    cp -a "/var/task/content/$stub" "content/$stub" || true
+  if [ -d "$CMS/public/$d" ]; then
+    cp -a "$CMS/public/$d/." "public/$d/" 2>/dev/null || true
   fi
 done
-# Prefer stub baked next to start script package: use git-deployed file from image
-# before volume wipe — we saved nothing. Write minimal stub if still missing.
-if [ ! -f content/photos.json ]; then
-  printf '%s\n' '{"note":"Nahrávání fotek je nahoře. Platí jen fotky uložené online na webu."}' > content/photos.json
-fi
-rm -rf "$SEED_CONTENT"
 
-# Prune broken refs only — never invent galleries from seed/disk.
+# Tiny admin stub if volume never had it (no media).
+if [ ! -f content/photos.json ]; then
+  printf '%s\n' '{"note":"Nahrání jde rovnou na web (volume). Deploy nic nedoplňuje."}' > content/photos.json
+  cp -a content/photos.json "$CMS/content/photos.json"
+fi
+
+# Drop broken refs only — never add photos from disk/seed.
 node scripts/restore-media-refs.mjs || true
 
-# Sync runtime → volume.
+# Persist content JSON (after prune) back to volume — do NOT wipe volume media.
 cp -a content/. "$CMS/content/" 2>/dev/null || true
-for d in $MEDIA_DIRS; do
-  mkdir -p "$CMS/public/$d"
-  find "$CMS/public/$d" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true
-  cp -a "public/$d/." "$CMS/public/$d/" 2>/dev/null || true
-done
 
+# While running: keep volume in sync with uploads/edits (additive copy).
 (
   while true; do
     sleep 8
