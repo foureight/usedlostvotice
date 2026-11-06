@@ -69,6 +69,7 @@ export function AdminSeoEditor() {
   const [seo, setSeo] = useState<SeoData>(empty);
   const [status, setStatus] = useState("Načítám online SEO…");
   const [busy, setBusy] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
 
   useEffect(() => {
     let cancelled = false;
@@ -100,6 +101,7 @@ export function AdminSeoEditor() {
 
   async function save() {
     setBusy(true);
+    setSaveState("saving");
     setStatus("Ukládám…");
     try {
       const res = await fetch("/api/admin/content", {
@@ -110,8 +112,11 @@ export function AdminSeoEditor() {
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setStatus("Uloženo online");
+      setSaveState("saved");
+      window.setTimeout(() => setSaveState("idle"), 2200);
     } catch {
       setStatus("Uložení selhalo");
+      setSaveState("idle");
     } finally {
       setBusy(false);
     }
@@ -157,14 +162,16 @@ export function AdminSeoEditor() {
             padding: "10px 18px",
             borderRadius: 6,
             border: 0,
-            background: "#3764d9",
+            background: saveState === "saved" ? "#2f7d4a" : "#3764d9",
             color: "#fff",
             fontWeight: 700,
             cursor: busy ? "wait" : "pointer",
             fontSize: 14,
+            minWidth: 96,
+            transition: "background .2s ease",
           }}
         >
-          {busy ? "Ukládám…" : "Save"}
+          {saveState === "saving" ? "Ukládám…" : saveState === "saved" ? "Uloženo" : "Uložit"}
         </button>
       </div>
 

@@ -16,6 +16,7 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
   const [editing, setEditing] = useState<{ field: string; src: string } | null>(null);
   const [draftAlt, setDraftAlt] = useState("");
   const [message, setMessage] = useState("");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const [localAlbums, setLocalAlbums] = useState(albums);
 
   useEffect(() => {
@@ -112,8 +113,11 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
   const total = localAlbums.reduce((n, a) => n + a.items.length, 0);
 
   function saveAndRefresh() {
+    setSaveState("saving");
     setMessage("Uloženo online. Obnovuji náhled…");
     router.refresh();
+    setSaveState("saved");
+    window.setTimeout(() => setSaveState("idle"), 2200);
   }
 
   return (
@@ -143,14 +147,16 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
             padding: "10px 18px",
             borderRadius: 6,
             border: 0,
-            background: "#3764d9",
+            background: saveState === "saved" ? "#2f7d4a" : "#3764d9",
             color: "#fff",
             fontWeight: 700,
             cursor: "pointer",
             fontSize: 14,
+            minWidth: 96,
+            transition: "background .2s ease",
           }}
         >
-          Save
+          {saveState === "saving" ? "Ukládám…" : saveState === "saved" ? "Uloženo" : "Uložit"}
         </button>
       </div>
 
