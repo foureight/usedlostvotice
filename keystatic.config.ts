@@ -308,6 +308,19 @@ export default config({
         }),
       },
     }),
+    photos: singleton({
+      label: "Fotky",
+      path: "content/photos",
+      format: { data: "json" },
+      schema: {
+        note: fields.text({
+          label: "Poznámka",
+          multiline: true,
+          defaultValue:
+            "Nahrávání a náhled fotek je nahoře na této stránce. Vyberte galerii (Galerie / Fotovize / …) a přidejte více souborů najednou — uloží se rovnou na web.",
+        }),
+      },
+    }),
     seo: singleton({
       label: "SEO",
       path: "content/seo",

@@ -5,15 +5,12 @@ import { AdminListThumbs, type AdminThumb } from "./admin-list-thumbs";
 import { AdminPhotoStrip } from "./admin-photo-strip";
 import { MultiUpload } from "./multi-upload";
 
-/** Photo helpers only on Celý web — SEO / SMTP stay readable. */
+/** Photo upload + strip only on the Fotky singleton tab. */
 export function AdminMediaChrome({ thumbs }: { thumbs: AdminThumb[] }) {
   const pathname = usePathname() || "";
-  const onSite =
-    pathname.includes("/singleton/site") ||
-    pathname === "/keystatic" ||
-    pathname === "/keystatic/";
+  const onPhotos = pathname.includes("/singleton/photos");
 
-  if (!onSite) return null;
+  if (!onPhotos) return null;
 
   return (
     <>
