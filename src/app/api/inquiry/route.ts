@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { saveInquiry } from "@/lib/inquiries";
+import { verifyMathCaptcha } from "@/lib/math-captcha";
 import { sendInquiryEmail } from "@/lib/mail";
 
 export async function POST(req: Request) {
@@ -10,11 +11,12 @@ export async function POST(req: Request) {
     const phone = String(body.phone || "").trim();
     const note = String(body.note || "").trim();
     const captcha = String(body.captcha || "").trim();
+    const captchaToken = String(body.captchaToken || "").trim();
 
     if (!name || !email) {
       return NextResponse.json({ error: "missing" }, { status: 400 });
     }
-    if (captcha !== "9") {
+    if (!verifyMathCaptcha(captchaToken, captcha)) {
       return NextResponse.json({ error: "captcha" }, { status: 400 });
     }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 export function InquiryForm({
   brand,
@@ -11,6 +11,25 @@ export function InquiryForm({
 }) {
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [captchaQuestion, setCaptchaQuestion] = useState("Načítám ověření…");
+  const [captchaToken, setCaptchaToken] = useState("");
+
+  async function loadCaptcha() {
+    try {
+      const res = await fetch("/api/captcha", { cache: "no-store" });
+      if (!res.ok) throw new Error("captcha");
+      const data = (await res.json()) as { question?: string; token?: string };
+      setCaptchaQuestion(data.question || "Kolik je součet?");
+      setCaptchaToken(data.token || "");
+    } catch {
+      setCaptchaQuestion("Ověření nejde načíst — obnovte stránku.");
+      setCaptchaToken("");
+    }
+  }
+
+  useEffect(() => {
+    void loadCaptcha();
+  }, []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,15 +52,27 @@ export function InquiryForm({
           phone: data.get("phone"),
           note: data.get("note"),
           captcha: data.get("captcha"),
+          captchaToken,
         }),
       });
-      if (!res.ok) throw new Error("fail");
+      if (!res.ok) {
+        const err = (await res.json().catch(() => ({}))) as { error?: string };
+        if (err.error === "captcha") {
+          setStatus("error");
+          setMessage("Špatný výsledek ověření. Zkuste znovu.");
+          await loadCaptcha();
+          return;
+        }
+        throw new Error("fail");
+      }
       setStatus("ok");
       setMessage("Děkujeme. Ozveme se co nejdřív kvůli prohlídce.");
       form.reset();
+      await loadCaptcha();
     } catch {
       setStatus("error");
       setMessage("Odeslání se nepovedlo. Zkuste e-mail nebo telefon níže.");
+      await loadCaptcha();
     }
   }
 
@@ -87,18 +118,31 @@ export function InquiryForm({
         />
       </label>
       <label className="block text-sm">
-        <span className="mb-1.5 block text-[var(--color-ink-soft)]">Ověření: kolik je 4 + 5?</span>
-        <input
-          name="captcha"
-          required
-          inputMode="numeric"
-          className="w-full max-w-[8rem] rounded-sm border border-[var(--color-line)] bg-white/70 px-3 py-2.5 outline-none ring-[var(--color-moss)] focus:ring-2"
-        />
+        <span className="mb-1.5 block text-[var(--color-ink-soft)]">
+          Ověření (anti-spam): {captchaQuestion}
+        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            name="captcha"
+            required
+            inputMode="numeric"
+            autoComplete="off"
+            placeholder="Výsledek"
+            className="w-full max-w-[8rem] rounded-sm border border-[var(--color-line)] bg-white/70 px-3 py-2.5 outline-none ring-[var(--color-moss)] focus:ring-2"
+          />
+          <button
+            type="button"
+            onClick={() => void loadCaptcha()}
+            className="text-sm text-[var(--color-moss)] underline-offset-2 hover:underline"
+          >
+            Jiný příklad
+          </button>
+        </div>
       </label>
       <input name="company" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
       <button
         type="submit"
-        disabled={status === "sending"}
+        disabled={status === "sending" || !captchaToken}
         className="inline-flex rounded-sm bg-[var(--color-moss)] px-5 py-3 text-sm font-medium text-[var(--color-paper)] transition hover:bg-[var(--color-moss-deep)] disabled:opacity-60"
       >
         {status === "sending" ? "Odesílám…" : "Poslat poptávku"}
