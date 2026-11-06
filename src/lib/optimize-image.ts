@@ -4,9 +4,11 @@ import path from "path";
 import sharp from "sharp";
 
 /** Max longest edge for stored CMS photos. */
-export const MAX_IMAGE_EDGE = 2000;
+export const MAX_IMAGE_EDGE = 1600;
 /** JPEG quality for permanently resized uploads. */
-export const STORE_JPEG_QUALITY = 82;
+export const STORE_JPEG_QUALITY = 78;
+/** Recompress originals larger than this (bytes). */
+export const OPTIMIZE_MIN_BYTES = 180_000;
 
 const RASTER_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 
@@ -70,17 +72,19 @@ export async function optimizeImageUpload(
 type Rewrite = { from: string; to: string };
 
 /** Shrink one file on disk; may change .png → .jpg. */
-export async function optimizeExistingFile(absPath: string): Promise<Rewrite | null> {
+export async function optimizeExistingFile(
+  absPath: string,
+): Promise<{ rewrite: Rewrite | null; savedBytes: number } | null> {
   const ext = path.extname(absPath).toLowerCase();
   if (!RASTER_EXT.has(ext)) return null;
 
   const before = await stat(absPath);
-  if (before.size < 350_000) return null;
+  if (before.size < OPTIMIZE_MIN_BYTES) return null;
 
   const input = await readFile(absPath);
   const optimized = await optimizeImageUpload(input, path.basename(absPath));
 
-  if (optimized.bytes >= before.size * 0.97 && path.extname(optimized.filename) === ext) {
+  if (optimized.bytes >= before.size * 0.95 && path.extname(optimized.filename) === ext) {
     return null;
   }
 
@@ -90,15 +94,20 @@ export async function optimizeExistingFile(absPath: string): Promise<Rewrite | n
   await writeFile(tmpPath, optimized.buffer);
   await rename(tmpPath, nextPath);
 
-  const fromPublic = "/" + path.relative(path.join(process.cwd(), "public"), absPath).split(path.sep).join("/");
-  const toPublic = "/" + path.relative(path.join(process.cwd(), "public"), nextPath).split(path.sep).join("/");
+  const fromPublic =
+    "/" + path.relative(path.join(process.cwd(), "public"), absPath).split(path.sep).join("/");
+  const toPublic =
+    "/" + path.relative(path.join(process.cwd(), "public"), nextPath).split(path.sep).join("/");
 
   if (nextPath !== absPath && existsSync(absPath)) {
     await unlink(absPath);
   }
 
-  if (fromPublic === toPublic) return null;
-  return { from: fromPublic, to: toPublic };
+  const savedBytes = Math.max(0, before.size - optimized.bytes);
+  if (fromPublic === toPublic) {
+    return { rewrite: null, savedBytes };
+  }
+  return { rewrite: { from: fromPublic, to: toPublic }, savedBytes };
 }
 
 const MEDIA_DIRS = [
@@ -107,6 +116,7 @@ const MEDIA_DIRS = [
   "vizualizace-dokonceno",
   "vizualizace",
   "pudorysy",
+  "stav",
 ];
 
 const MEDIA_FIELDS = [
@@ -118,9 +128,14 @@ const MEDIA_FIELDS = [
 ] as const;
 
 /** Walk public media, shrink oversized originals, rewrite site.json src paths. */
-export async function optimizePublicMedia(): Promise<{ touched: string[]; rewrites: Rewrite[] }> {
+export async function optimizePublicMedia(): Promise<{
+  touched: string[];
+  rewrites: Rewrite[];
+  savedBytes: number;
+}> {
   const touched: string[] = [];
   const rewrites: Rewrite[] = [];
+  let savedBytes = 0;
   const root = path.join(process.cwd(), "public");
 
   for (const folder of MEDIA_DIRS) {
@@ -135,16 +150,16 @@ export async function optimizePublicMedia(): Promise<{ touched: string[]; rewrit
       if (name.endsWith(".tmp")) continue;
       const abs = path.join(dir, name);
       try {
-        const rewrite = await optimizeExistingFile(abs);
-        if (rewrite) {
-          touched.push(rewrite.to);
-          rewrites.push(rewrite);
+        const result = await optimizeExistingFile(abs);
+        if (!result) continue;
+        savedBytes += result.savedBytes;
+        if (result.rewrite) {
+          touched.push(result.rewrite.to);
+          rewrites.push(result.rewrite);
         } else {
-          // in-place shrink still counts
-          const st = await stat(abs).catch(() => null);
-          if (st && st.size < 350_000) {
-            /* already small */
-          }
+          touched.push(
+            "/" + path.relative(root, abs).split(path.sep).join("/"),
+          );
         }
       } catch (err) {
         console.error("[optimize]", abs, err);
@@ -171,5 +186,5 @@ export async function optimizePublicMedia(): Promise<{ touched: string[]; rewrit
     }
   }
 
-  return { touched, rewrites };
+  return { touched, rewrites, savedBytes };
 }

@@ -14,6 +14,7 @@ const MEDIA_DIRS = [
   "vizualizace-dokonceno",
   "vizualizace",
   "pudorysy",
+  "stav",
 ];
 
 /**
@@ -55,6 +56,7 @@ export async function POST() {
       ...repairedAfter,
       removedCount: repairedAfter.removed.length,
       optimized: optimized.touched.length,
+      savedBytes: optimized.savedBytes,
       rewrites: optimized.rewrites,
     });
   } catch (err) {

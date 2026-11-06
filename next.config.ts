@@ -4,11 +4,12 @@ import path from "path";
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname),
   images: {
-    qualities: [50, 60, 65, 70, 75, 80, 85, 90],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    qualities: [50, 55, 60, 65, 70, 75, 80],
+    // Cap at 1536 — full-bleed hero doesn't need 1920px sources on most screens.
+    deviceSizes: [640, 750, 828, 1080, 1280, 1536],
     imageSizes: [96, 128, 256, 384],
     formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60 * 60 * 24 * 7,
+    minimumCacheTTL: 60 * 60 * 24 * 30,
   },
   async headers() {
     return [

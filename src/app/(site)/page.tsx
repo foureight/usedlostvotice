@@ -80,8 +80,8 @@ export default async function HomePage() {
               fill
               priority
               fetchPriority="high"
-              sizes="100vw"
-              quality={75}
+              sizes="(max-width: 768px) 100vw, 1400px"
+              quality={60}
               className="animate-ken object-cover object-center brightness-[1.04] contrast-[1.04] saturate-[1.18]"
             />
           ) : (
@@ -444,7 +444,7 @@ export default async function HomePage() {
                     alt={(photoGallery[1] || photoGallery[0] || hero)!.alt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    quality={75}
+                    quality={60}
                     loading="lazy"
                     className="object-cover"
                   />

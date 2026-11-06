@@ -30,7 +30,8 @@ export function SeoLanding({
             alt={heroAlt}
             fill
             priority
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, 1400px"
+            quality={60}
             className="object-cover brightness-[1.04] contrast-[1.04] saturate-[1.18]"
           />
           <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-black/72 via-black/28 to-transparent" />

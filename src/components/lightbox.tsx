@@ -28,7 +28,7 @@ function GalleryThumb({
           alt={item.alt}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          quality={65}
+          quality={55}
           loading="lazy"
           className="object-cover transition duration-700 group-hover:scale-[1.03]"
           onError={() => setFailed(true)}
@@ -145,7 +145,7 @@ export function GalleryGrid({
                 alt={items[active].alt}
                 fill
                 sizes="(max-width: 1280px) 100vw, 1024px"
-                quality={80}
+                quality={70}
                 className="object-contain"
                 priority
               />
