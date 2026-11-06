@@ -12,6 +12,7 @@ const MEDIA_FIELDS = [
 
 const URL_PATHS = [
   ["listingUrl"],
+  ["architecture", "studioUrl"],
   ["completion", "teamUrl"],
   ["completion", "partnerUrl"],
 ] as const;

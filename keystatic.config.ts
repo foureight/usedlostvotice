@@ -240,6 +240,10 @@ export default config({
         architecture: fields.object(
           {
             studio: fields.text({ label: "Studio" }),
+            studioUrl: fields.text({
+              label: "URL studia",
+              defaultValue: "https://www.dilnaarchitektury.cz",
+            }),
             authors: textList("Autoři"),
             studyYear: fields.integer({ label: "Rok studie" }),
             studyTitle: fields.text({ label: "Název studie" }),

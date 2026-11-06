@@ -1,10 +1,17 @@
 "use client";
 
 import { useId, useState } from "react";
+import { linkifyArchitecture } from "@/components/linkify-architecture";
 
 type Faq = { q: string; a: string };
 
-export function FaqAccordion({ items }: { items: readonly Faq[] }) {
+export function FaqAccordion({
+  items,
+  architectureStudioUrl = "https://www.dilnaarchitektury.cz",
+}: {
+  items: readonly Faq[];
+  architectureStudioUrl?: string;
+}) {
   const baseId = useId();
   const [open, setOpen] = useState<Record<number, boolean>>({});
 
@@ -63,7 +70,7 @@ export function FaqAccordion({ items }: { items: readonly Faq[] }) {
                   itemType="https://schema.org/Answer"
                   className="max-w-prose pb-5 text-sm leading-relaxed text-[var(--color-ink-soft)] sm:text-base"
                 >
-                  <p itemProp="text">{f.a}</p>
+                  <p itemProp="text">{linkifyArchitecture(f.a, architectureStudioUrl)}</p>
                 </div>
               </div>
             </div>

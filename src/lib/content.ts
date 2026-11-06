@@ -133,7 +133,9 @@ function normalizeSite(site: UnknownRecord, seo: UnknownRecord = {}): SiteConten
       return { title: asString(h.title), text: asString(h.text) };
     }),
     architecture: {
-      studio: asString(architecture.studio),
+      studio: asString(architecture.studio) || "Dílna architektury",
+      studioUrl:
+        asString(architecture.studioUrl) || "https://www.dilnaarchitektury.cz",
       authors: asStringArray(architecture.authors),
       studyYear: asNumber(architecture.studyYear),
       studyTitle: asString(architecture.studyTitle),

@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { DeferUntilVisible } from "@/components/defer-until-visible";
 import { FadeIn } from "@/components/fade-in";
 import { FaqAccordion } from "@/components/faq-accordion";
 import { GalleryGrid } from "@/components/lightbox";
 import { InquiryForm } from "@/components/inquiry-form";
+import {
+  ArchitectureStudioLink,
+  linkifyArchitecture,
+} from "@/components/linkify-architecture";
 import { getProperty } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +25,7 @@ function SectionHead({
 }: {
   eyebrow?: string;
   title: string;
-  lead?: string;
+  lead?: ReactNode;
 }) {
   return (
     <div className="max-w-2xl">
@@ -108,6 +113,12 @@ export default async function HomePage() {
               {property.title}
             </h1>
             <p
+              className="animate-rise mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-ink-soft)] sm:text-base md:text-[color-mix(in_oklab,var(--color-paper)_82%,transparent)]"
+              style={{ animationDelay: "160ms" }}
+            >
+              Bývalá sýpka a stodola. Krásné místo na kraji přírodního parku Polánka.
+            </p>
+            <p
               className="animate-rise mt-4 max-w-lg text-sm text-[var(--color-ink-soft)] sm:text-base md:text-[color-mix(in_oklab,var(--color-paper)_72%,transparent)]"
               style={{ animationDelay: "220ms" }}
             >
@@ -170,13 +181,13 @@ export default async function HomePage() {
             <SectionHead
               eyebrow="O nabídce"
               title="Zahájená rekonstrukce usedlosti u rybníka"
-              lead={property.summary[0]}
+              lead={linkifyArchitecture(property.summary[0], property.architecture.studioUrl)}
             />
           </FadeIn>
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
             <FadeIn delay={80} className="space-y-5 text-base leading-relaxed text-[var(--color-ink-soft)] sm:text-lg">
               {property.summary.slice(1).map((p) => (
-                <p key={p}>{p}</p>
+                <p key={p}>{linkifyArchitecture(p, property.architecture.studioUrl)}</p>
               ))}
               <p>
                 {property.priceNote}. Aktuální inzerát také na{" "}
@@ -249,12 +260,20 @@ export default async function HomePage() {
                   <SectionHead
                     eyebrow="Vize dokončení"
                     title="Studie nabarvená do atmosféry místa"
-                    lead="Šedé rámce Dílny architektury jsme dobarvili materiály a světlem z reálných fotek usedlosti — bílá omítka, dřevo, pálená krytina, jarní zeleň a rybník. Jde o ilustrativní fotovize, ne o finální CGI zakázku."
+                    lead={linkifyArchitecture(
+                      "Šedé rámce Dílny architektury jsme dobarvili materiály a světlem z reálných fotek usedlosti — bílá omítka, dřevo, pálená krytina, jarní zeleň a rybník. Jde o ilustrativní fotovize, ne o finální CGI zakázku.",
+                      property.architecture.studioUrl,
+                    )}
                   />
                 </FadeIn>
                 <FadeIn delay={100} className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[var(--color-ink-soft)]">
                   <span>
-                    Autor studie: {property.architecture.studio} · {property.architecture.authors.join(", ")}
+                    Autor studie:{" "}
+                    <ArchitectureStudioLink
+                      label={property.architecture.studio}
+                      href={property.architecture.studioUrl}
+                    />{" "}
+                    · {property.architecture.authors.join(", ")}
                   </span>
                   <span>Studie {property.architecture.studyYear}</span>
                   <a
@@ -349,7 +368,12 @@ export default async function HomePage() {
                 <a href={property.completion.partnerUrl} className="underline underline-offset-2" target="_blank" rel="noreferrer">
                   {property.completion.partner}
                 </a>
-                . Architektura studie: {property.architecture.studio}.
+                . Architektura studie:{" "}
+                <ArchitectureStudioLink
+                  label={property.architecture.studio}
+                  href={property.architecture.studioUrl}
+                />
+                .
               </p>
             </FadeIn>
           </div>
@@ -430,14 +454,14 @@ export default async function HomePage() {
               <SectionHead
                 eyebrow="Shrnutí nabídky"
                 title="Prodej domu Vodice — fakta na jednom místě"
-                lead={property.summary[0]}
+                lead={linkifyArchitecture(property.summary[0], property.architecture.studioUrl)}
               />
             </FadeIn>
             <div className="mt-10 grid gap-10 lg:grid-cols-2">
               <FadeIn delay={60} className="space-y-4 text-base leading-relaxed text-[var(--color-ink-soft)]">
                 <h3 className="font-display text-2xl text-[var(--color-ink)]">Proč Usedlost Vodice</h3>
                 {property.summary.map((p) => (
-                  <p key={p}>{p}</p>
+                  <p key={p}>{linkifyArchitecture(p, property.architecture.studioUrl)}</p>
                 ))}
               </FadeIn>
               <div className="sr-only" aria-hidden="true" data-seo="body">
@@ -515,7 +539,10 @@ export default async function HomePage() {
                 title="Co se lidé ptají před prohlídkou"
               />
             </FadeIn>
-            <FaqAccordion items={property.faqs} />
+            <FaqAccordion
+              items={property.faqs}
+              architectureStudioUrl={property.architecture.studioUrl}
+            />
           </div>
         </section>
 

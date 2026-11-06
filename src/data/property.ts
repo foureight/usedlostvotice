@@ -153,6 +153,7 @@ export const property = {
   },
 
   summary: [
+    "Bývalá sýpka a stodola. Krásné místo na kraji přírodního parku Polánka.",
     "Dům se zahájenou velkorysou rekonstrukcí za účelem trvalého bydlení stojí na okraji Vodice u Tábora, hned u Pilského rybníka, na pozemcích o celkové výměře 1 762 m².",
     "Základní dispozice 5+1 prošla nákladnou rekonstrukcí podle návrhu Dílny architektury. Stavební práce dosud realizovala firma MY76, která úzce spolupracuje s Atelierem SAD.",
     "Snahou bylo zachovat maximum původních prvků a materiálů v rovnováze s moderními technologiemi. Projekt počítá i s dalším využitím stávající stodoly.",
@@ -231,6 +232,7 @@ export const property = {
 
   architecture: {
     studio: "Dílna architektury",
+    studioUrl: "https://www.dilnaarchitektury.cz",
     authors: ["Ing. arch. Vít Markvart", "Ing. arch. Naďa Klimešová"],
     studyYear: 2020,
     studyTitle: "Architektonická studie — rodinný dům ve Vodicích u Tábora",

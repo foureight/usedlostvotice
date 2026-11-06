@@ -94,6 +94,7 @@ export async function getListingJson() {
     },
     architecture: {
       studio: architecture.studio,
+      studioUrl: architecture.studioUrl,
       authors: [...architecture.authors],
       studyYear: architecture.studyYear,
       studyTitle: architecture.studyTitle,
@@ -294,7 +295,7 @@ export async function getLlmsTxt(): Promise<string> {
     `- Souřadnice: ${property.location.geo.lat}, ${property.location.geo.lng}`,
     `- Vzdálenosti: ${property.location.distances.map((d) => `${d.label} ${d.value}`).join(", ")}`,
     `- Stav: ${property.specs.condition}`,
-    `- Architektura: ${property.architecture.studio} (${property.architecture.studyYear})`,
+    `- Architektura: [${property.architecture.studio}](${property.architecture.studioUrl}) (${property.architecture.studyYear})`,
     `- Realizace / dostavba: ${property.completion.team} / ${property.completion.partner}`,
     `- Kontakt majitel: ${property.contact.ownerName}, ${property.contact.ownerEmail}, ${property.contact.ownerPhone}`,
     `- Kontakt Bio Reality: ${property.contact.agentName}, ${property.contact.agentEmail}, ${property.contact.agentPhone}`,

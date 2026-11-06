@@ -60,6 +60,7 @@ export type SiteContent = {
   highlights: { title: string; text: string }[];
   architecture: {
     studio: string;
+    studioUrl: string;
     authors: string[];
     studyYear: number;
     studyTitle: string;
