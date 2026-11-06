@@ -50,9 +50,15 @@ export function FaqAccordion({
                 </span>
                 <span
                   aria-hidden
-                  className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center text-2xl leading-none text-[var(--color-moss)]"
+                  className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center border border-[var(--color-line)] text-[var(--color-moss)]"
                 >
-                  {isOpen ? "×" : "+"}
+                  <span
+                    className={`block text-lg leading-none transition-transform duration-300 ${
+                      isOpen ? "rotate-45" : "rotate-0"
+                    }`}
+                  >
+                    +
+                  </span>
                 </span>
               </button>
             </h3>
