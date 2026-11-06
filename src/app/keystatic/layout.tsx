@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { AdminListThumbs } from "./admin-list-thumbs";
-import { AdminPhotoStrip } from "./admin-photo-strip";
-import { MultiUpload } from "./multi-upload";
+import { AdminMediaChrome } from "./admin-media-chrome";
 import { RepairBanner } from "./repair-banner";
 import KeystaticApp from "./keystatic";
 import { getContent } from "@/lib/content";
@@ -58,7 +56,6 @@ export default async function Layout() {
     ...content.plans.map((g) => ({ alt: g.alt || g.label, src: g.src })),
   ].filter((t) => t.src);
 
-  // Local helpers always on when not in real GitHub mode — photo strip + multi-upload.
   if (isGithubMode()) {
     return <KeystaticApp />;
   }
@@ -66,9 +63,7 @@ export default async function Layout() {
   return (
     <>
       <RepairBanner initialNote={repairNote} />
-      <MultiUpload />
-      <AdminPhotoStrip thumbs={thumbs} />
-      <AdminListThumbs thumbs={thumbs} />
+      <AdminMediaChrome thumbs={thumbs} />
       <KeystaticApp />
     </>
   );
