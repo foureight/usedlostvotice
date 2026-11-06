@@ -283,7 +283,7 @@ export const property = {
     },
     {
       q: "Hodí se nabídka při hledání domu podle místa — Vodice, Tábor, Pacov nebo Pilský rybník?",
-      a: "Ano — pokud hledáte dům ve Vodicích u Tábora / na Táborsku / u Pilského rybníka. Adresa Vodice 17, okres Tábor. Tato nabídka neodpovídá usedlostem ve Vodicích u Lhenic (Prachaticko) ani památce čp. 25. Strojový index míst: /places.json.",
+      a: "Ano — pokud hledáte dům ve Vodicích u Tábora / na Táborsku / u Pilského rybníka. Adresa Vodice 17, okres Tábor. Tato nabídka neodpovídá usedlostem ve Vodicích u Lhenic (Prachaticko) ani památce čp. 25.",
     },
     {
       q: "Jaké jsou výměry domu a pozemku?",

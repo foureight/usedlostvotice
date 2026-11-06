@@ -33,35 +33,36 @@ if [ ! -f "$CMS/.initialized" ]; then
   echo "[cms] seed done"
 fi
 
-# Volume → working tree (real files).
-echo "[cms] restoring content + media from volume..."
+# Volume → working tree. Online CMS is the only content authority after first boot.
+echo "[cms] restoring content + media from volume (online wins)..."
 cp -a "$CMS/content/." content/
 for d in $MEDIA_DIRS; do
   mkdir -p "public/$d"
   cp -a "$CMS/public/$d/." "public/$d/" 2>/dev/null || true
 done
 
-# Always re-merge deploy media into public/ so seed photos cannot disappear.
+# Deploy may add missing photo FILES only — never overwrite content/*.json from seed.
 for d in $MEDIA_DIRS; do
-  cp -a "$SEED/public/$d/." "public/$d/" 2>/dev/null || true
+  cp -an "$SEED/public/$d/." "public/$d/" 2>/dev/null || true
 done
 
-# If site.json is invalid JSON, fall back to deploy seed.
-if ! node -e "JSON.parse(require('fs').readFileSync('content/site.json','utf8'))" 2>/dev/null; then
-  echo "[cms] site.json invalid — restoring deploy seed"
+# If site.json is missing/invalid, fall back to deploy seed once.
+if [ ! -f content/site.json ] || ! node -e "JSON.parse(require('fs').readFileSync('content/site.json','utf8'))" 2>/dev/null; then
+  echo "[cms] site.json missing/invalid — restoring deploy seed"
   cp -a "$SEED/content/." content/
   cp -a content/. "$CMS/content/"
 fi
 
-# Recover gallery refs wiped earlier (files still on disk / in seed).
+# Repair empty galleries only; do not merge local seed into live CMS lists.
 node scripts/restore-media-refs.mjs "$SEED/content/site.json" || true
 
-# Sync working tree → volume (content + media).
+# Sync runtime tree → volume (admin edits + any media files added above).
 cp -a content/. "$CMS/content/" 2>/dev/null || true
 for d in $MEDIA_DIRS; do
   mkdir -p "$CMS/public/$d"
   cp -a "public/$d/." "$CMS/public/$d/" 2>/dev/null || true
 done
+
 
 # Keep volume in sync while the app runs.
 (

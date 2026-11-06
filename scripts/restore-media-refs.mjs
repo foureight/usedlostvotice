@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Restore gallery refs wiped from volume site.json while files still exist.
- * Prefers deploy seed metadata; falls back to scanning public/ folders.
+ * Only repair EMPTY / broken gallery arrays in the live site.json.
+ * Never merge deploy-seed refs into non-empty online CMS data — volume wins.
+ * Seed is used only as metadata fallback when a field has zero usable items.
  */
 import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
@@ -60,49 +61,35 @@ for (const { field, folder, withKind, withLabel } of FIELDS) {
   const seedPresent = seedList.filter((item) => existsPublic(item?.src));
   const scanned = scanFolder(folder, { withKind, withLabel });
 
-  // Prefer seed metadata when current gallery is empty/broken.
-  if (present.length === 0 && seedPresent.length > 0) {
+  // Drop broken refs only when some items remain — never invent from seed.
+  if (present.length > 0) {
+    if (present.length !== current.length) {
+      site[field] = present;
+      changed += current.length - present.length;
+      console.log(
+        `[restore-media] pruned missing from ${field}: ${current.length} → ${present.length}`,
+      );
+    }
+    continue;
+  }
+
+  // Field empty/broken: prefer seed metadata, else scan disk.
+  if (seedPresent.length > 0) {
     site[field] = seedPresent;
     changed += seedPresent.length;
     console.log(`[restore-media] restored ${field} from seed: ${seedPresent.length}`);
     continue;
   }
 
-  // Last resort: rebuild from files on disk.
-  if (present.length === 0 && scanned.length > 0) {
-    // Keep seed alts/labels when paths match.
+  if (scanned.length > 0) {
     const bySrc = new Map(seedPresent.map((i) => [i.src, i]));
     site[field] = scanned.map((item) => bySrc.get(item.src) || item);
     changed += site[field].length;
     console.log(`[restore-media] rebuilt ${field} from disk: ${site[field].length}`);
-    continue;
-  }
-
-  if (seedPresent.length > 0) {
-    const have = new Set(present.map((i) => i.src));
-    const merged = [...present];
-    for (const item of seedPresent) {
-      if (!have.has(item.src)) {
-        merged.push(item);
-        changed += 1;
-      }
-    }
-    if (merged.length !== current.length) {
-      site[field] = merged;
-      console.log(`[restore-media] merged ${field}: ${merged.length}`);
-    } else if (present.length !== current.length) {
-      site[field] = present;
-    }
-  } else if (present.length !== current.length) {
-    site[field] = present;
   }
 }
 
-const before = JSON.parse(readFileSync(sitePath, "utf8"));
-const beforeCounts = FIELDS.map((f) => (before[f.field] || []).length).join(",");
-const afterCounts = FIELDS.map((f) => (site[f.field] || []).length).join(",");
-
-if (changed > 0 || beforeCounts !== afterCounts) {
+if (changed > 0) {
   writeFileSync(sitePath, `${JSON.stringify(site, null, 2)}\n`);
   const cms = process.env.CMS_DATA_DIR;
   if (cms) {
@@ -112,7 +99,7 @@ if (changed > 0 || beforeCounts !== afterCounts) {
       /* ignore */
     }
   }
-  console.log(`[restore-media] wrote site.json (+${changed})`);
+  console.log(`[restore-media] wrote site.json (delta ${changed})`);
 } else {
-  console.log("[restore-media] nothing to restore");
+  console.log("[restore-media] nothing to restore — online CMS unchanged");
 }

@@ -358,19 +358,7 @@ export default async function HomePage() {
                 title={`${property.location.addressLine} · hráz Pilského rybníka`}
                 lead={property.location.vicinity}
               />
-              <p className="mt-4 text-sm text-[var(--color-ink-soft)]">
-                Hledání podle místa:{" "}
-                <a className="font-medium text-[var(--color-moss)] underline-offset-2 hover:underline" href="/places.json">
-                  places.json
-                </a>
-                {" — "}
-                {property.location.places
-                  .slice(0, 5)
-                  .map((p) => p.name)
-                  .join(" · ")}
-                …
-              </p>
-              <ul className="mt-4 flex flex-wrap gap-2" aria-label="Místa pro hledání">
+              <ul className="mt-4 flex flex-wrap gap-2" aria-label="Okolí">
                 {property.location.places.map((p) => (
                   <li
                     key={p.name}
@@ -428,7 +416,7 @@ export default async function HomePage() {
           </FadeIn>
         </section>
 
-        {/* SEO / AIO searchable copy */}
+        {/* Shrnutí nabídky */}
         <section id="prodej" className="border-y border-[var(--color-line)] bg-[color-mix(in_oklab,var(--color-paper)_55%,white)] py-16 sm:py-20">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <FadeIn>
@@ -446,7 +434,7 @@ export default async function HomePage() {
                 ))}
               </FadeIn>
               <FadeIn delay={120}>
-                <h3 className="font-display text-2xl text-[var(--color-ink)]">Klíčová fakta pro AI a mapy</h3>
+                <h3 className="font-display text-2xl text-[var(--color-ink)]">Klíčová fakta</h3>
                 <ul className="mt-4 space-y-3 text-[var(--color-ink-soft)]">
                   {property.search.aioBullets.map((b) => (
                     <li key={b} className="flex gap-3 border-b border-[var(--color-line)] pb-3 last:border-0">
@@ -455,10 +443,6 @@ export default async function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-6 text-sm text-[var(--color-ink-soft)]">
-                  Související vyhledávání:{" "}
-                  {property.search.keywords.slice(0, 6).join(" · ")}.
-                </p>
               </FadeIn>
             </div>
           </div>

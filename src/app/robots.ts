@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/seo";
 
-/** Explicitně povolit běžné AI / search boty (indexace + odpovědi). */
-const aiAgents = [
+/** Povolit běžné search / crawler boty. JSON + llms.txt zůstávají veřejné endpointy. */
+const crawlerAgents = [
   "GPTBot",
   "ChatGPT-User",
   "OAI-SearchBot",
@@ -25,18 +25,43 @@ const aiAgents = [
   "cohere-ai",
 ];
 
+const disallow = [
+  "/admin",
+  "/keystatic",
+  "/zmensito",
+  "/api/admin",
+  "/api/keystatic",
+  "/api/inquiry",
+];
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
-        disallow: ["/admin", "/keystatic", "/zmensito", "/api/admin", "/api/keystatic", "/api/inquiry"],
+        allow: [
+          "/",
+          "/property.json",
+          "/faq.json",
+          "/places.json",
+          "/llms.txt",
+          "/llms-full.txt",
+          "/sitemap.xml",
+        ],
+        disallow,
       },
-      ...aiAgents.map((userAgent) => ({
+      ...crawlerAgents.map((userAgent) => ({
         userAgent,
-        allow: "/",
-        disallow: ["/admin", "/keystatic", "/zmensito", "/api/admin", "/api/keystatic", "/api/inquiry"],
+        allow: [
+          "/",
+          "/property.json",
+          "/faq.json",
+          "/places.json",
+          "/llms.txt",
+          "/llms-full.txt",
+          "/sitemap.xml",
+        ],
+        disallow,
       })),
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

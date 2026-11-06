@@ -202,7 +202,7 @@ export default config({
             geoLat: fields.number({ label: "Zeměpisná šířka", validation: { isRequired: true } }),
             geoLng: fields.number({ label: "Zeměpisná délka", validation: { isRequired: true } }),
             places: fields.array(placeItem, {
-              label: "Místa pro AI hledání",
+              label: "Místa / okolí",
               itemLabel: (props) => props.fields.name.value || "Místo",
             }),
           },
@@ -309,7 +309,7 @@ export default config({
       },
     }),
     seo: singleton({
-      label: "SEO / AI",
+      label: "SEO",
       path: "content/seo",
       format: { data: "json" },
       schema: {
@@ -322,8 +322,8 @@ export default config({
         keywords: textList("Keywords"),
         seoBody: textList("SEO odstavce (levý sloupec webu)"),
         geoBody: textList("GEO odstavce (lokalita)"),
-        aioSummary: fields.text({ label: "AI shrnutí", multiline: true }),
-        aioBullets: textList("AI bullet points"),
+        aioSummary: fields.text({ label: "Shrnutí nabídky", multiline: true }),
+        aioBullets: textList("Klíčová fakta"),
       },
     }),
     smtp: singleton({
