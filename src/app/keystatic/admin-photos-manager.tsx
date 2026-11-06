@@ -57,17 +57,59 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
 
   const total = localAlbums.reduce((n, a) => n + a.items.length, 0);
 
+  function saveAndRefresh() {
+    setMessage("Uloženo online. Obnovuji náhled…");
+    router.refresh();
+  }
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", background: "#f7f4ef", minHeight: "100%" }}>
+      <div
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 30,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 12,
+          padding: "12px 16px",
+          borderBottom: "1px solid #333",
+          background: "#111",
+          color: "#f5f5f5",
+        }}
+      >
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 16 }}>Fotky ({total})</div>
+          <div style={{ fontSize: 12, color: "#aaa" }}>
+            Nahrání a smazání jdou rovnou na web
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={saveAndRefresh}
+          style={{
+            padding: "10px 18px",
+            borderRadius: 6,
+            border: 0,
+            background: "#3764d9",
+            color: "#fff",
+            fontWeight: 700,
+            cursor: "pointer",
+            fontSize: 14,
+          }}
+        >
+          Save
+        </button>
+      </div>
+
       <div style={{ borderBottom: "1px solid #ddd", background: "#111" }}>
         <MultiUpload />
       </div>
 
       <div style={{ padding: "20px 20px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <h1 style={{ margin: "0 0 6px", fontSize: 22 }}>Fotky na webu ({total})</h1>
         <p style={{ margin: "0 0 8px", color: "#555", fontSize: 14 }}>
-          Kategorie = sekce na webu. Nahrání i smazání platí hned online — nic z lokálu se
-          nedoplňuje.
+          Kategorie = sekce na webu. Nic z lokálu se samo nedoplňuje.
         </p>
         {message ? (
           <p style={{ margin: "0 0 12px", color: "#5a6b4a", fontSize: 13, fontWeight: 600 }}>

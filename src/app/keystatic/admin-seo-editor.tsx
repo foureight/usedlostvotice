@@ -128,36 +128,60 @@ export function AdminSeoEditor() {
   return (
     <div
       style={{
-        maxWidth: 860,
-        margin: "0 auto",
-        padding: "20px 16px 48px",
         fontFamily: "system-ui, sans-serif",
         display: "grid",
-        gap: 16,
+        gap: 0,
+        minHeight: "100%",
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+      <div
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 20,
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 12,
+          alignItems: "center",
+          padding: "12px 16px",
+          borderBottom: "1px solid #e5e5e5",
+          background: "#fff",
+        }}
+      >
         <div>
-          <h1 style={{ margin: 0, fontSize: 22 }}>SEO</h1>
-          <p style={{ margin: "4px 0 0", color: "#666", fontSize: 13 }}>{status}</p>
+          <h1 style={{ margin: 0, fontSize: 20 }}>SEO</h1>
+          <p style={{ margin: "2px 0 0", color: "#666", fontSize: 13 }}>{status}</p>
         </div>
         <button
           type="button"
           disabled={busy}
           onClick={save}
           style={{
-            padding: "10px 16px",
+            padding: "10px 18px",
             borderRadius: 6,
             border: 0,
             background: "#3764d9",
             color: "#fff",
             fontWeight: 700,
             cursor: busy ? "wait" : "pointer",
+            fontSize: 14,
           }}
         >
-          {busy ? "Ukládám…" : "Uložit"}
+          {busy ? "Ukládám…" : "Save"}
         </button>
       </div>
+
+      <div
+        style={{
+          maxWidth: 860,
+          margin: "0 auto",
+          padding: "20px 16px 48px",
+          display: "grid",
+          gap: 16,
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
 
       <label style={{ display: "grid", gap: 6, fontWeight: 600, fontSize: 13 }}>
         SEO title
@@ -209,6 +233,7 @@ export function AdminSeoEditor() {
         values={seo.aioBullets}
         onChange={(aioBullets) => setSeo({ ...seo, aioBullets })}
       />
+      </div>
     </div>
   );
 }
