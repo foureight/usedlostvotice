@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { DeferUntilVisible } from "@/components/defer-until-visible";
 import { FadeIn } from "@/components/fade-in";
@@ -7,6 +8,10 @@ import { InquiryForm } from "@/components/inquiry-form";
 import { getProperty } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 function SectionHead({
   eyebrow,

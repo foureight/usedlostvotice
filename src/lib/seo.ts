@@ -58,11 +58,23 @@ export function realEstateJsonLd(property: SiteContent) {
           },
         },
         mainEntity: { "@id": `${siteUrl}/#residence` },
+        identifier: [
+          { "@type": "PropertyValue", name: "houseNumber", value: `Vodice ${location.houseNumber}` },
+          { "@type": "PropertyValue", name: "cadastral", value: location.cadastral },
+          { "@type": "PropertyValue", name: "parcel", value: location.parcel },
+        ],
+        sameAs: [property.listingUrl, absoluteUrl("/property.json"), absoluteUrl("/llms.txt")],
         subjectOf: [
           { "@type": "WebPage", url: absoluteUrl("/faq.json"), name: "FAQ JSON" },
           { "@type": "WebPage", url: absoluteUrl("/property.json"), name: "Property JSON" },
           { "@type": "WebPage", url: absoluteUrl("/places.json"), name: "Places JSON — hledání podle místa" },
           { "@type": "WebPage", url: absoluteUrl("/llms.txt"), name: "llms.txt" },
+          { "@type": "WebPage", url: absoluteUrl("/prodej-domu-tabor"), name: "Prodej domu Tábor" },
+          { "@type": "WebPage", url: absoluteUrl("/prodej-domu-jizni-cechy"), name: "Prodej domu Jižní Čechy" },
+          { "@type": "WebPage", url: absoluteUrl("/dum-u-rybnika"), name: "Dům u rybníka" },
+          { "@type": "WebPage", url: absoluteUrl("/dum-se-stodolou"), name: "Dům se stodolou" },
+          { "@type": "WebPage", url: absoluteUrl("/dum-k-rekonstrukci-taborsko"), name: "Dům k rekonstrukci Táborsko" },
+          { "@type": "WebPage", url: absoluteUrl("/prodej-domu-pacov"), name: "Prodej domu Pacov" },
         ],
       },
       {
@@ -73,11 +85,14 @@ export function realEstateJsonLd(property: SiteContent) {
           "Usedlost Vodice 17",
           "Dům Vodice u Tábora u Pilského rybníka",
           "Prodej domu okres Tábor Vodice 17",
+          "Prodej domu Tábor Vodice 17",
+          "Dům u Pilského rybníka Vodice",
         ],
         description: search.aioSummary,
         disambiguatingDescription:
           "Prodej domu čp. 17 v obci Vodice u Tábora (okres Tábor). Ne Vodice u Lhenic na Prachaticku a ne památková usedlost čp. 25.",
         url: siteUrl,
+        identifier: `CZ-Vodice-${location.houseNumber}-${location.postalCode}`,
         numberOfRooms: specs.rooms,
         numberOfBathroomsTotal: 1,
         floorSize: {

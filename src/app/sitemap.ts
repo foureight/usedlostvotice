@@ -1,8 +1,16 @@
 import type { MetadataRoute } from "next";
+import { getLandingSlugs } from "@/data/landings";
 import { siteUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const landings = getLandingSlugs().map((slug) => ({
+    url: `${siteUrl}/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.75,
+  }));
+
   return [
     {
       url: siteUrl,
@@ -10,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    ...landings,
     {
       url: `${siteUrl}/property.json`,
       lastModified: now,

@@ -10,6 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const property = await getContent();
   const description = property.search.seoDescription;
 
+  // Shared defaults only — homepage / landings set their own canonical + title.
   return {
     title: {
       default: property.search.seoTitle,
@@ -19,7 +20,6 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: [...property.search.keywords],
     authors: [{ name: property.contact.ownerName }],
     alternates: {
-      canonical: "/",
       types: {
         "application/json": [
           { url: "/property.json", title: "Property listing JSON" },
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     other: {
       "geo.region": "CZ-JC",
-      "geo.placename": "Vodice 17, Pilský rybník",
+      "geo.placename": "Vodice 17, okres Tábor, Pilský rybník",
       "geo.position": `${property.location.geo.lat};${property.location.geo.lng}`,
       ICBM: `${property.location.geo.lat}, ${property.location.geo.lng}`,
       "llms-txt": absoluteUrl("/llms.txt"),
