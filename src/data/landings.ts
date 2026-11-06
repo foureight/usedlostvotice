@@ -95,22 +95,23 @@ export const landings: LandingPage[] = [
   {
     slug: "dum-u-rybnika",
     keyword: "dům u rybníka",
-    title: "Dům u rybníka k prodeji — Pilský rybník, Vodice u Tábora",
+    title: "Prodej domu u rybníka — Pilský rybník, Vodice u Tábora",
     description:
-      "Dům u rybníka na prodej: Usedlost Vodice přímo na hrázi Pilského rybníka (okres Tábor). 5+1, pozemek 1 762 m², stodola. 5 150 000 Kč.",
-    h1: "Dům u rybníka k prodeji",
-    lead: "Hledáte dům u rybníka — bydlení u vody s výhledem a klidem? Usedlost Vodice stojí přímo na hrázi Pilského rybníka, na hranici Přírodního parku Polánka.",
+      "Prodej domu u rybníka: Usedlost Vodice přímo na hrázi Pilského rybníka (okres Tábor). 5+1, pozemek 1 762 m², stodola. Cena 5 150 000 Kč.",
+    h1: "Prodej domu u rybníka",
+    lead: "Hledáte prodej domu u rybníka — bydlení u vody s výhledem a klidem? Usedlost Vodice je prodej domu přímo na hrázi Pilského rybníka, na hranici Přírodního parku Polánka.",
     bullets: [
-      "Poloha: hráz Pilského rybníka · Vodice 17",
+      "Prodej domu · adresa Vodice 17 · hráz Pilského rybníka",
       "Výhled na vodu a okolní krajinu",
       "Pozemek 1 762 m² · stodola k dalšímu využití",
       "Cena 5 150 000 Kč",
     ],
     body: [
-      "Dotazy „dům u rybníka“, „prodej domu u vody“ nebo „Pilský rybník bydlení“ patří mezi typické záměry lidí, kteří chtějí venkov + kontakt s přírodou. Tato nabídka je jedna konkrétní usedlost — ne chatová osada.",
-      "Prohlídka na místě nejlíp ukáže atmosféru. Kontakt a termín na usedlostvodice.cz.",
+      "Prodej domu u rybníka na Táborsku: Usedlost Vodice (usedlostvodice.cz) je konkrétní nabídka — ne chatová osada. Dotazy „dům u rybníka“, „prodej domu u vody“ nebo „Pilský rybník bydlení“ míří právě sem.",
+      "Prodej domu Vodice 17 u Pilského rybníka — prohlídku domluvíte na usedlostvodice.cz.",
     ],
     relatedKeywords: [
+      "prodej domu u rybníka",
       "Pilský rybník bydlení",
       "prodej domu u vody",
       "dům u rybníka Táborsko",
