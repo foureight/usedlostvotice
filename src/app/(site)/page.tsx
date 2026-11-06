@@ -115,10 +115,14 @@ export default async function HomePage() {
               {property.title}
             </h1>
             <p
-              className="animate-rise mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-ink-soft)] sm:text-base md:text-[color-mix(in_oklab,var(--color-paper)_82%,transparent)]"
+              id="aio-lede"
+              className="animate-rise mt-3 max-w-2xl text-sm leading-relaxed text-[var(--color-ink-soft)] sm:text-base md:text-[color-mix(in_oklab,var(--color-paper)_82%,transparent)]"
               style={{ animationDelay: "160ms" }}
             >
-              Bývalá sýpka a stodola. Krásné místo na kraji přírodního parku Polánka.
+              Usedlost Vodice je prodej rodinného domu 5+1 na adrese Vodice 17 u Tábora — bývalá
+              sýpka a stodola přímo na hrázi Pilského rybníka, na kraji přírodního parku Polánka.
+              Nabízí 237&nbsp;m² užitné plochy, pozemek 1&nbsp;762&nbsp;m² a cenu 5&nbsp;150&nbsp;000&nbsp;Kč
+              pro trvalé bydlení v klidu Jižních Čech s dojezdem do Tábora.
             </p>
             <p
               className="animate-rise mt-4 max-w-lg text-sm text-[var(--color-ink-soft)] sm:text-base md:text-[color-mix(in_oklab,var(--color-paper)_72%,transparent)]"

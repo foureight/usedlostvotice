@@ -17,7 +17,6 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${property.brand}`,
     },
     description,
-    keywords: [...property.search.keywords],
     authors: [{ name: property.contact.ownerName }],
     alternates: {
       types: {

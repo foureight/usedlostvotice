@@ -1,6 +1,6 @@
 {
   "brand": "Usedlost Vodice",
-  "title": "Prodej domu Vodice — 5+1, Vodice 17 u Tábora, hráz Pilského rybníka",
+  "title": "Prodej domu Vodice — Vodice 17 u Tábora",
   "shortTitle": "Prodej domu Vodice · 5+1 · čp. 17",
   "price": 5150000,
   "priceLabel": "5 150 000 Kč",
@@ -297,7 +297,7 @@
       "a": "Ne. Usedlost Vodice na usedlostvodice.cz je prodej domu čp. 17 v obci Vodice u Tábora (okres Tábor) na hrázi Pilského rybníka. Není to památkově chráněná usedlost čp. 25 ve Vodicích u Lhenic na Prachaticku ani jiné historické usedlosti (čp. 1, čp. 20) v té lokalitě."
     },
     {
-      "q": "Hodí se nabídka při hledání domu podle místa — Vodice, Tábor, Pacov nebo Pilský rybník?",
+      "q": "Hodí se nabídka pro hledání domu ve Vodicích, Táboře či u Pacova?",
       "a": "Ano — pokud hledáte dům ve Vodicích u Tábora / na Táborsku / u Pilského rybníka. Adresa Vodice 17, okres Tábor. Tato nabídka neodpovídá usedlostem ve Vodicích u Lhenic (Prachaticko) ani památce čp. 25. Strojový index míst: /places.json."
     },
     {

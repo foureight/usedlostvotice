@@ -28,7 +28,22 @@ export function realEstateJsonLd(property: SiteContent) {
         about: { "@id": `${siteUrl}/#listing` },
         speakable: {
           "@type": "SpeakableSpecification",
-          cssSelector: ["#prodej", "#faq", "h1"],
+          cssSelector: ["#aio-lede", "#prodej", "#faq", "h1"],
+        },
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${siteUrl}/#webpage`,
+        url: siteUrl,
+        name: search.seoTitle,
+        description: search.seoDescription,
+        inLanguage: "cs-CZ",
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: { "@id": `${siteUrl}/#listing` },
+        primaryImageOfPage: absoluteUrl("/og.jpg"),
+        speakable: {
+          "@type": "SpeakableSpecification",
+          cssSelector: ["#aio-lede", "h1"],
         },
       },
       {
