@@ -107,17 +107,11 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
   });
 }
 
-export async function sendInquiryEmail(payload: InquiryPayload) {
-  const settings = await getSmtpSettings();
-
-  if (!smtpIsConfigured(settings)) {
-    return { sent: false as const, reason: "smtp-not-configured" as const };
-  }
-
+function createTransporter(settings: SmtpSettings) {
   // Port 465 = implicit TLS. Port 587 = STARTTLS (secure:false).
   const useSecure = settings.secure || settings.port === 465;
 
-  const transporter = nodemailer.createTransport({
+  return nodemailer.createTransport({
     host: settings.host,
     port: settings.port,
     secure: useSecure,
@@ -137,7 +131,59 @@ export async function sendInquiryEmail(payload: InquiryPayload) {
       minVersion: "TLSv1.2",
     },
   });
+}
 
+function fromAddress(settings: SmtpSettings) {
+  return settings.fromName
+    ? `"${settings.fromName}" <${settings.fromEmail}>`
+    : settings.fromEmail;
+}
+
+async function sendWithSettings(
+  settings: SmtpSettings,
+  mail: {
+    to: string;
+    cc?: string;
+    replyTo?: string;
+    subject: string;
+    text: string;
+  },
+) {
+  if (!smtpIsConfigured(settings)) {
+    return { sent: false as const, reason: "smtp-not-configured" as const, detail: "" };
+  }
+
+  const transporter = createTransporter(settings);
+
+  try {
+    await withTimeout(
+      transporter.sendMail({
+        from: fromAddress(settings),
+        to: mail.to,
+        cc: mail.cc || undefined,
+        replyTo: mail.replyTo,
+        subject: mail.subject,
+        text: mail.text,
+      }),
+      MAIL_TIMEOUT_MS + 2000,
+      "smtp-send",
+    );
+    return { sent: true as const, reason: undefined, detail: "" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "mail-failed";
+    console.error("[mail] send failed", message);
+    return {
+      sent: false as const,
+      reason: (message.includes("timeout") ? "smtp-timeout" : "mail-failed") as
+        | "smtp-timeout"
+        | "mail-failed",
+      detail: message.slice(0, 240),
+    };
+  }
+}
+
+export async function sendInquiryEmail(payload: InquiryPayload) {
+  const settings = await getSmtpSettings();
   const subject = `${settings.subjectPrefix} Nová poptávka od ${payload.name}`.trim();
   const text = [
     "Nová poptávka z webu Usedlost Vodice",
@@ -152,30 +198,60 @@ export async function sendInquiryEmail(payload: InquiryPayload) {
     `Čas: ${new Date().toISOString()}`,
   ].join("\n");
 
-  try {
-    await withTimeout(
-      transporter.sendMail({
-        from: settings.fromName
-          ? `"${settings.fromName}" <${settings.fromEmail}>`
-          : settings.fromEmail,
-        to: settings.toEmail,
-        cc: settings.ccEmail || undefined,
-        replyTo: payload.email,
-        subject,
-        text,
-      }),
-      MAIL_TIMEOUT_MS + 2000,
-      "smtp-send",
-    );
-    return { sent: true as const };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "mail-failed";
-    console.error("[mail] send failed", message);
+  return sendWithSettings(settings, {
+    to: settings.toEmail,
+    cc: settings.ccEmail || undefined,
+    replyTo: payload.email,
+    subject,
+    text,
+  });
+}
+
+/** Admin self-test — sends a short message to the configured To address. */
+export async function sendSmtpTestEmail() {
+  const settings = await getSmtpSettings();
+  if (!smtpIsConfigured(settings)) {
     return {
       sent: false as const,
-      reason: (message.includes("timeout") ? "smtp-timeout" : "mail-failed") as
-        | "smtp-timeout"
-        | "mail-failed",
+      reason: "smtp-not-configured" as const,
+      detail: "Zapněte SMTP a vyplňte host, from a to.",
+      meta: {
+        host: settings.host,
+        port: settings.port,
+        secure: settings.secure,
+        user: settings.user,
+        to: settings.toEmail,
+        hasPassword: Boolean(settings.password),
+      },
     };
   }
+
+  const result = await sendWithSettings(settings, {
+    to: settings.toEmail,
+    subject: `${settings.subjectPrefix} Test SMTP`.trim(),
+    text: [
+      "Testovací e-mail z adminu Usedlost Vodice.",
+      "",
+      `Host: ${settings.host}`,
+      `Port: ${settings.port}`,
+      `Secure/TLS: ${settings.secure || settings.port === 465}`,
+      `From: ${settings.fromEmail}`,
+      `To: ${settings.toEmail}`,
+      `Čas: ${new Date().toISOString()}`,
+      "",
+      "Když tento mail dorazí, SMTP z webu funguje.",
+    ].join("\n"),
+  });
+
+  return {
+    ...result,
+    meta: {
+      host: settings.host,
+      port: settings.port,
+      secure: settings.secure || settings.port === 465,
+      user: settings.user,
+      to: settings.toEmail,
+      hasPassword: Boolean(settings.password),
+    },
+  };
 }

@@ -38,6 +38,8 @@ export function AdminSmtpEditor() {
   const [smtp, setSmtp] = useState<SmtpData>(empty);
   const [status, setStatus] = useState("Načítám SMTP…");
   const [busy, setBusy] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState("");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
 
   useEffect(() => {
@@ -76,6 +78,42 @@ export function AdminSmtpEditor() {
       cancelled = true;
     };
   }, []);
+
+  async function testSmtp() {
+    setTesting(true);
+    setTestResult("Odesílám testovací e-mail…");
+    try {
+      const res = await fetch("/api/admin/smtp-test", {
+        method: "POST",
+        credentials: "same-origin",
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        sent?: boolean;
+        reason?: string;
+        detail?: string;
+        meta?: { host?: string; port?: number; to?: string };
+      };
+      if (data.sent) {
+        setTestResult(
+          `OK — test odeslán na ${data.meta?.to || smtp.toEmail} (${data.meta?.host}:${data.meta?.port}). Zkontrolujte schránku.`,
+        );
+      } else {
+        const why =
+          data.reason === "smtp-timeout"
+            ? "timeout spojení"
+            : data.reason === "smtp-not-configured"
+              ? "SMTP není nastavené"
+              : data.reason || "chyba";
+        setTestResult(
+          `Neúspěch (${why})${data.detail ? `: ${data.detail}` : ""}. Port na Zeropsu musí být 587.`,
+        );
+      }
+    } catch {
+      setTestResult("Test selhal — síťová chyba.");
+    } finally {
+      setTesting(false);
+    }
+  }
 
   async function save() {
     setBusy(true);
@@ -153,25 +191,44 @@ export function AdminSmtpEditor() {
           <p style={{ margin: 0, fontWeight: 700, fontSize: 16 }}>E-mail / SMTP</p>
           <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>{status}</p>
         </div>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={save}
-          style={{
-            padding: "10px 18px",
-            borderRadius: 6,
-            border: 0,
-            background: saveState === "saved" ? "#2f7d4a" : "#3764d9",
-            color: "#fff",
-            fontWeight: 700,
-            cursor: busy ? "wait" : "pointer",
-            fontSize: 14,
-            minWidth: 96,
-            transition: "background .2s ease",
-          }}
-        >
-          {saveState === "saving" ? "Ukládám…" : saveState === "saved" ? "Uloženo" : "Uložit"}
-        </button>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button
+            type="button"
+            disabled={busy || testing}
+            onClick={() => void testSmtp()}
+            style={{
+              padding: "10px 16px",
+              borderRadius: 6,
+              border: "1px solid #ccc",
+              background: "#fff",
+              color: "#111",
+              fontWeight: 700,
+              cursor: testing ? "wait" : "pointer",
+              fontSize: 14,
+            }}
+          >
+            {testing ? "Testuji…" : "Otestovat odeslání"}
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={save}
+            style={{
+              padding: "10px 18px",
+              borderRadius: 6,
+              border: 0,
+              background: saveState === "saved" ? "#2f7d4a" : "#3764d9",
+              color: "#fff",
+              fontWeight: 700,
+              cursor: busy ? "wait" : "pointer",
+              fontSize: 14,
+              minWidth: 96,
+              transition: "background .2s ease",
+            }}
+          >
+            {saveState === "saving" ? "Ukládám…" : saveState === "saved" ? "Uloženo" : "Uložit"}
+          </button>
+        </div>
       </div>
 
       <div
@@ -185,6 +242,22 @@ export function AdminSmtpEditor() {
           boxSizing: "border-box",
         }}
       >
+        {testResult ? (
+          <p
+            style={{
+              margin: 0,
+              padding: "10px 12px",
+              borderRadius: 6,
+              background: testResult.startsWith("OK") ? "#e8f5ec" : "#fdeceb",
+              color: testResult.startsWith("OK") ? "#1f5c34" : "#8a1f1f",
+              fontSize: 13,
+              lineHeight: 1.45,
+            }}
+          >
+            {testResult}
+          </p>
+        ) : null}
+
         <label style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 600, fontSize: 13 }}>
           <input
             type="checkbox"
