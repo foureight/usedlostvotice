@@ -266,3 +266,57 @@ export async function DELETE(request: Request) {
 
   return NextResponse.json({ ok: true, field, src, remaining: next.length });
 }
+
+/** Update photo caption (alt / label) in online CMS. */
+export async function PATCH(request: Request) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
+  }
+
+  let body: { field?: string; src?: string; alt?: string };
+  try {
+    body = (await request.json()) as { field?: string; src?: string; alt?: string };
+  } catch {
+    return NextResponse.json({ error: "Neplatné JSON." }, { status: 400 });
+  }
+
+  const field = String(body.field || "").trim();
+  const src = String(body.src || "").trim();
+  const alt = String(body.alt || "").trim();
+  if (!DELETABLE_FIELDS.has(field) || !src.startsWith("/") || !alt) {
+    return NextResponse.json({ error: "Neplatná fotka nebo popisek." }, { status: 400 });
+  }
+  if (src.includes("..") || src.includes("\\")) {
+    return NextResponse.json({ error: "Neplatná cesta." }, { status: 400 });
+  }
+
+  const sitePath = path.join(process.cwd(), "content", "site.json");
+  let site: Record<string, unknown>;
+  try {
+    site = JSON.parse(await readFile(sitePath, "utf8")) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "Nelze načíst content/site.json." }, { status: 500 });
+  }
+
+  const existing = Array.isArray(site[field])
+    ? ([...(site[field] as GalleryItem[])] as GalleryItem[])
+    : [];
+  const idx = existing.findIndex((item) => item?.src === src);
+  if (idx < 0) {
+    return NextResponse.json({ error: "Fotka v CMS není." }, { status: 404 });
+  }
+
+  const updated: GalleryItem = { ...existing[idx], alt };
+  if (field === "plans") updated.label = alt;
+  existing[idx] = updated;
+  site[field] = existing;
+  await writeFile(sitePath, `${JSON.stringify(site, null, 2)}\n`, "utf8");
+
+  const cms = process.env.CMS_DATA_DIR;
+  if (cms) {
+    await mkdir(path.join(cms, "content"), { recursive: true });
+    await copyFile(sitePath, path.join(cms, "content", "site.json"));
+  }
+
+  return NextResponse.json({ ok: true, field, src, alt });
+}
