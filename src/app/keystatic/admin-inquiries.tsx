@@ -19,6 +19,7 @@ export function AdminInquiries() {
   const [rows, setRows] = useState<Inquiry[]>([]);
   const [status, setStatus] = useState("Načítám poptávky…");
   const [open, setOpen] = useState<string | null>(null);
+  const [busySlug, setBusySlug] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setStatus("Načítám poptávky…");
@@ -37,6 +38,29 @@ export function AdminInquiries() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  async function remove(slug: string, label: string) {
+    if (!window.confirm(`Smazat poptávku „${label}“?`)) return;
+    setBusySlug(slug);
+    try {
+      const res = await fetch("/api/admin/content", {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ inquirySlug: slug }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = (await res.json()) as { inquiries?: Inquiry[] };
+      const list = Array.isArray(data.inquiries) ? data.inquiries : [];
+      setRows(list);
+      if (open === slug) setOpen(null);
+      setStatus(list.length ? `${list.length} poptávek` : "Zatím žádná poptávka");
+    } catch {
+      setStatus("Smazání selhalo");
+    } finally {
+      setBusySlug(null);
+    }
+  }
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", minHeight: "100vh", background: "#f7f7f5" }}>
@@ -82,16 +106,45 @@ export function AdminInquiries() {
           <div style={{ display: "grid", gap: 10 }}>
             {rows.map((r) => {
               const isOpen = open === r.slug;
+              const label = r.name || r.title || r.slug;
+              const busy = busySlug === r.slug;
               return (
                 <article
                   key={r.slug}
                   style={{
+                    position: "relative",
                     background: "#fff",
                     border: "1px solid #e0ddd6",
                     borderRadius: 8,
                     padding: "12px 14px",
+                    paddingRight: 48,
                   }}
                 >
+                  <button
+                    type="button"
+                    aria-label={`Smazat poptávku ${label}`}
+                    disabled={busy}
+                    onClick={() => void remove(r.slug, label)}
+                    style={{
+                      position: "absolute",
+                      top: 12,
+                      right: 12,
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      border: "2px solid #fff",
+                      background: "#d64545",
+                      color: "#fff",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      lineHeight: "24px",
+                      padding: 0,
+                      cursor: busy ? "wait" : "pointer",
+                      boxShadow: "0 1px 4px rgba(0,0,0,.25)",
+                    }}
+                  >
+                    ×
+                  </button>
                   <button
                     type="button"
                     onClick={() => setOpen(isOpen ? null : r.slug)}
@@ -109,15 +162,13 @@ export function AdminInquiries() {
                     }}
                   >
                     <span>
-                      <strong style={{ display: "block", marginBottom: 4 }}>
-                        {r.name || r.title || r.slug}
-                      </strong>
+                      <strong style={{ display: "block", marginBottom: 4 }}>{label}</strong>
                       <span style={{ fontSize: 13, color: "#555" }}>
                         {r.email || "—"}
                         {r.phone ? ` · ${r.phone}` : ""}
                       </span>
                     </span>
-                    <span style={{ fontSize: 12, color: "#777", whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: 12, color: "#777", whiteSpace: "nowrap", marginRight: 8 }}>
                       {r.createdAt ? r.createdAt.replace("T", " ").slice(0, 16) : ""}
                       <br />
                       {r.mailed ? "e-mail OK" : "e-mail ne"}

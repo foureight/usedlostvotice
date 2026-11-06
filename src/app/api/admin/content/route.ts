@@ -13,6 +13,7 @@ import {
   readSmtpJson,
   writeJsonFile,
 } from "@/lib/cms-files";
+import { deleteInquiry } from "@/lib/inquiries";
 import { repairSiteJson } from "@/lib/repair-site";
 
 export const runtime = "nodejs";
@@ -40,6 +41,31 @@ export async function GET() {
     listInquiries(),
   ]);
   return NextResponse.json({ site, seo, smtp: redactSmtp(smtp), inquiries });
+}
+
+export async function DELETE(request: Request) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
+  }
+
+  let body: { inquirySlug?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Neplatné JSON." }, { status: 400 });
+  }
+
+  const slug = String(body.inquirySlug || "").trim();
+  if (!slug) {
+    return NextResponse.json({ error: "Chybí inquirySlug." }, { status: 400 });
+  }
+
+  const ok = await deleteInquiry(slug);
+  if (!ok) {
+    return NextResponse.json({ error: "Poptávka nenalezena." }, { status: 404 });
+  }
+
+  return NextResponse.json({ ok: true, inquiries: await listInquiries() });
 }
 
 export async function PUT(request: Request) {

@@ -1,4 +1,5 @@
-import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
+import { copyFile, mkdir, readFile, unlink, writeFile } from "fs/promises";
+import { existsSync } from "fs";
 import path from "path";
 
 export type InquiryRecord = {
@@ -63,4 +64,20 @@ export async function markInquiryMailed(slug: string): Promise<void> {
   data.mailed = true;
   await writeFile(file, `${JSON.stringify(data, null, 2)}\n`, "utf8");
   await flushInquiryToVolume(slug);
+}
+
+export async function deleteInquiry(slug: string): Promise<boolean> {
+  const safe = String(slug || "").replace(/[^a-zA-Z0-9._-]/g, "");
+  if (!safe || safe !== slug) return false;
+
+  const file = path.join(process.cwd(), "content", "inquiries", `${safe}.json`);
+  if (!existsSync(file)) return false;
+  await unlink(file);
+
+  const cms = process.env.CMS_DATA_DIR;
+  if (cms) {
+    const vol = path.join(cms, "content", "inquiries", `${safe}.json`);
+    if (existsSync(vol)) await unlink(vol);
+  }
+  return true;
 }

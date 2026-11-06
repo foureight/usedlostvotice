@@ -297,9 +297,9 @@ export function AdminSmtpEditor() {
         </label>
 
         <p style={{ margin: 0, fontSize: 12, color: "#666", lineHeight: 1.45 }}>
-          Poznámka: server Zerops často blokuje odchozí SMTP (port 465/587). Poptávky se vždy
-          ukládají do adminu (Poptávky). Když e-mail timeoutuje, zkontrolujte firewall u
-          poskytovatele SMTP (povolit IP Zerops), nebo zkuste jiný relay.
+          Poznámka: na Zeropsu je pro SMTP povolený jen port <strong>587</strong> (STARTTLS). Port
+          465 a 25 jsou blokované. Zaškrtnutí „TLS/SSL“ nechte vypnuté. Poptávky se vždy ukládají
+          do adminu i když e-mail selže.
         </p>
       </div>
     </div>
