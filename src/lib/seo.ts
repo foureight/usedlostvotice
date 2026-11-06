@@ -69,6 +69,7 @@ export function realEstateJsonLd(property: SiteContent) {
           { "@type": "WebPage", url: absoluteUrl("/property.json"), name: "Property JSON" },
           { "@type": "WebPage", url: absoluteUrl("/places.json"), name: "Places JSON — hledání podle místa" },
           { "@type": "WebPage", url: absoluteUrl("/llms.txt"), name: "llms.txt" },
+          { "@type": "WebPage", url: absoluteUrl("/prodej-domu-vodice"), name: "Prodej domu Vodice" },
           { "@type": "WebPage", url: absoluteUrl("/prodej-domu-tabor"), name: "Prodej domu Tábor" },
           { "@type": "WebPage", url: absoluteUrl("/prodej-domu-jizni-cechy"), name: "Prodej domu Jižní Čechy" },
           { "@type": "WebPage", url: absoluteUrl("/dum-u-rybnika"), name: "Dům u rybníka" },

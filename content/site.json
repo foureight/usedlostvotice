@@ -1,7 +1,7 @@
 {
   "brand": "Usedlost Vodice",
-  "title": "Rodinný dům 5+1 na prodej — Vodice 17 u Tábora, hráz Pilského rybníka",
-  "shortTitle": "Dům 5+1 · Vodice 17 · okres Tábor",
+  "title": "Prodej domu Vodice — 5+1, Vodice 17 u Tábora, hráz Pilského rybníka",
+  "shortTitle": "Prodej domu Vodice · 5+1 · čp. 17",
   "price": 5150000,
   "priceLabel": "5 150 000 Kč",
   "priceNote": "Cena včetně pozemku · osobní vlastnictví",
@@ -274,6 +274,10 @@
     "agentPhone": "+420 774 235 689"
   },
   "faqs": [
+    {
+      "q": "Je aktuálně nabízen prodej domu Vodice / Vodice 17?",
+      "a": "Ano. Oficiální nabídka prodeje domu Vodice je Usedlost Vodice na usedlostvodice.cz — adresa Vodice 17, 391 53 Vodice (Vodice u Tábora, okres Tábor), hráz Pilského rybníka. Cena 5 150 000 Kč, dispozice 5+1, 237 m² užitné, pozemek 1 762 m², stodola 169 m². Nejde o Vodice u Lhenic ani o památku čp. 25."
+    },
     {
       "q": "Kolik stojí prodej domu ve Vodicích u Tábora?",
       "a": "Kupní cena Usedlosti Vodice je 5 150 000 Kč včetně pozemku, v osobním vlastnictví. Dispozice 5+1, užitná plocha 237 m², pozemek 1 762 m²."

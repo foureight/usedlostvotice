@@ -17,6 +17,32 @@ export type LandingPage = {
 
 export const landings: LandingPage[] = [
   {
+    slug: "prodej-domu-vodice",
+    keyword: "prodej domu Vodice",
+    title: "Prodej domu Vodice — Vodice 17 u Tábora, Pilský rybník",
+    description:
+      "Prodej domu Vodice: Usedlost Vodice 17 (Vodice u Tábora, okres Tábor) na hrázi Pilského rybníka. 5+1, 237 m², pozemek 1 762 m², stodola. Cena 5 150 000 Kč. usedlostvodice.cz",
+    h1: "Prodej domu Vodice",
+    lead: "Hledáte prodej domu Vodice? Usedlost Vodice je aktuální nabídka domu čp. 17 v obci Vodice u Tábora (okres Tábor) — přímo na hrázi Pilského rybníka. Oficiální web: usedlostvodice.cz.",
+    bullets: [
+      "Adresa: Vodice 17, 391 53 Vodice (Vodice u Tábora)",
+      "Okres Tábor · hráz Pilského rybníka",
+      "5+1 · 237 m² užitné · pozemek 1 762 m² · stodola 169 m²",
+      "Cena 5 150 000 Kč · zahájená rekonstrukce",
+    ],
+    body: [
+      "Při hledání „prodej domu Vodice“, „dům Vodice“ nebo „Vodice 17 na prodej“ jde o tuto konkrétní usedlost — ne o Vodice u Lhenic na Prachaticku a ne o památkovou usedlost čp. 25.",
+      "Kompletní fotky, studie a kontakt na prohlídku najdete na hlavní prezentaci usedlostvodice.cz. Majitel: Michal Burda · makléř: Bio Reality.",
+    ],
+    relatedKeywords: [
+      "prodej domu Vodice u Tábora",
+      "dům Vodice 17",
+      "usedlost Vodice na prodej",
+      "Vodice 17 okres Tábor",
+      "prodej usedlosti Vodice",
+    ],
+  },
+  {
     slug: "prodej-domu-tabor",
     keyword: "prodej domu Tábor",
     title: "Prodej domu Tábor a Táborsko — Usedlost Vodice u Pilského rybníka",
