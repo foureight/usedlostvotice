@@ -41,6 +41,18 @@ for d in $MEDIA_DIRS; do
   cp -a "$CMS/public/$d/." "public/$d/" 2>/dev/null || true
 done
 
+# New singleton files from deploy (e.g. photos.json) — only if missing online.
+if [ -d "$SEED/content" ]; then
+  for f in "$SEED/content"/*; do
+    [ -f "$f" ] || continue
+    base=$(basename "$f")
+    if [ ! -f "content/$base" ]; then
+      echo "[cms] adding missing content file from deploy: $base"
+      cp -a "$f" "content/$base"
+    fi
+  done
+fi
+
 # Deploy may add missing photo FILES only — never overwrite content/*.json from seed.
 for d in $MEDIA_DIRS; do
   cp -an "$SEED/public/$d/." "public/$d/" 2>/dev/null || true
