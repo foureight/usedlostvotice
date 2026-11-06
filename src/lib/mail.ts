@@ -89,23 +89,53 @@ export type InquiryPayload = {
   note: string;
 };
 
+const MAIL_TIMEOUT_MS = 12_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label}-timeout`)), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
 export async function sendInquiryEmail(payload: InquiryPayload) {
   const settings = await getSmtpSettings();
 
   if (!smtpIsConfigured(settings)) {
-    return { sent: false as const, reason: "smtp-not-configured" as const, settings };
+    return { sent: false as const, reason: "smtp-not-configured" as const };
   }
+
+  // Port 465 = implicit TLS. Port 587 = STARTTLS (secure:false).
+  const useSecure = settings.secure || settings.port === 465;
 
   const transporter = nodemailer.createTransport({
     host: settings.host,
     port: settings.port,
-    secure: settings.secure,
+    secure: useSecure,
+    requireTLS: !useSecure && settings.port === 587,
     auth: settings.user
       ? {
           user: settings.user,
           pass: settings.password,
         }
       : undefined,
+    connectionTimeout: MAIL_TIMEOUT_MS,
+    greetingTimeout: MAIL_TIMEOUT_MS,
+    socketTimeout: MAIL_TIMEOUT_MS,
+    tls: {
+      // Some shared hosts use imperfect cert chains.
+      rejectUnauthorized: false,
+      minVersion: "TLSv1.2",
+    },
   });
 
   const subject = `${settings.subjectPrefix} Nová poptávka od ${payload.name}`.trim();
@@ -122,16 +152,30 @@ export async function sendInquiryEmail(payload: InquiryPayload) {
     `Čas: ${new Date().toISOString()}`,
   ].join("\n");
 
-  await transporter.sendMail({
-    from: settings.fromName
-      ? `"${settings.fromName}" <${settings.fromEmail}>`
-      : settings.fromEmail,
-    to: settings.toEmail,
-    cc: settings.ccEmail || undefined,
-    replyTo: payload.email,
-    subject,
-    text,
-  });
-
-  return { sent: true as const, settings };
+  try {
+    await withTimeout(
+      transporter.sendMail({
+        from: settings.fromName
+          ? `"${settings.fromName}" <${settings.fromEmail}>`
+          : settings.fromEmail,
+        to: settings.toEmail,
+        cc: settings.ccEmail || undefined,
+        replyTo: payload.email,
+        subject,
+        text,
+      }),
+      MAIL_TIMEOUT_MS + 2000,
+      "smtp-send",
+    );
+    return { sent: true as const };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "mail-failed";
+    console.error("[mail] send failed", message);
+    return {
+      sent: false as const,
+      reason: (message.includes("timeout") ? "smtp-timeout" : "mail-failed") as
+        | "smtp-timeout"
+        | "mail-failed",
+    };
+  }
 }

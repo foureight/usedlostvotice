@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
-import { saveInquiry } from "@/lib/inquiries";
+import { markInquiryMailed, saveInquiry } from "@/lib/inquiries";
 import { verifyMathCaptcha } from "@/lib/math-captcha";
 import { sendInquiryEmail } from "@/lib/mail";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
@@ -20,18 +24,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "captcha" }, { status: 400 });
     }
 
+    // Save first so a slow/blocked SMTP never loses the lead.
+    const saved = await saveInquiry({ name, email, phone, note, mailed: false });
+
     let mailed = false;
     let mailReason: string | undefined;
     try {
       const result = await sendInquiryEmail({ name, email, phone, note });
       mailed = result.sent;
       mailReason = result.sent ? undefined : result.reason;
+      if (mailed) {
+        await markInquiryMailed(saved.slug).catch(() => null);
+      }
     } catch (error) {
       console.error("[inquiry] mail failed", error);
       mailReason = "mail-failed";
     }
-
-    const saved = await saveInquiry({ name, email, phone, note, mailed });
 
     console.info("[inquiry]", {
       name,

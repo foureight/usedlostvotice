@@ -42,10 +42,13 @@ export function InquiryForm({
       return;
     }
     setStatus("sending");
+    const controller = new AbortController();
+    const kill = window.setTimeout(() => controller.abort(), 25_000);
     try {
       const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           name: data.get("name"),
           email: data.get("email"),
@@ -65,14 +68,27 @@ export function InquiryForm({
         }
         throw new Error("fail");
       }
+      const payload = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        mailed?: boolean;
+        reason?: string;
+      };
       setStatus("ok");
-      setMessage("Děkujeme. Ozveme se co nejdřív kvůli prohlídce.");
+      if (payload.mailed) {
+        setMessage("Děkujeme. Ozveme se co nejdřív kvůli prohlídce.");
+      } else {
+        setMessage(
+          "Děkujeme — poptávku jsme uložili. E-mail se teď nepodařilo odeslat, ozveme se podle kontaktu v poptávce.",
+        );
+      }
       form.reset();
       await loadCaptcha();
     } catch {
       setStatus("error");
       setMessage("Odeslání se nepovedlo. Zkuste e-mail nebo telefon níže.");
       await loadCaptcha();
+    } finally {
+      window.clearTimeout(kill);
     }
   }
 

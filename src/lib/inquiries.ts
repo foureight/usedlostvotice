@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 
 export type InquiryRecord = {
@@ -43,4 +43,12 @@ export async function saveInquiry(record: InquiryRecord): Promise<{ slug: string
 
   await writeFile(path.join(dir, `${slug}.json`), `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   return { slug };
+}
+
+export async function markInquiryMailed(slug: string): Promise<void> {
+  const file = path.join(process.cwd(), "content", "inquiries", `${slug}.json`);
+  const raw = await readFile(file, "utf8");
+  const data = JSON.parse(raw) as Record<string, unknown>;
+  data.mailed = true;
+  await writeFile(file, `${JSON.stringify(data, null, 2)}\n`, "utf8");
 }
