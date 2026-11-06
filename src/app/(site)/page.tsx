@@ -9,6 +9,7 @@ import { InquiryForm } from "@/components/inquiry-form";
 import {
   ArchitectureStudioLink,
   linkifyArchitecture,
+  partnerUrlsFromProperty,
 } from "@/components/linkify-architecture";
 import { getProperty } from "@/lib/content";
 
@@ -65,6 +66,7 @@ export default async function HomePage() {
     (plans[0] ? { src: plans[0].src, alt: plans[0].alt } : null);
   const photosCtaHref = showGalerie ? "#galerie" : showVize ? "#vize" : "#kontakt";
   const photosCtaLabel = showGalerie || showVize ? "Prohlédnout fotografie" : "Domluvit prohlídku";
+  const partners = partnerUrlsFromProperty(property);
 
   return (
     <main id="top" className="atmosphere relative overflow-x-hidden">
@@ -181,13 +183,13 @@ export default async function HomePage() {
             <SectionHead
               eyebrow="O nabídce"
               title="Zahájená rekonstrukce usedlosti u rybníka"
-              lead={linkifyArchitecture(property.summary[0], property.architecture.studioUrl)}
+              lead={linkifyArchitecture(property.summary[0], partners)}
             />
           </FadeIn>
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
             <FadeIn delay={80} className="space-y-5 text-base leading-relaxed text-[var(--color-ink-soft)] sm:text-lg">
               {property.summary.slice(1).map((p) => (
-                <p key={p}>{linkifyArchitecture(p, property.architecture.studioUrl)}</p>
+                <p key={p}>{linkifyArchitecture(p, partners)}</p>
               ))}
               <p>
                 {property.priceNote}. Aktuální inzerát také na{" "}
@@ -262,7 +264,7 @@ export default async function HomePage() {
                     title="Studie nabarvená do atmosféry místa"
                     lead={linkifyArchitecture(
                       "Šedé rámce Dílny architektury jsme dobarvili materiály a světlem z reálných fotek usedlosti — bílá omítka, dřevo, pálená krytina, jarní zeleň a rybník. Jde o ilustrativní fotovize, ne o finální CGI zakázku.",
-                      property.architecture.studioUrl,
+                      partners,
                     )}
                   />
                 </FadeIn>
@@ -356,19 +358,28 @@ export default async function HomePage() {
             </FadeIn>
             <FadeIn delay={100} className="space-y-4 text-base leading-relaxed text-[var(--color-ink-soft)] sm:text-lg">
               {property.completion.text.map((p) => (
-                <p key={p}>{p}</p>
+                <p key={p}>{linkifyArchitecture(p, partners)}</p>
               ))}
               <p>
                 Realizace:{" "}
-                <a href={property.completion.teamUrl} className="underline underline-offset-2" target="_blank" rel="noreferrer">
+                <a
+                  href={property.completion.teamUrl}
+                  className="underline underline-offset-2 hover:text-[var(--color-moss)]"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {property.completion.team}
                 </a>
                 {" · "}
-                partnerství s{" "}
-                <a href={property.completion.partnerUrl} className="underline underline-offset-2" target="_blank" rel="noreferrer">
+                <a
+                  href={property.completion.partnerUrl}
+                  className="underline underline-offset-2 hover:text-[var(--color-moss)]"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {property.completion.partner}
                 </a>
-                . Architektura studie:{" "}
+                .{" "}
                 <ArchitectureStudioLink
                   label={property.architecture.studio}
                   href={property.architecture.studioUrl}
@@ -454,14 +465,14 @@ export default async function HomePage() {
               <SectionHead
                 eyebrow="Shrnutí nabídky"
                 title="Prodej domu Vodice — fakta na jednom místě"
-                lead={linkifyArchitecture(property.summary[0], property.architecture.studioUrl)}
+                lead={linkifyArchitecture(property.summary[0], partners)}
               />
             </FadeIn>
             <div className="mt-10 grid gap-10 lg:grid-cols-2">
               <FadeIn delay={60} className="space-y-4 text-base leading-relaxed text-[var(--color-ink-soft)]">
                 <h3 className="font-display text-2xl text-[var(--color-ink)]">Proč Usedlost Vodice</h3>
                 {property.summary.map((p) => (
-                  <p key={p}>{linkifyArchitecture(p, property.architecture.studioUrl)}</p>
+                  <p key={p}>{linkifyArchitecture(p, partners)}</p>
                 ))}
               </FadeIn>
               <div className="sr-only" aria-hidden="true" data-seo="body">
@@ -476,7 +487,7 @@ export default async function HomePage() {
                   {property.search.aioBullets.map((b) => (
                     <li key={b} className="flex gap-3 border-b border-[var(--color-line)] pb-3 last:border-0">
                       <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-moss)]" />
-                      <span>{b}</span>
+                      <span>{linkifyArchitecture(b, partners)}</span>
                     </li>
                   ))}
                 </ul>
@@ -539,10 +550,7 @@ export default async function HomePage() {
                 title="Co se lidé ptají před prohlídkou"
               />
             </FadeIn>
-            <FaqAccordion
-              items={property.faqs}
-              architectureStudioUrl={property.architecture.studioUrl}
-            />
+            <FaqAccordion items={property.faqs} partnerUrls={partners} />
           </div>
         </section>
 

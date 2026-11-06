@@ -3,7 +3,10 @@ import Link from "next/link";
 import type { LandingPage } from "@/data/landings";
 import type { SiteContent } from "@/lib/content-types";
 import { InquiryForm } from "@/components/inquiry-form";
-import { linkifyArchitecture } from "@/components/linkify-architecture";
+import {
+  linkifyArchitecture,
+  partnerUrlsFromProperty,
+} from "@/components/linkify-architecture";
 
 export function SeoLanding({
   landing,
@@ -16,6 +19,8 @@ export function SeoLanding({
   heroSrc: string;
   heroAlt: string;
 }) {
+  const partners = partnerUrlsFromProperty(property);
+
   return (
     <main id="obsah" className="atmosphere min-h-dvh pt-[4.5rem]">
       <section className="relative isolate overflow-hidden">
@@ -64,13 +69,13 @@ export function SeoLanding({
               {landing.bullets.map((b) => (
                 <li key={b} className="flex gap-3 border-b border-[var(--color-line)] pb-3">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-moss)]" />
-                  <span>{linkifyArchitecture(b, property.architecture.studioUrl)}</span>
+                  <span>{linkifyArchitecture(b, partners)}</span>
                 </li>
               ))}
             </ul>
             <div className="mt-8 space-y-4 text-base leading-relaxed text-[var(--color-ink-soft)]">
               {landing.body.map((p) => (
-                <p key={p}>{linkifyArchitecture(p, property.architecture.studioUrl)}</p>
+                <p key={p}>{linkifyArchitecture(p, partners)}</p>
               ))}
             </div>
             <p className="mt-8 text-sm text-[var(--color-ink-soft)]">

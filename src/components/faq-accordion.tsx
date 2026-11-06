@@ -1,16 +1,19 @@
 "use client";
 
 import { useId, useState } from "react";
-import { linkifyArchitecture } from "@/components/linkify-architecture";
+import {
+  linkifyArchitecture,
+  type PartnerLinkUrls,
+} from "@/components/linkify-architecture";
 
 type Faq = { q: string; a: string };
 
 export function FaqAccordion({
   items,
-  architectureStudioUrl = "https://www.dilnaarchitektury.cz",
+  partnerUrls,
 }: {
   items: readonly Faq[];
-  architectureStudioUrl?: string;
+  partnerUrls?: PartnerLinkUrls;
 }) {
   const baseId = useId();
   const [open, setOpen] = useState<Record<number, boolean>>({});
@@ -70,7 +73,7 @@ export function FaqAccordion({
                   itemType="https://schema.org/Answer"
                   className="max-w-prose pb-5 text-sm leading-relaxed text-[var(--color-ink-soft)] sm:text-base"
                 >
-                  <p itemProp="text">{linkifyArchitecture(f.a, architectureStudioUrl)}</p>
+                  <p itemProp="text">{linkifyArchitecture(f.a, partnerUrls)}</p>
                 </div>
               </div>
             </div>
