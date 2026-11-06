@@ -88,9 +88,6 @@ export function MultiUpload() {
   return (
     <div
       style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 1000,
         background: "#111",
         color: "#f5f5f5",
         borderBottom: "2px solid #5a6b4a",

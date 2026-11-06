@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { AdminMediaChrome } from "./admin-media-chrome";
+import { AdminShell } from "./admin-shell";
 import { RepairBanner } from "./repair-banner";
 import KeystaticApp from "./keystatic";
 import { getContent } from "@/lib/content";
@@ -16,14 +16,11 @@ export const metadata: Metadata = {
 
 function isGithubMode() {
   const id = (process.env.KEYSTATIC_GITHUB_CLIENT_ID || "").trim();
-  // Zerops may leave unresolved `${VAR}` placeholders — treat those as unset.
   if (!id || id.includes("${") || id === "undefined") return false;
   return true;
 }
 
 export default async function Layout() {
-  // GitHub mode = přihlášení přes GitHub App (Keystatic).
-  // Bez GitHub env zůstaneme u hesla na /admin.
   if (!isGithubMode() && !(await isAdminAuthenticated())) {
     redirect("/admin");
   }
@@ -91,8 +88,9 @@ export default async function Layout() {
   return (
     <>
       <RepairBanner initialNote={repairNote} />
-      <AdminMediaChrome thumbs={thumbs} albums={albums} />
-      <KeystaticApp />
+      <AdminShell thumbs={thumbs} albums={albums}>
+        <KeystaticApp />
+      </AdminShell>
     </>
   );
 }

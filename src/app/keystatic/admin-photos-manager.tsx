@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MultiUpload } from "./multi-upload";
 
 export type PhotoAlbum = {
@@ -14,6 +14,11 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
   const router = useRouter();
   const [busySrc, setBusySrc] = useState<string | null>(null);
   const [message, setMessage] = useState("");
+  const [localAlbums, setLocalAlbums] = useState(albums);
+
+  useEffect(() => {
+    setLocalAlbums(albums);
+  }, [albums]);
 
   async function removePhoto(field: string, src: string) {
     if (!confirm(`Smazat fotku z webu?\n${src}`)) return;
@@ -34,7 +39,14 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
         setMessage(data.error || `Smazání selhalo (${res.status})`);
         return;
       }
-      setMessage("Smazáno. Obnovuji…");
+      setLocalAlbums((prev) =>
+        prev.map((album) =>
+          album.id === field
+            ? { ...album, items: album.items.filter((i) => i.src !== src) }
+            : album,
+        ),
+      );
+      setMessage("Smazáno z webu.");
       router.refresh();
     } catch {
       setMessage("Smazání selhalo (síť).");
@@ -43,54 +55,61 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
     }
   }
 
-  const total = albums.reduce((n, a) => n + a.items.length, 0);
+  const total = localAlbums.reduce((n, a) => n + a.items.length, 0);
 
   return (
-    <div
-      style={{
-        background: "#f7f4ef",
-        borderBottom: "1px solid #ddd",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <MultiUpload />
-      <div style={{ padding: "14px 16px 20px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "baseline" }}>
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>
-            Fotky na webu ({total})
-          </h2>
-          <span style={{ color: "#666", fontSize: 13 }}>
-            Podle kategorií — smažete jen to, co je online. Nic z lokálu se nedoplňuje.
-          </span>
-        </div>
+    <div style={{ fontFamily: "system-ui, sans-serif", background: "#f7f4ef", minHeight: "100%" }}>
+      <div style={{ borderBottom: "1px solid #ddd", background: "#111" }}>
+        <MultiUpload />
+      </div>
+
+      <div style={{ padding: "20px 20px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <h1 style={{ margin: "0 0 6px", fontSize: 22 }}>Fotky na webu ({total})</h1>
+        <p style={{ margin: "0 0 8px", color: "#555", fontSize: 14 }}>
+          Kategorie = sekce na webu. Nahrání i smazání platí hned online — nic z lokálu se
+          nedoplňuje.
+        </p>
         {message ? (
-          <p style={{ margin: "8px 0 0", color: "#5a6b4a", fontSize: 13 }}>{message}</p>
+          <p style={{ margin: "0 0 12px", color: "#5a6b4a", fontSize: 13, fontWeight: 600 }}>
+            {message}
+          </p>
         ) : null}
 
-        <div style={{ display: "grid", gap: 22, marginTop: 16 }}>
-          {albums.map((album) => (
-            <section key={album.id}>
-              <h3
+        <div style={{ display: "grid", gap: 28, marginTop: 18 }}>
+          {localAlbums.map((album) => (
+            <section
+              key={album.id}
+              style={{
+                background: "#fff",
+                border: "1px solid #e0ddd6",
+                borderRadius: 8,
+                padding: 16,
+              }}
+            >
+              <h2
                 style={{
-                  margin: "0 0 10px",
-                  fontSize: 13,
+                  margin: "0 0 12px",
+                  fontSize: 14,
                   fontWeight: 700,
-                  letterSpacing: "0.06em",
+                  letterSpacing: "0.05em",
                   textTransform: "uppercase",
-                  color: "#444",
+                  color: "#333",
                 }}
               >
                 {album.label}{" "}
-                <span style={{ fontWeight: 500, color: "#888" }}>({album.items.length})</span>
-              </h3>
+                <span style={{ color: "#888", fontWeight: 500 }}>({album.items.length})</span>
+              </h2>
+
               {album.items.length === 0 ? (
-                <p style={{ margin: 0, color: "#999", fontSize: 13 }}>Žádné fotky v této kategorii.</p>
+                <p style={{ margin: 0, color: "#999", fontSize: 13 }}>
+                  Žádné fotky — nahrajte nahoře do této kategorie.
+                </p>
               ) : (
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-                    gap: 10,
+                    gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+                    gap: 12,
                   }}
                 >
                   {album.items.map((item) => (
@@ -98,10 +117,10 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
                       key={`${album.id}-${item.src}`}
                       style={{
                         margin: 0,
-                        border: "1px solid #ddd",
+                        border: "1px solid #e5e5e5",
                         borderRadius: 6,
                         overflow: "hidden",
-                        background: "#fff",
+                        background: "#fafafa",
                       }}
                     >
                       <a href={item.src} target="_blank" rel="noreferrer" title={item.alt}>
@@ -120,16 +139,15 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
                           }}
                         />
                       </a>
-                      <figcaption style={{ padding: "8px 8px 10px" }}>
+                      <figcaption style={{ padding: "8px" }}>
                         <div
                           style={{
                             fontSize: 11,
                             color: "#555",
-                            lineHeight: 1.3,
-                            minHeight: 28,
+                            lineHeight: 1.35,
+                            minHeight: 30,
                             overflow: "hidden",
                           }}
-                          title={item.alt}
                         >
                           {item.alt || item.src}
                         </div>
@@ -138,15 +156,15 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
                           disabled={busySrc === item.src}
                           onClick={() => removePhoto(album.id, item.src)}
                           style={{
-                            marginTop: 6,
+                            marginTop: 8,
                             width: "100%",
-                            padding: "6px 8px",
+                            padding: "7px 8px",
                             border: "1px solid #c45c5c",
                             borderRadius: 4,
                             background: busySrc === item.src ? "#eee" : "#fff5f5",
                             color: "#a33",
                             fontSize: 12,
-                            fontWeight: 600,
+                            fontWeight: 700,
                             cursor: busySrc === item.src ? "wait" : "pointer",
                           }}
                         >
