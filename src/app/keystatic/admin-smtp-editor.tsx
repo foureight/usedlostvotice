@@ -295,6 +295,12 @@ export function AdminSmtpEditor() {
             onChange={(e) => setSmtp({ ...smtp, subjectPrefix: e.target.value })}
           />
         </label>
+
+        <p style={{ margin: 0, fontSize: 12, color: "#666", lineHeight: 1.45 }}>
+          Poznámka: server Zerops často blokuje odchozí SMTP (port 465/587). Poptávky se vždy
+          ukládají do adminu (Poptávky). Když e-mail timeoutuje, zkontrolujte firewall u
+          poskytovatele SMTP (povolit IP Zerops), nebo zkuste jiný relay.
+        </p>
       </div>
     </div>
   );
