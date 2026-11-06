@@ -132,22 +132,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
               </a>
             </p>
             <p>
-              <a className="underline-offset-2 hover:underline" href={absoluteUrl("/property.json")}>
-                property.json
-              </a>
-              {" · "}
-              <a className="underline-offset-2 hover:underline" href={absoluteUrl("/faq.json")}>
-                faq.json
-              </a>
-              {" · "}
-              <a className="underline-offset-2 hover:underline" href={absoluteUrl("/places.json")}>
-                places.json
-              </a>
-              {" · "}
-              <a className="underline-offset-2 hover:underline" href={absoluteUrl("/llms.txt")}>
-                llms.txt
-              </a>
-              {" · "}
               <a
                 className="underline-offset-2 hover:underline"
                 href={property.listingUrl}

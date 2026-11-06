@@ -516,22 +516,7 @@ export default async function HomePage() {
               <SectionHead
                 eyebrow="Časté otázky"
                 title="Co se lidé ptají před prohlídkou"
-                lead="Odpovědi jsou i ve strojově čitelném JSON a llms.txt — pro AI vyhledávání podobných nemovitostí."
               />
-              <p className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-[var(--color-ink-soft)]">
-                <a className="font-medium text-[var(--color-moss)] underline-offset-2 hover:underline" href="/faq.json">
-                  faq.json
-                </a>
-                <a className="font-medium text-[var(--color-moss)] underline-offset-2 hover:underline" href="/property.json">
-                  property.json
-                </a>
-                <a className="font-medium text-[var(--color-moss)] underline-offset-2 hover:underline" href="/places.json">
-                  places.json
-                </a>
-                <a className="font-medium text-[var(--color-moss)] underline-offset-2 hover:underline" href="/llms.txt">
-                  llms.txt
-                </a>
-              </p>
             </FadeIn>
             <FaqAccordion items={property.faqs} />
           </div>
