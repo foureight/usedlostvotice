@@ -6,6 +6,7 @@ import { useEffect, type ReactNode } from "react";
 import { AdminListThumbs, type AdminThumb } from "./admin-list-thumbs";
 import { AdminPhotosManager, type PhotoAlbum } from "./admin-photos-manager";
 import { AdminSeoEditor } from "./admin-seo-editor";
+import { AdminSmtpEditor } from "./admin-smtp-editor";
 
 const NAV = [
   { href: "/keystatic", label: "Dashboard" },
@@ -79,8 +80,9 @@ export function AdminShell({
   const pathname = usePathname() || "";
   const onPhotos = pathname.includes("/singleton/photos");
   const onSeo = pathname.includes("/singleton/seo");
+  const onSmtp = pathname.includes("/singleton/smtp");
   const onSite = pathname.includes("/singleton/site");
-  const customPage = onPhotos || onSeo;
+  const customPage = onPhotos || onSeo || onSmtp;
 
   // Unlock any Keystatic body scroll lock so the document can scroll.
   useEffect(() => {
@@ -99,6 +101,47 @@ export function AdminShell({
     };
   }, [customPage]);
 
+  // Keystatic toolbar: Save → Uložit, Saved → zelené Uloženo
+  useEffect(() => {
+    if (customPage) return;
+
+    const paint = (btn: HTMLElement, mode: "idle" | "saved") => {
+      if (mode === "saved") {
+        btn.style.background = "#2f7d4a";
+        btn.style.color = "#fff";
+        btn.style.borderColor = "#2f7d4a";
+      } else {
+        btn.style.removeProperty("background");
+        btn.style.removeProperty("color");
+        btn.style.removeProperty("border-color");
+      }
+    };
+
+    const rename = () => {
+      document.querySelectorAll("button").forEach((btn) => {
+        const raw = (btn.textContent || "").replace(/\s+/g, " ").trim();
+        if (raw === "Save" || raw === "Saving…" || raw === "Saving...") {
+          btn.textContent = raw.startsWith("Saving") ? "Ukládám…" : "Uložit";
+          paint(btn, "idle");
+        } else if (raw === "Saved" || raw === "Uloženo") {
+          btn.textContent = "Uloženo";
+          paint(btn, "saved");
+        } else if (raw === "Uložit") {
+          paint(btn, "idle");
+        }
+      });
+    };
+
+    rename();
+    const mo = new MutationObserver(rename);
+    mo.observe(document.body, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+    });
+    return () => mo.disconnect();
+  }, [customPage, pathname]);
+
   if (customPage) {
     return (
       <div
@@ -111,7 +154,13 @@ export function AdminShell({
       >
         <SideNav current={pathname} />
         <main style={{ flex: 1, minWidth: 0 }}>
-          {onPhotos ? <AdminPhotosManager albums={albums} /> : <AdminSeoEditor />}
+          {onPhotos ? (
+            <AdminPhotosManager albums={albums} />
+          ) : onSeo ? (
+            <AdminSeoEditor />
+          ) : (
+            <AdminSmtpEditor />
+          )}
         </main>
       </div>
     );

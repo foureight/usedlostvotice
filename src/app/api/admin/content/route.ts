@@ -18,6 +18,16 @@ import { repairSiteJson } from "@/lib/repair-site";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+function redactSmtp(smtp: Record<string, unknown>) {
+  const hasPassword =
+    typeof smtp.password === "string" && smtp.password.trim().length > 0;
+  return {
+    ...smtp,
+    password: "",
+    hasPassword,
+  };
+}
+
 export async function GET() {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
@@ -29,7 +39,7 @@ export async function GET() {
     readSmtpJson(),
     listInquiries(),
   ]);
-  return NextResponse.json({ site, seo, smtp, inquiries });
+  return NextResponse.json({ site, seo, smtp: redactSmtp(smtp), inquiries });
 }
 
 export async function PUT(request: Request) {
@@ -55,7 +65,16 @@ export async function PUT(request: Request) {
     await writeJsonFile("seo.json", body.seo);
   }
   if (body.smtp && typeof body.smtp === "object") {
-    await writeJsonFile("smtp.json", body.smtp);
+    const current = await readSmtpJson();
+    const next = { ...body.smtp };
+    const incoming =
+      typeof next.password === "string" ? next.password.trim() : "";
+    // Empty / placeholder = keep existing secret on disk.
+    if (!incoming || incoming === "••••••••" || incoming === "***") {
+      next.password =
+        typeof current.password === "string" ? current.password : "";
+    }
+    await writeJsonFile("smtp.json", next);
   }
 
   await repairSiteJson().catch(() => null);
@@ -64,7 +83,7 @@ export async function PUT(request: Request) {
     ok: true,
     site: await readSiteJson(),
     seo: await readSeoJson(),
-    smtp: await readSmtpJson(),
+    smtp: redactSmtp(await readSmtpJson()),
   });
 }
 
