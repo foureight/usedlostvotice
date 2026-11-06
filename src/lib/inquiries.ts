@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 
 export type InquiryRecord = {
@@ -19,19 +19,29 @@ function slugify(input: string): string {
     .slice(0, 48);
 }
 
-/** Save a contact-form lead into Keystatic collection `inquiries`. */
+async function flushInquiryToVolume(slug: string) {
+  const cms = process.env.CMS_DATA_DIR;
+  if (!cms) return;
+  const from = path.join(process.cwd(), "content", "inquiries", `${slug}.json`);
+  const to = path.join(cms, "content", "inquiries", `${slug}.json`);
+  await mkdir(path.dirname(to), { recursive: true });
+  await copyFile(from, to);
+}
+
+/** Save a contact-form lead into content/inquiries (Keystatic-compatible JSON). */
 export async function saveInquiry(record: InquiryRecord): Promise<{ slug: string }> {
   const createdAt = new Date().toISOString();
   const stamp = createdAt.replace(/[:.]/g, "-");
   const base = slugify(record.name) || "poptavka";
   const slug = `${stamp}-${base}`;
 
-  const title = `${record.name} · ${createdAt.slice(0, 16).replace("T", " ")} UTC`;
+  const titleName = `${record.name} · ${createdAt.slice(0, 16).replace("T", " ")} UTC`;
   const dir = path.join(process.cwd(), "content", "inquiries");
   await mkdir(dir, { recursive: true });
 
+  // Keystatic `fields.slug` expects { name, slug } — plain string breaks the collection UI.
   const payload = {
-    title,
+    title: { name: titleName, slug },
     name: record.name,
     email: record.email,
     phone: record.phone,
@@ -42,6 +52,7 @@ export async function saveInquiry(record: InquiryRecord): Promise<{ slug: string
   };
 
   await writeFile(path.join(dir, `${slug}.json`), `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  await flushInquiryToVolume(slug);
   return { slug };
 }
 
@@ -51,4 +62,5 @@ export async function markInquiryMailed(slug: string): Promise<void> {
   const data = JSON.parse(raw) as Record<string, unknown>;
   data.mailed = true;
   await writeFile(file, `${JSON.stringify(data, null, 2)}\n`, "utf8");
+  await flushInquiryToVolume(slug);
 }

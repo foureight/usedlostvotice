@@ -78,9 +78,16 @@ export async function listInquiries(): Promise<InquiryRow[]> {
         string,
         unknown
       >;
+      let title = slug;
+      if (typeof data.title === "string") {
+        title = data.title;
+      } else if (data.title && typeof data.title === "object") {
+        const t = data.title as Record<string, unknown>;
+        if (typeof t.name === "string" && t.name.trim()) title = t.name;
+      }
       rows.push({
         slug,
-        title: typeof data.title === "string" ? data.title : slug,
+        title,
         name: typeof data.name === "string" ? data.name : "",
         email: typeof data.email === "string" ? data.email : "",
         phone: typeof data.phone === "string" ? data.phone : "",

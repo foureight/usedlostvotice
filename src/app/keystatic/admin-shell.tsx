@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
+import { AdminInquiries } from "./admin-inquiries";
 import { AdminListThumbs, type AdminThumb } from "./admin-list-thumbs";
 import { AdminPhotosManager, type PhotoAlbum } from "./admin-photos-manager";
 import { AdminSeoEditor } from "./admin-seo-editor";
@@ -81,8 +82,9 @@ export function AdminShell({
   const onPhotos = pathname.includes("/singleton/photos");
   const onSeo = pathname.includes("/singleton/seo");
   const onSmtp = pathname.includes("/singleton/smtp");
+  const onInquiries = pathname.includes("/collection/inquiries");
   const onSite = pathname.includes("/singleton/site");
-  const customPage = onPhotos || onSeo || onSmtp;
+  const customPage = onPhotos || onSeo || onSmtp || onInquiries;
 
   // Unlock any Keystatic body scroll lock so the document can scroll.
   useEffect(() => {
@@ -158,8 +160,10 @@ export function AdminShell({
             <AdminPhotosManager albums={albums} />
           ) : onSeo ? (
             <AdminSeoEditor />
-          ) : (
+          ) : onSmtp ? (
             <AdminSmtpEditor />
+          ) : (
+            <AdminInquiries />
           )}
         </main>
       </div>
