@@ -56,6 +56,34 @@ export default async function Layout() {
     ...content.plans.map((g) => ({ alt: g.alt || g.label, src: g.src })),
   ].filter((t) => t.src);
 
+  const albums = [
+    {
+      id: "gallery",
+      label: "Galerie",
+      items: content.gallery.map((g) => ({ src: g.src, alt: g.alt })),
+    },
+    {
+      id: "visualizationsPhoto",
+      label: "Fotovize",
+      items: content.visualizationsPhoto.map((g) => ({ src: g.src, alt: g.alt })),
+    },
+    {
+      id: "visualizationsDokonceno",
+      label: "Vize dokončení",
+      items: content.visualizationsDokonceno.map((g) => ({ src: g.src, alt: g.alt })),
+    },
+    {
+      id: "visualizations",
+      label: "Studie (černobílé)",
+      items: content.visualizations.map((g) => ({ src: g.src, alt: g.alt })),
+    },
+    {
+      id: "plans",
+      label: "Půdorysy",
+      items: content.plans.map((g) => ({ src: g.src, alt: g.alt || g.label })),
+    },
+  ];
+
   if (isGithubMode()) {
     return <KeystaticApp />;
   }
@@ -63,7 +91,7 @@ export default async function Layout() {
   return (
     <>
       <RepairBanner initialNote={repairNote} />
-      <AdminMediaChrome thumbs={thumbs} />
+      <AdminMediaChrome thumbs={thumbs} albums={albums} />
       <KeystaticApp />
     </>
   );

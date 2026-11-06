@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto";
-import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
+import { copyFile, mkdir, readFile, rm, writeFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
@@ -207,4 +207,62 @@ export async function POST(request: Request) {
     field: target.field,
     items: added,
   });
+}
+
+const DELETABLE_FIELDS = new Set(
+  Object.values(TARGETS).map((t) => t.field as string),
+);
+
+export async function DELETE(request: Request) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
+  }
+
+  let body: { field?: string; src?: string };
+  try {
+    body = (await request.json()) as { field?: string; src?: string };
+  } catch {
+    return NextResponse.json({ error: "Neplatné JSON." }, { status: 400 });
+  }
+
+  const field = String(body.field || "").trim();
+  const src = String(body.src || "").trim();
+  if (!DELETABLE_FIELDS.has(field) || !src.startsWith("/")) {
+    return NextResponse.json({ error: "Neplatná fotka." }, { status: 400 });
+  }
+  if (src.includes("..") || src.includes("\\")) {
+    return NextResponse.json({ error: "Neplatná cesta." }, { status: 400 });
+  }
+
+  const sitePath = path.join(process.cwd(), "content", "site.json");
+  let site: Record<string, unknown>;
+  try {
+    site = JSON.parse(await readFile(sitePath, "utf8")) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "Nelze načíst content/site.json." }, { status: 500 });
+  }
+
+  const existing = Array.isArray(site[field])
+    ? ([...(site[field] as GalleryItem[])] as GalleryItem[])
+    : [];
+  const next = existing.filter((item) => item?.src !== src);
+  if (next.length === existing.length) {
+    return NextResponse.json({ error: "Fotka v CMS není." }, { status: 404 });
+  }
+
+  site[field] = next;
+  await writeFile(sitePath, `${JSON.stringify(site, null, 2)}\n`, "utf8");
+
+  const rel = src.replace(/^\//, "");
+  const abs = path.join(process.cwd(), "public", rel);
+  await rm(abs, { force: true }).catch(() => null);
+
+  const cms = process.env.CMS_DATA_DIR;
+  if (cms) {
+    await mkdir(path.join(cms, "content"), { recursive: true });
+    await copyFile(sitePath, path.join(cms, "content", "site.json"));
+    await rm(path.join(cms, "public", rel), { force: true }).catch(() => null);
+  }
+
+  return NextResponse.json({ ok: true, field, src, remaining: next.length });
 }

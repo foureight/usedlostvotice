@@ -2,26 +2,25 @@
 
 import { usePathname } from "next/navigation";
 import { AdminListThumbs, type AdminThumb } from "./admin-list-thumbs";
-import { AdminPhotoStrip } from "./admin-photo-strip";
-import { MultiUpload } from "./multi-upload";
+import { AdminPhotosManager, type PhotoAlbum } from "./admin-photos-manager";
 
 /**
- * - Celý web: thumbnails in Keystatic gallery rows (as before)
- * - Fotky: multi-upload + full photo strip
+ * Celý web — náhledy u editovaných řádků galerie.
+ * Fotky — kategorie + náhledy + mazání + hromadný upload.
  */
-export function AdminMediaChrome({ thumbs }: { thumbs: AdminThumb[] }) {
+export function AdminMediaChrome({
+  thumbs,
+  albums,
+}: {
+  thumbs: AdminThumb[];
+  albums: PhotoAlbum[];
+}) {
   const pathname = usePathname() || "";
   const onSite = pathname.includes("/singleton/site");
   const onPhotos = pathname.includes("/singleton/photos");
 
   if (onPhotos) {
-    return (
-      <>
-        <MultiUpload />
-        <AdminPhotoStrip thumbs={thumbs} />
-        <AdminListThumbs thumbs={thumbs} />
-      </>
-    );
+    return <AdminPhotosManager albums={albums} />;
   }
 
   if (onSite) {
