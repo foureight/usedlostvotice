@@ -75,7 +75,7 @@ export default async function HomePage() {
               fetchPriority="high"
               sizes="100vw"
               quality={75}
-              className="animate-ken object-cover object-center"
+              className="animate-ken object-cover object-center brightness-[1.04] contrast-[1.04] saturate-[1.18]"
             />
           ) : (
             <div
@@ -83,13 +83,14 @@ export default async function HomePage() {
               className="absolute inset-0 bg-[color-mix(in_oklab,var(--color-moss-deep)_85%,black)]"
             />
           )}
+          {/* Overlay only near bottom text — keep photo colorful above */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-[color-mix(in_oklab,var(--color-ink)_78%,transparent)] via-[color-mix(in_oklab,var(--color-ink)_35%,transparent)] to-[color-mix(in_oklab,var(--color-ink)_20%,transparent)] md:block"
+            className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[42%] bg-gradient-to-t from-black/72 via-black/28 to-transparent md:block"
           />
         </div>
 
-        <div className="relative bg-[#d9d6d1] text-[var(--color-ink)] md:flex md:min-h-[100svh] md:flex-col md:justify-end md:bg-transparent md:text-[var(--color-paper)]">
+        <div className="relative bg-[#e4e0d8] text-[var(--color-ink)] md:flex md:min-h-[100svh] md:flex-col md:justify-end md:bg-transparent md:text-[var(--color-paper)]">
           <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 md:pb-20 md:pt-28 lg:px-8">
             <p className="animate-rise text-xs font-medium uppercase tracking-[0.2em] text-[var(--color-ink-soft)] md:text-[color-mix(in_oklab,var(--color-paper)_70%,transparent)]">
               Samostatná prezentace prodeje domu

@@ -25,9 +25,9 @@ export function SeoLanding({
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            className="object-cover brightness-[1.04] contrast-[1.04] saturate-[1.18]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/25" />
+          <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-black/72 via-black/28 to-transparent" />
         </div>
         <div className="mx-auto flex min-h-[58vh] max-w-6xl flex-col justify-end px-4 pb-12 pt-20 sm:px-6 sm:pb-16 lg:px-8">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/70">
