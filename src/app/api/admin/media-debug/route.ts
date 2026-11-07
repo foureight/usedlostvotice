@@ -62,6 +62,11 @@ export async function GET(request: Request) {
   }
 
   const target = file ? path.basename(file) : "";
+  const raster = (names: string[]) =>
+    names
+      .filter((n) => /\.(webp|jpe?g|png|gif|avif)$/i.test(n) && !n.endsWith(".tmp"))
+      .sort();
+
   return NextResponse.json({
     cwd: process.cwd(),
     cms,
@@ -70,6 +75,8 @@ export async function GET(request: Request) {
     volumeDir: volumeDir || null,
     localCount: localFiles.length,
     volumeCount: volumeFiles.length,
+    localFiles: raster(localFiles),
+    volumeFiles: raster(volumeFiles),
     localHasPuda: localFiles.some((n) => n.toLowerCase().includes("puda")),
     volumeHasPuda: volumeFiles.some((n) => n.toLowerCase().includes("puda")),
     localPudaLike: localFiles.filter((n) => /puda/i.test(n)),
