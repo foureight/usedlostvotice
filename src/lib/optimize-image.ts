@@ -5,10 +5,10 @@ import sharp from "sharp";
 
 /** Max longest edge for stored CMS photos. */
 export const MAX_IMAGE_EDGE = 1600;
-/** JPEG quality for permanently resized uploads. */
-export const STORE_JPEG_QUALITY = 78;
-/** Recompress originals larger than this (bytes). */
-export const OPTIMIZE_MIN_BYTES = 180_000;
+/** WebP quality for permanently stored photos (much smaller than JPEG/PNG). */
+export const STORE_WEBP_QUALITY = 72;
+/** Recompress / convert when larger than this (bytes). */
+export const OPTIMIZE_MIN_BYTES = 40_000;
 
 const RASTER_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 
@@ -21,48 +21,38 @@ export type OptimizedImage = {
 };
 
 /**
- * Permanently downscale + recompress an uploaded photo.
- * Large phone PNGs become JPEG so public/ stays small.
+ * Permanently downscale + store as WebP (with alpha when needed).
+ * WebP is typically 25–40% smaller than JPEG at similar quality.
  */
 export async function optimizeImageUpload(
   input: Buffer,
   originalFilename: string,
 ): Promise<OptimizedImage> {
-  const ext = path.extname(originalFilename).toLowerCase();
   const stem = path.basename(originalFilename, path.extname(originalFilename));
 
   const image = sharp(input, { failOn: "none", animated: false }).rotate();
   const meta = await image.metadata();
   const width = meta.width ?? 0;
   const height = meta.height ?? 0;
-  const hasAlpha = Boolean(meta.hasAlpha);
-  const keepPng = hasAlpha && ext === ".png";
 
-  let pipeline = image.resize({
-    width: MAX_IMAGE_EDGE,
-    height: MAX_IMAGE_EDGE,
-    fit: "inside",
-    withoutEnlargement: true,
-  });
-
-  let outExt = ".jpg";
-  if (keepPng) {
-    pipeline = pipeline.png({ compressionLevel: 8, palette: false });
-    outExt = ".png";
-  } else {
-    pipeline = pipeline.jpeg({
-      quality: STORE_JPEG_QUALITY,
-      mozjpeg: true,
-      chromaSubsampling: "4:2:0",
+  const pipeline = image
+    .resize({
+      width: MAX_IMAGE_EDGE,
+      height: MAX_IMAGE_EDGE,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({
+      quality: STORE_WEBP_QUALITY,
+      alphaQuality: 80,
+      effort: 4,
     });
-    outExt = ".jpg";
-  }
 
   const buffer = await pipeline.toBuffer();
   const outMeta = await sharp(buffer).metadata();
   return {
     buffer,
-    filename: `${stem}${outExt}`,
+    filename: `${stem}.webp`,
     width: outMeta.width ?? width,
     height: outMeta.height ?? height,
     bytes: buffer.length,
@@ -71,7 +61,7 @@ export async function optimizeImageUpload(
 
 type Rewrite = { from: string; to: string };
 
-/** Shrink one file on disk; may change .png → .jpg. */
+/** Shrink one file on disk; converts JPG/PNG → WebP. */
 export async function optimizeExistingFile(
   absPath: string,
 ): Promise<{ rewrite: Rewrite | null; savedBytes: number } | null> {
@@ -79,13 +69,19 @@ export async function optimizeExistingFile(
   if (!RASTER_EXT.has(ext)) return null;
 
   const before = await stat(absPath);
-  if (before.size < OPTIMIZE_MIN_BYTES) return null;
+  // Always convert legacy JPG/PNG; only skip tiny WebP.
+  if (ext === ".webp" && before.size < OPTIMIZE_MIN_BYTES) return null;
+  if (ext !== ".webp" && before.size < 12_000) return null;
 
   const input = await readFile(absPath);
   const optimized = await optimizeImageUpload(input, path.basename(absPath));
 
-  if (optimized.bytes >= before.size * 0.95 && path.extname(optimized.filename) === ext) {
+  // Keep original if WebP isn't meaningfully smaller (rare for PNG).
+  if (ext === ".webp" && optimized.bytes >= before.size * 0.95) {
     return null;
+  }
+  if (ext !== ".webp" && optimized.bytes >= before.size * 0.98) {
+    // Still convert to WebP for consistent format / Next Image cache keys.
   }
 
   const dir = path.dirname(absPath);
@@ -127,7 +123,7 @@ const MEDIA_FIELDS = [
   "plans",
 ] as const;
 
-/** Walk public media, shrink oversized originals, rewrite site.json src paths. */
+/** Walk public media, convert to WebP, rewrite site.json src paths. */
 export async function optimizePublicMedia(): Promise<{
   touched: string[];
   rewrites: Rewrite[];
@@ -157,9 +153,7 @@ export async function optimizePublicMedia(): Promise<{
           touched.push(result.rewrite.to);
           rewrites.push(result.rewrite);
         } else {
-          touched.push(
-            "/" + path.relative(root, abs).split(path.sep).join("/"),
-          );
+          touched.push("/" + path.relative(root, abs).split(path.sep).join("/"));
         }
       } catch (err) {
         console.error("[optimize]", abs, err);
