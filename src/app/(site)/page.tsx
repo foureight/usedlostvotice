@@ -98,7 +98,7 @@ export default async function HomePage() {
         </div>
 
         <div className="relative bg-[#e4e0d8] text-[var(--color-ink)] md:flex md:min-h-[100svh] md:flex-col md:justify-end md:bg-transparent md:text-[var(--color-paper)]">
-          <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 md:pb-20 md:pt-28 lg:px-8">
+          <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 md:pb-20 md:pt-36 lg:px-8">
             <p className="animate-rise text-xs font-medium uppercase tracking-[0.2em] text-[var(--color-ink-soft)] md:text-[color-mix(in_oklab,var(--color-paper)_70%,transparent)]">
               Samostatná prezentace prodeje domu
             </p>

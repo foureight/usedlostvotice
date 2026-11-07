@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getOpeningStatus, OPENING_RULES, type OpeningStatus } from "@/lib/opening-hours";
 
 type SiteHeaderProps = {
   brand: string;
@@ -11,6 +12,14 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ brand, showGalerie, showVize }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState<OpeningStatus | null>(null);
+
+  useEffect(() => {
+    const tick = () => setStatus(getOpeningStatus());
+    tick();
+    const id = window.setInterval(tick, 60_000);
+    return () => window.clearInterval(id);
+  }, []);
 
   // Absolute /#… so landing pages jump back to the main presentation.
   const links = [
@@ -28,6 +37,37 @@ export function SiteHeader({ brand, showGalerie, showVize }: SiteHeaderProps) {
       data-site-header
       className="fixed inset-x-0 top-0 z-50 border-b-2 border-[var(--color-moss)] bg-black text-[var(--color-paper)]"
     >
+      <div className="border-b border-white/10 bg-[color-mix(in_oklab,var(--color-moss-deep)_88%,black)]">
+        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-1.5 text-[11px] leading-snug text-white/75 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6 sm:text-xs lg:px-8">
+          <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
+            <span
+              className={
+                status?.open
+                  ? "font-medium text-[color-mix(in_oklab,var(--color-moss)_70%,white)]"
+                  : "font-medium text-white/90"
+              }
+            >
+              {status ? status.label : "Prohlídky"}
+            </span>
+            {status ? (
+              <>
+                <span aria-hidden className="text-white/35">
+                  ·
+                </span>
+                <span className="text-white/65">{status.detail}</span>
+              </>
+            ) : null}
+          </p>
+          <p className="min-w-0 truncate text-white/55 sm:max-w-[58%] sm:text-right" title={OPENING_RULES.map((r) => r.text).join(" · ")}>
+            <span className="sm:hidden">
+              So 1.4.–31.10. 8–11:30 · So 1.11.–31.3. zavřeno · Zima st 8–16
+            </span>
+            <span className="hidden sm:inline">
+              {OPENING_RULES.map((r) => r.text).join(" · ")}
+            </span>
+          </p>
+        </div>
+      </div>
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="min-w-0">
           <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">
@@ -75,6 +115,14 @@ export function SiteHeader({ brand, showGalerie, showVize }: SiteHeaderProps) {
                 </Link>
               </li>
             ))}
+            <li className="border-t border-white/10 pt-3 text-sm text-white/65">
+              <p className="font-medium text-white/85">Prohlídky</p>
+              <ul className="mt-1.5 space-y-1">
+                {OPENING_RULES.map((r) => (
+                  <li key={r.id}>{r.text}</li>
+                ))}
+              </ul>
+            </li>
             <li>
               <Link
                 href="/#kontakt"
