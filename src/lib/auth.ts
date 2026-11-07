@@ -1,14 +1,21 @@
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 
 export const ADMIN_COOKIE = "uv_admin_session";
+
+// Without any configured secret in production, use a per-process random
+// secret so session cookies can never be forged from a known default.
+const fallbackSecret =
+  process.env.NODE_ENV === "production"
+    ? randomBytes(32).toString("hex")
+    : "usedlost-vodice-dev-secret";
 
 function getSecret() {
   return (
     process.env.ADMIN_SECRET ||
     process.env.ADMIN_PASSWORD ||
     process.env.KEYSTATIC_ADMIN_PASSWORD ||
-    "usedlost-vodice-dev-secret"
+    fallbackSecret
   );
 }
 
@@ -23,7 +30,7 @@ export function getAdminPassword() {
   return (
     process.env.ADMIN_PASSWORD ||
     process.env.KEYSTATIC_ADMIN_PASSWORD ||
-    "VodiceAdmin2026!"
+    ""
   ).trim();
 }
 

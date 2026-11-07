@@ -51,13 +51,15 @@ node scripts/restore-media-refs.mjs || true
 cp -a content/. "$CMS/content/" 2>/dev/null || true
 
 # While running: keep volume in sync with uploads/edits (additive copy).
+# -u copies only files newer than the volume copy, so the loop no longer
+# rewrites every photo/PDF (~20 MB) to the volume every 8 seconds.
 (
   while true; do
     sleep 8
-    cp -a content/. "$CMS/content/" 2>/dev/null || true
+    cp -au content/. "$CMS/content/" 2>/dev/null || true
     for d in $MEDIA_DIRS; do
       mkdir -p "$CMS/public/$d"
-      cp -a "public/$d/." "$CMS/public/$d/" 2>/dev/null || true
+      cp -au "public/$d/." "$CMS/public/$d/" 2>/dev/null || true
     done
   done
 ) &
