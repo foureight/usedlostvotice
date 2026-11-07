@@ -125,7 +125,7 @@ export function getOpeningStatus(now = new Date()): OpeningStatus {
     return {
       open,
       label: open ? "Teď otevřeno" : "Teď zavřeno",
-      detail: open ? "Středa do 16:00" : "Zima: středa 8:00–16:00",
+      detail: open ? "Středa do 16:00" : "Zima zavřeno",
     };
   }
 
@@ -134,7 +134,7 @@ export function getOpeningStatus(now = new Date()): OpeningStatus {
     return {
       open: false,
       label: "Teď zavřeno",
-      detail: "Zima: středa 8:00–16:00",
+      detail: "Zima zavřeno",
     };
   }
 
