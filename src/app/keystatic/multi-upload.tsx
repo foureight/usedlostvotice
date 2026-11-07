@@ -41,7 +41,11 @@ async function uploadBatch(
   return { ok: true, added: data.added ?? files.length };
 }
 
-export function MultiUpload() {
+export function MultiUpload({
+  onUploaded,
+}: {
+  onUploaded?: (count: number, label: string) => void;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [target, setTarget] = useState<TargetId>("gallery");
   const [kind, setKind] = useState<Kind>("exterier");
@@ -59,6 +63,7 @@ export function MultiUpload() {
     let uploaded = 0;
     // Small batches so Zerops/nginx body limit does not reject the request.
     const chunkSize = 3;
+    const label = TARGETS.find((t) => t.id === target)?.label || target;
     try {
       for (let i = 0; i < files.length; i += chunkSize) {
         const chunk = files.slice(i, i + chunkSize);
@@ -73,9 +78,8 @@ export function MultiUpload() {
         uploaded += result.added ?? chunk.length;
         setMessage(`Nahráno ${uploaded} / ${files.length}…`);
       }
-      setMessage(
-        `Hotovo: ${uploaded} fotek v „${TARGETS.find((t) => t.id === target)?.label}“. Obnovte stránku (F5), ať je Keystatic načte.`,
-      );
+      setMessage(`Hotovo: ${uploaded} fotek v „${label}“.`);
+      onUploaded?.(uploaded, label);
     } catch {
       setError(true);
       setMessage("Upload selhal (síť nebo server).");

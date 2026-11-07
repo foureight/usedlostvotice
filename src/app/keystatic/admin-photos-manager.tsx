@@ -102,6 +102,7 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
       );
       setEditing(null);
       setMessage("Popisek uložen.");
+      flashSaved();
       router.refresh();
     } catch {
       setMessage("Uložení popisku selhalo (síť).");
@@ -112,12 +113,22 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
 
   const total = localAlbums.reduce((n, a) => n + a.items.length, 0);
 
+  function flashSaved() {
+    setSaveState("saved");
+    window.setTimeout(() => setSaveState("idle"), 2200);
+  }
+
   function saveAndRefresh() {
     setSaveState("saving");
     setMessage("Uloženo online. Obnovuji náhled…");
     router.refresh();
-    setSaveState("saved");
-    window.setTimeout(() => setSaveState("idle"), 2200);
+    flashSaved();
+  }
+
+  function onUploaded(count: number, label: string) {
+    setMessage(`Hotovo: ${count} fotek v „${label}“.`);
+    flashSaved();
+    router.refresh();
   }
 
   return (
@@ -161,7 +172,7 @@ export function AdminPhotosManager({ albums }: { albums: PhotoAlbum[] }) {
       </div>
 
       <div style={{ borderBottom: "1px solid #ddd", background: "#111" }}>
-        <MultiUpload />
+        <MultiUpload onUploaded={onUploaded} />
       </div>
 
       <div style={{ padding: "20px 20px 48px", maxWidth: 1100, margin: "0 auto" }}>

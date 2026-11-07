@@ -103,33 +103,68 @@ export function AdminShell({
     };
   }, [customPage]);
 
-  // Keystatic toolbar: Save → Uložit, Saved → zelené Uloženo
+  // Keystatic toolbar: Save → Uložit, Saved → zelené Uloženo (držet ~2.5 s)
   useEffect(() => {
     if (customPage) return;
 
+    let holdUntil = 0;
+    let heldBtn: HTMLElement | null = null;
+    let holdTimer: number | null = null;
+
     const paint = (btn: HTMLElement, mode: "idle" | "saved") => {
       if (mode === "saved") {
-        btn.style.background = "#2f7d4a";
-        btn.style.color = "#fff";
-        btn.style.borderColor = "#2f7d4a";
-      } else {
+        btn.style.setProperty("background", "#2f7d4a", "important");
+        btn.style.setProperty("color", "#fff", "important");
+        btn.style.setProperty("border-color", "#2f7d4a", "important");
+      } else if (btn !== heldBtn || Date.now() >= holdUntil) {
         btn.style.removeProperty("background");
         btn.style.removeProperty("color");
         btn.style.removeProperty("border-color");
       }
     };
 
+    const markSaved = (btn: HTMLElement) => {
+      heldBtn = btn;
+      holdUntil = Date.now() + 2500;
+      btn.textContent = "Uloženo";
+      paint(btn, "saved");
+      if (holdTimer) window.clearTimeout(holdTimer);
+      holdTimer = window.setTimeout(() => {
+        holdUntil = 0;
+        // Keep label until Keystatic changes it; drop forced green hold.
+        if (heldBtn) paint(heldBtn, "idle");
+        heldBtn = null;
+      }, 2500);
+    };
+
     const rename = () => {
+      const now = Date.now();
       document.querySelectorAll("button").forEach((btn) => {
-        const raw = (btn.textContent || "").replace(/\s+/g, " ").trim();
-        if (raw === "Save" || raw === "Saving…" || raw === "Saving...") {
-          btn.textContent = raw.startsWith("Saving") ? "Ukládám…" : "Uložit";
-          paint(btn, "idle");
-        } else if (raw === "Saved" || raw === "Uloženo") {
-          btn.textContent = "Uloženo";
-          paint(btn, "saved");
-        } else if (raw === "Uložit") {
-          paint(btn, "idle");
+        const el = btn as HTMLElement;
+        const raw = (el.textContent || "").replace(/\s+/g, " ").trim();
+        const holding = el === heldBtn && now < holdUntil;
+
+        if (raw === "Saved" || raw.startsWith("Saved ")) {
+          markSaved(el);
+          return;
+        }
+        if (raw === "Uloženo") {
+          paint(el, "saved");
+          return;
+        }
+        if (raw === "Saving…" || raw === "Saving..." || raw === "Ukládám…") {
+          el.textContent = "Ukládám…";
+          paint(el, "idle");
+          return;
+        }
+        if (raw === "Save" || raw === "Uložit") {
+          if (holding) {
+            el.textContent = "Uloženo";
+            paint(el, "saved");
+            return;
+          }
+          el.textContent = "Uložit";
+          paint(el, "idle");
         }
       });
     };
@@ -141,7 +176,10 @@ export function AdminShell({
       childList: true,
       characterData: true,
     });
-    return () => mo.disconnect();
+    return () => {
+      mo.disconnect();
+      if (holdTimer) window.clearTimeout(holdTimer);
+    };
   }, [customPage, pathname]);
 
   if (customPage) {
