@@ -74,19 +74,27 @@ type GalleryItem = {
   label?: string;
 };
 
-async function flushToVolume(sitePath: string, added: GalleryItem[]) {
+/** Persist bytes to app public/ and Zerops volume (same path). */
+async function writeMediaFile(folder: string, filename: string, buffer: Buffer) {
+  const rel = path.join(folder, filename);
+  const localAbs = path.join(process.cwd(), "public", rel);
+  await mkdir(path.dirname(localAbs), { recursive: true });
+  await writeFile(localAbs, buffer);
+
+  const cms = process.env.CMS_DATA_DIR;
+  if (cms) {
+    const volumeAbs = path.join(cms, "public", rel);
+    await mkdir(path.dirname(volumeAbs), { recursive: true });
+    await writeFile(volumeAbs, buffer);
+  }
+  return `/${folder}/${filename}`.split(path.sep).join("/");
+}
+
+async function flushSiteToVolume(sitePath: string) {
   const cms = process.env.CMS_DATA_DIR;
   if (!cms) return;
   await mkdir(path.join(cms, "content"), { recursive: true });
   await copyFile(sitePath, path.join(cms, "content", "site.json"));
-  for (const item of added) {
-    const rel = (item.src || "").replace(/^\//, "");
-    if (!rel) continue;
-    const from = path.join(process.cwd(), "public", rel);
-    const to = path.join(cms, "public", rel);
-    await mkdir(path.dirname(to), { recursive: true });
-    await copyFile(from, to);
-  }
 }
 
 export async function POST(request: Request) {
@@ -176,10 +184,7 @@ export async function POST(request: Request) {
       );
     }
     const filename = uniqueName(optimized.filename, usedNames);
-    const abs = path.join(folderAbs, filename);
-    await writeFile(abs, optimized.buffer);
-
-    const src = `/${target.folder}/${filename}`;
+    const src = await writeMediaFile(target.folder, filename, optimized.buffer);
     const alt =
       sanitizeBase(path.basename(file.name, path.extname(file.name))).replace(/-/g, " ") ||
       "Foto";
@@ -196,9 +201,9 @@ export async function POST(request: Request) {
   site[target.field] = [...existing, ...added];
   await writeFile(sitePath, `${JSON.stringify(site, null, 2)}\n`, "utf8");
   try {
-    await flushToVolume(sitePath, added);
+    await flushSiteToVolume(sitePath);
   } catch (err) {
-    console.error("[cms] flushToVolume failed", err);
+    console.error("[cms] flushSiteToVolume failed", err);
   }
 
   return NextResponse.json({

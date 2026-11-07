@@ -44,7 +44,11 @@ function resolveMediaSrc(value: unknown, folder: string): string {
 function publicMediaExists(src: string): boolean {
   if (!src.startsWith("/")) return false;
   if (src.startsWith("http://") || src.startsWith("https://")) return true;
-  return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
+  const rel = src.replace(/^\//, "");
+  if (existsSync(path.join(process.cwd(), "public", rel))) return true;
+  const cms = process.env.CMS_DATA_DIR;
+  if (cms && existsSync(path.join(cms, "public", rel))) return true;
+  return false;
 }
 
 function normalizeSearch(search: UnknownRecord) {

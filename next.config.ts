@@ -64,6 +64,25 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Runtime uploads live on the Zerops volume; serve them through a Node
+  // handler so missing/stale Next static maps cannot 404 a file that exists.
+  async rewrites() {
+    const folders = [
+      "galerie",
+      "vizualizace-foto",
+      "vizualizace-dokonceno",
+      "vizualizace",
+      "pudorysy",
+      "stav",
+      "docs",
+    ];
+    return {
+      beforeFiles: folders.map((folder) => ({
+        source: `/${folder}/:path*`,
+        destination: `/api/cms-file/${folder}/:path*`,
+      })),
+    };
+  },
 };
 
 export default nextConfig;
