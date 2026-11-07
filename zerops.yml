@@ -23,8 +23,9 @@ zerops:
         PORT: "3000"
         NEXT_PUBLIC_SITE_URL: https://usedlostvodice.cz
         ADMIN_USER: michal@tribo.cz
-        ADMIN_PASSWORD: VodiceAdmin2026!
-        KEYSTATIC_ADMIN_PASSWORD: VodiceAdmin2026!
+        # ADMIN_PASSWORD / KEYSTATIC_ADMIN_PASSWORD / ADMIN_SECRET patří JEN
+        # do Zerops GUI → app → Environment variables → Secret variables.
+        # Nikdy je sem nepiš: hodnoty v zerops.yml přebíjí secrety a repo je veřejné.
         CMS_DATA_DIR: /srv/cms
         # GitHub Keystatic mode: nastav CLIENT_ID až po vytvoření GitHub App.
         # Nenechávej unresolved ${placeholders} — spustí falešný GitHub režim
