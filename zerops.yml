@@ -8,6 +8,12 @@ zerops:
         - npm ci
         - npm run build
       deployFiles: ./
+    deploy:
+      # New container gets traffic only once Next.js really answers.
+      readinessCheck:
+        httpGet:
+          port: 3000
+          path: /
     run:
       base: nodejs@22
       ports:

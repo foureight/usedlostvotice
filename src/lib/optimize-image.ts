@@ -97,6 +97,14 @@ export async function optimizeExistingFile(
 
   if (nextPath !== absPath && existsSync(absPath)) {
     await unlink(absPath);
+    // Remove the replaced original from the Zerops volume too, otherwise
+    // the startup restore copies it back and it lingers as an orphan.
+    const cms = process.env.CMS_DATA_DIR;
+    if (cms && fromPublic.startsWith("/")) {
+      await unlink(path.join(cms, "public", fromPublic.slice(1))).catch(
+        () => null,
+      );
+    }
   }
 
   const savedBytes = Math.max(0, before.size - optimized.bytes);
