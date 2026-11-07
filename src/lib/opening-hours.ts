@@ -110,12 +110,12 @@ export function getOpeningStatus(now = new Date()): OpeningStatus {
     };
   }
 
-  // Saturday November–March: closed
+  // Saturday November–March: closed (never say „otevřeno“)
   if (weekday === 6 && isSaturdayClosedSeason(month, day)) {
     return {
       open: false,
       label: "Teď zavřeno",
-      detail: "Sobota v zimě zavřeno",
+      detail: "Sobota 1. 11. – 31. 3. zavřeno",
     };
   }
 
@@ -134,7 +134,7 @@ export function getOpeningStatus(now = new Date()): OpeningStatus {
     return {
       open: false,
       label: "Teď zavřeno",
-      detail: "Zima: otevřeno ve středu 8:00–16:00",
+      detail: "Zima: středa 8:00–16:00",
     };
   }
 
@@ -142,13 +142,13 @@ export function getOpeningStatus(now = new Date()): OpeningStatus {
     return {
       open: false,
       label: "Teď zavřeno",
-      detail: "Sezóna: sobota 8:00–11:30",
+      detail: "Sobota 8:00–11:30",
     };
   }
 
   return {
     open: false,
     label: "Teď zavřeno",
-    detail: "Sobota zavřeno · zima středa 8:00–16:00",
+    detail: "Sobota 1. 11. – 31. 3. zavřeno",
   };
 }
