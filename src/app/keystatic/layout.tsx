@@ -14,14 +14,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-function isGithubMode() {
-  const id = (process.env.KEYSTATIC_GITHUB_CLIENT_ID || "").trim();
-  if (!id || id.includes("${") || id === "undefined") return false;
-  return true;
+function isGithubCms() {
+  return (process.env.KEYSTATIC_STORAGE || "").trim() === "github";
 }
 
 export default async function Layout() {
-  if (!isGithubMode() && !(await isAdminAuthenticated())) {
+  // GitHub mode (default): Keystatic Create App / OAuth — bez cookie login.
+  if (isGithubCms()) {
+    return <KeystaticApp />;
+  }
+
+  if (!(await isAdminAuthenticated())) {
     redirect("/admin");
   }
 
@@ -80,10 +83,6 @@ export default async function Layout() {
       items: content.plans.map((g) => ({ src: g.src, alt: g.alt || g.label })),
     },
   ];
-
-  if (isGithubMode()) {
-    return <KeystaticApp />;
-  }
 
   return (
     <>
