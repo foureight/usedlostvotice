@@ -17,6 +17,8 @@ const URL_PATHS = [
   ["completion", "partnerUrl"],
 ] as const;
 
+const ALT_EXTS = [".jpg", ".jpeg", ".webp", ".png", ".gif", ".avif"] as const;
+
 function publicExists(src: string): boolean {
   if (!src.startsWith("/")) return false;
   const rel = src.replace(/^\//, "");
@@ -24,6 +26,18 @@ function publicExists(src: string): boolean {
   const cms = process.env.CMS_DATA_DIR;
   if (cms && existsSync(path.join(cms, "public", rel))) return true;
   return false;
+}
+
+/** If /foo.png is missing but /foo.jpg exists, return the working path. */
+function resolvePublicSrc(src: string): string | null {
+  if (publicExists(src)) return src;
+  const dir = path.posix.dirname(src);
+  const base = path.posix.basename(src).replace(/\.[^.]+$/, "");
+  for (const ext of ALT_EXTS) {
+    const candidate = `${dir}/${base}${ext}`;
+    if (publicExists(candidate)) return candidate;
+  }
+  return null;
 }
 
 function normalizePdf(value: unknown): string {
@@ -80,19 +94,30 @@ export async function repairSiteJson(): Promise<RepairResult> {
   let dirty = false;
 
   for (const field of MEDIA_FIELDS) {
-    const list = Array.isArray(site[field]) ? (site[field] as { src?: unknown }[]) : [];
-    const next = list.filter((item) => {
+    const list = Array.isArray(site[field])
+      ? (site[field] as { src?: unknown }[])
+      : [];
+    const next: { src?: unknown }[] = [];
+    for (const item of list) {
       const src = typeof item?.src === "string" ? item.src.trim() : "";
-      if (!src || !publicExists(src)) {
+      const fixed = src ? resolvePublicSrc(src) : null;
+      if (!fixed) {
         removed.push(`${field}:${src || "(empty)"}`);
-        return false;
+        continue;
       }
-      return true;
-    });
+      if (fixed !== src) {
+        next.push({ ...item, src: fixed });
+        dirty = true;
+      } else {
+        next.push(item);
+      }
+    }
     // Never persist a fully emptied gallery — that wiped production photos before.
     if (next.length !== list.length && (next.length > 0 || list.length === 0)) {
       site[field] = next;
       dirty = true;
+    } else if (next.length === list.length && dirty) {
+      site[field] = next;
     } else if (next.length === 0 && list.length > 0) {
       console.warn(
         `[repair] skip emptying ${field} (${list.length} → 0); files may be mid-restore`,
