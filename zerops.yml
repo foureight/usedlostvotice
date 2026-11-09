@@ -23,12 +23,11 @@ zerops:
         PORT: "3000"
         NEXT_PUBLIC_SITE_URL: https://usedlostvodice.cz
         ADMIN_USER: michal@tribo.cz
-        ADMIN_PASSWORD: VodiceAdmin2026!
-        KEYSTATIC_ADMIN_PASSWORD: VodiceAdmin2026!
+        ADMIN_PASSWORD: ${KEYSTATIC_ADMIN_PASSWORD}
         CMS_DATA_DIR: /srv/cms
-        # GitHub Keystatic mode: nastav CLIENT_ID až po vytvoření GitHub App.
-        # Nenechávej unresolved ${placeholders} — spustí falešný GitHub režim
-        # a schová multi-upload / náhled fotek.
+        # Po Create GitHub App na /keystatic doplň v Zerops GUI secrets:
+        # KEYSTATIC_GITHUB_CLIENT_ID, KEYSTATIC_GITHUB_CLIENT_SECRET,
+        # KEYSTATIC_SECRET, NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG
       start: sh scripts/zerops-start.sh
       healthCheck:
         httpGet:
