@@ -120,7 +120,9 @@ const planItem = fields.object({
 
 export default config({
   // Local + Zerops volume (CMS_DATA_DIR). GitHub mode až po nastavení App secrets.
-  storage: { kind: "local" },
+  storage: (process.env.KEYSTATIC_STORAGE || "").trim() === "github"
+    ? { kind: "github", repo: "foureight/usedlostvotice" }
+    : { kind: "local" },
   ui: {
     brand: { name: "Usedlost Vodice" },
   },
