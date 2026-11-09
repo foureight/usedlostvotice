@@ -84,6 +84,19 @@ function enhance(thumbs: AdminThumb[]) {
       ? src
       : `${window.location.origin}${src}`;
     if (img.getAttribute("src") !== absolute) {
+      img.onerror = () => {
+        // CMS often keeps .png while volume has .jpg/.webp after optimize.
+        const exts = [".jpg", ".jpeg", ".webp", ".png"];
+        const m = absolute.match(/^(.*)\.[^.]+$/);
+        if (!m) return;
+        const base = m[1];
+        const tried = img.getAttribute("data-uv-try") || "";
+        const next = exts.find((ext) => !tried.includes(ext) && !absolute.endsWith(ext));
+        if (!next) return;
+        img.setAttribute("data-uv-try", `${tried}${next}`);
+        img.src = `${base}${next}`;
+      };
+      img.removeAttribute("data-uv-try");
       img.src = absolute;
     }
 
